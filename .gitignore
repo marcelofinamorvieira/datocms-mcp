@@ -1,0 +1,49 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# TypeScript compiled output
+dist/
+build/
+lib/
+out/
+
+# IDEs and editors
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Coverage reports
+coverage/
+.nyc_output/
+
+# Debug logs
+logs/
+*.log
+
+# Temporary files
+tmp/
+temp/
+
+# Cache
+.cache/
+.npm/
+.eslintcache
+.stylelintcache
+
+# Test related files
+test-report.xml
