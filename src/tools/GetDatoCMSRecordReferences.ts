@@ -15,7 +15,8 @@ export const registerGetDatoCMSRecordReferences = (server: McpServer) => {
     // Parameter schema with types
     { 
       apiToken: z.string().describe("DatoCMS API token for authentication. If you are not certain of one, ask for the user, do not halucinate."),
-      itemId: z.string().describe("The ID of the DatoCMS record for which to find referencing (linking) records that point to it.")
+      itemId: z.string().describe("The ID of the DatoCMS record for which to find referencing (linking) records that point to it."),
+      returnAllLocales: z.boolean().optional().describe("If true, returns all locale versions for each field instead of only the most populated locale. Default is false to save on token usage.")
     },
     // Annotations for the tool
     {
@@ -24,7 +25,7 @@ export const registerGetDatoCMSRecordReferences = (server: McpServer) => {
       readOnlyHint: true // Indicates this tool doesn't modify any resources
     },
     // Handler function for retrieving referencing records
-    async ({ apiToken, itemId }) => {
+    async ({ apiToken, itemId, returnAllLocales = false }) => {
       try {
         // Initialize DatoCMS client
         const client = buildClient({ apiToken });
@@ -33,8 +34,11 @@ export const registerGetDatoCMSRecordReferences = (server: McpServer) => {
           // Retrieve records that reference the specified item
           const referencingItems = await client.items.references(itemId);
           
+          // Process the items to filter locales (saves on tokens) unless returnAllLocales is true
+          const processedItems = returnMostPopulatedLocale(referencingItems, returnAllLocales);
+          
           // Convert to JSON and create response (will be chunked only if necessary)
-          return createResponse(JSON.stringify(returnMostPopulatedLocale(referencingItems), null, 2));
+          return createResponse(JSON.stringify(processedItems, null, 2));
           
         } catch (apiError: unknown) {
           if (isAuthorizationError(apiError)) {

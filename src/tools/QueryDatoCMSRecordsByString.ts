@@ -17,7 +17,8 @@ export const registerQueryDatoCMSRecordsByString = (server: McpServer) => {
       apiToken: z.string().describe("DatoCMS API token for authentication. If you are not certain of one, ask for the user, do not halucinate."),
       filterQuery: z.string().describe("The raw string to search for in the DatoCMS items. Do not specify field names, just the value. Try to be as general as possible with the string, as this is not fuzzy search, otherwise you may miss results."),
       modelName: z.string().optional().describe("Optional model name to restrict results to. Only pass this if the user is certain of the model name, otherwise ommit it."),
-      version: z.enum(["published", "current"]).optional().describe("Whether to retrieve the published version ('published') or the latest draft ('current'). Default is 'published'.")
+      version: z.enum(["published", "current"]).optional().describe("Whether to retrieve the published version ('published') or the latest draft ('current'). Default is 'published'."),
+      returnAllLocales: z.boolean().optional().describe("If true, returns all locale versions for each field instead of only the most populated locale. Default is false to save on token usage.")
     },
     // Annotations for the tool
     {
@@ -26,7 +27,7 @@ export const registerQueryDatoCMSRecordsByString = (server: McpServer) => {
       readOnlyHint: true // Indicates this tool doesn't modify any resources
     },
     // Handler function for the DatoCMS query operation
-    async ({ apiToken, filterQuery, modelName, version = "current" }) => {
+    async ({ apiToken, filterQuery, modelName, version = "current", returnAllLocales = false }) => {
       try {
         // Initialize DatoCMS client
         const client = buildClient({ apiToken });
@@ -43,7 +44,8 @@ export const registerQueryDatoCMSRecordsByString = (server: McpServer) => {
           const allItems = [];
 
           for await (const item of client.items.listPagedIterator(queryParams)) {
-            allItems.push(returnMostPopulatedLocale(item));
+            // Process each item to filter locales (saves on tokens) unless returnAllLocales is true
+            allItems.push(returnMostPopulatedLocale(item, returnAllLocales));
           }
           
           if(allItems.length === 0) {

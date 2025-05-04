@@ -3,6 +3,7 @@ import { buildClient } from "@datocms/cma-client-node";
 import { isAuthorizationError, isNotFoundError, createErrorResponse } from "../utils/errorHandlers.js";
 import { createResponse } from "../utils/responseHandlers.js";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { returnMostPopulatedLocale } from "../utils/returnMostPopulatedLocale.js";
 
 /**
  * Registers the GetDatoCMSRecordById tool with the MCP server
@@ -15,7 +16,8 @@ export const registerGetDatoCMSRecordById = (server: McpServer) => {
     { 
       apiToken: z.string().describe("DatoCMS API token for authentication. If you are not certain of one, ask for the user, do not halucinate."),
       itemId: z.string().describe("The ID of the specific DatoCMS record to retrieve."),
-      version: z.enum(["published", "current"]).optional().describe("Whether to retrieve the published version ('published') or the latest draft ('current'). Default is 'published'.")
+      version: z.enum(["published", "current"]).optional().describe("Whether to retrieve the published version ('published') or the latest draft ('current'). Default is 'published'."),
+      returnAllLocales: z.boolean().optional().describe("If true, returns all locale versions for each field instead of only the most populated locale. Default is false to save on token usage.")
     },
     // Annotations for the tool
     {
@@ -24,7 +26,7 @@ export const registerGetDatoCMSRecordById = (server: McpServer) => {
       readOnlyHint: true // Indicates this tool doesn't modify any resources
     },
     // Handler function for retrieving a specific item
-    async ({ apiToken, itemId, version = "current" }) => {
+    async ({ apiToken, itemId, version = "current", returnAllLocales = false }) => {
       try {
         // Initialize DatoCMS client
         const client = buildClient({ apiToken });
@@ -44,8 +46,11 @@ export const registerGetDatoCMSRecordById = (server: McpServer) => {
             return createErrorResponse(`Error: Record with ID '${itemId}' was not found.`);
           }
 
+          // Process the item to filter locales (saves on tokens) unless returnAllLocales is true
+          const processedItem = returnMostPopulatedLocale(item, returnAllLocales);
+
           // Convert to JSON and create response (will be chunked only if necessary)
-          return createResponse(JSON.stringify(item, null, 2));
+          return createResponse(JSON.stringify(processedItem, null, 2));
           
         } catch (apiError: unknown) {
           if (isAuthorizationError(apiError)) {

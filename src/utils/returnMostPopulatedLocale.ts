@@ -3,6 +3,10 @@
  * 1. Detects which locale (e.g. "en", "pt-BR") carries the most non-empty values.
  * 2. Returns a copy of the structure where any localized field keeps only that dominant locale.
  *
+ * This utility helps save on tokens when sending responses by eliminating redundant localized content
+ * while preserving the most populated locale's data. It's especially helpful for multilingual records
+ * where sending all locales would significantly increase token usage.
+ * 
  * Useful for records that mix localized and non-localized fields.
  */
 
@@ -100,10 +104,17 @@ const stripToLocale = (node: unknown, loc: string): unknown => {
 /**
  * Main export: Finds the most populated locale and returns a copy
  * of the data structure with only that locale's values.
+ * 
+ * By default, only keeps the most populated locale to reduce token usage in responses.
+ * Set keepAllLocales=true when you need the complete multilingual data.
+ * 
  * @param data The source data with potential localized fields
- * @returns A copy with the best locale chosen and all others removed
+ * @param keepAllLocales If true, returns the original data with all locales intact, which increases token usage but preserves all translations
+ * @returns A copy with the best locale chosen and all others removed (or original data if keepAllLocales is true)
  */
-export function returnMostPopulatedLocale(data: unknown): unknown {
+export function returnMostPopulatedLocale(data: unknown, keepAllLocales = false): unknown {
+  if (keepAllLocales) return data; // Skip locale filtering and return all locales
+  
   const bestLocale = dominantLocale(data);
   if (!bestLocale) return data; // No localized content found
   return stripToLocale(data, bestLocale);
