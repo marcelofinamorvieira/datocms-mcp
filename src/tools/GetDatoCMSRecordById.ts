@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { buildClient } from "@datocms/cma-client-node";
 import { isAuthorizationError, isNotFoundError, createErrorResponse } from "../utils/errorHandlers.js";
+import { createResponse } from "../utils/responseHandlers.js";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 
 /**
@@ -35,16 +36,17 @@ export const registerGetDatoCMSRecordById = (server: McpServer) => {
             nested: true
           };
         
-          
           // Retrieve the item
           const item = await client.items.find(itemId, queryParams);
           
-          return {
-            content: [{
-              type: "text" as const,
-              text: JSON.stringify(item, null, 2)
-            }]
-          };
+          // If no item found, return error
+          if (!item) {
+            return createErrorResponse(`Error: Record with ID '${itemId}' was not found.`);
+          }
+
+          // Convert to JSON and create response (will be chunked only if necessary)
+          return createResponse(JSON.stringify(item, null, 2));
+          
         } catch (apiError: unknown) {
           if (isAuthorizationError(apiError)) {
             return createErrorResponse("Error: Please provide a valid DatoCMS API token. The token you provided was rejected by the DatoCMS API.");

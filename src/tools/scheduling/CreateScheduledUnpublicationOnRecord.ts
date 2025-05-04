@@ -1,39 +1,39 @@
 import { z } from "zod";
 import { buildClient } from "@datocms/cma-client-node";
-import { isAuthorizationError, createErrorResponse } from "../utils/errorHandlers.js";
+import { isAuthorizationError, createErrorResponse } from "../../utils/errorHandlers.js";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 
 /**
- * Registers the CreateScheduledPublicationOnRecord tool with the MCP server
+ * Registers the CreateScheduledUnpublicationOnRecord tool with the MCP server
  */
-export const registerCreateScheduledPublicationOnRecord = (server: McpServer) => {
+export const registerCreateScheduledUnpublicationOnRecord = (server: McpServer) => {
   server.tool(
     // Tool name
-    "CreateScheduledPublicationOnRecord",
+    "CreateScheduledUnpublicationOnRecord",
     // Parameter schema with types
     { 
       apiToken: z.string().describe("DatoCMS API token for authentication. If you are not certain of one, ask for the user, do not halucinate."),
-      itemId: z.string().describe("The ID of the item you want to schedule for publication."),
-      publicationDate: z.string().describe("The date and time when the item should be published, in ISO 8601 format")
+      itemId: z.string().describe("The ID of the item you want to schedule for unpublication. If you are not certain of one, ask for the user, do not halucinate. Keep in mind that a record can have only one scheduled unpublication at a time."),
+      unpublicationDate: z.string().describe("The date and time when the item should be unpublished, in ISO 8601 format")
     },
     // Annotations for the tool
     {
-      title: "Create Scheduled Publication",
-      description: "Schedules a DatoCMS item to be published at a specific date and time.",
+      title: "Create Scheduled Unpublication",
+      description: "Schedules a DatoCMS item to be unpublished at a specific date and time.",
       readOnlyHint: false // This tool modifies resources
     },
-    // Handler function for the scheduled publication creation
-    async ({ apiToken, itemId, publicationDate }) => {
+    // Handler function for the scheduled unpublication creation
+    async ({ apiToken, itemId, unpublicationDate }) => {
       try {
         // Initialize DatoCMS client
         const client = buildClient({ apiToken });
         
-        // Create the scheduled publication
+        // Create the scheduled unpublication
         try {
-          const scheduledPublication = await client.scheduledPublication.create(
+          const scheduledUnpublication = await client.scheduledUnpublishing.create(
             itemId,
             {
-              publication_scheduled_at: publicationDate
+              unpublishing_scheduled_at: unpublicationDate
             }
           );
           
@@ -41,8 +41,8 @@ export const registerCreateScheduledPublicationOnRecord = (server: McpServer) =>
             content: [{
               type: "text" as const,
               text: JSON.stringify({
-                message: "Successfully scheduled the item for publication.",
-                scheduledPublication
+                message: "Successfully scheduled the item for unpublication.",
+                scheduledUnpublication
               }, null, 2)
             }]
           };
@@ -58,7 +58,7 @@ export const registerCreateScheduledPublicationOnRecord = (server: McpServer) =>
         return {
           content: [{
             type: "text" as const,
-            text: `Error creating scheduled publication: ${error instanceof Error ? error.message : String(error)}`
+            text: `Error creating scheduled unpublication: ${error instanceof Error ? error.message : String(error)}`
           }]
         };
       }

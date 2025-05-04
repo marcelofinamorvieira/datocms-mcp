@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { buildClient } from "@datocms/cma-client-node";
 import { isAuthorizationError, createErrorResponse } from "../utils/errorHandlers.js";
+import { createResponse } from "../utils/responseHandlers.js";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 
 /**
@@ -53,12 +54,9 @@ export const registerQueryDatoCMSRecordsByString = (server: McpServer) => {
             };
           }
 
-          return {
-            content: [{
-              type: "text" as const,
-              text: JSON.stringify(allItems, null, 2)
-            }]
-          };
+          // Convert to JSON and create response (will be chunked only if necessary)
+          return createResponse(JSON.stringify(allItems, null, 2));
+          
         } catch (apiError: unknown) {
           if (isAuthorizationError(apiError)) {
             return createErrorResponse("Error: Please provide a valid DatoCMS API token. The token you provided was rejected by the DatoCMS API.");

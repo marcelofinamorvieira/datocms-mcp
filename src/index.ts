@@ -30,13 +30,23 @@ const createServer = () => {
   });
 
   // Register all tools
+
+  //Record Querying
+
+  registerGetDatoCMSRecordById(server);
   registerQueryDatoCMSRecordsByString(server);
-  registerBuildDatoCMSRecordUrl(server);
+
+  //Record Scheduling
+
   registerCreateScheduledPublicationOnRecord(server);
   registerDestroyScheduledPublicationOnRecord(server);
-  registerGetDatoCMSRecordById(server);
   registerCreateScheduledUnpublicationOnRecord(server);
   registerDestroyScheduledUnpublicationOnRecord(server);
+
+  //Record Utilities
+
+  registerBuildDatoCMSRecordUrl(server);
+
 
   return server;
 };
