@@ -91,27 +91,47 @@ To connect this MCP server to Claude:
 
 ## Using DatoCMS Tools with Claude
 
-Once connected, you can use the tools described in the table above. Here are some example prompts:
+Once connected, you can use the tools described in the table above. **Note that you only need to provide your API token once per conversation** - Claude will remember it for subsequent tool calls.
 
-### Searching for content
-
-```
-Please search for blog posts about "artificial intelligence" in my DatoCMS project.
-My API token is [your-api-token].
-```
-
-### Getting a specific record
+Here's an example conversation using the DatoCMS tools:
 
 ```
-Can you retrieve the DatoCMS record with ID "123456" for me?
-My API token is [your-api-token].
-```
+User: I need to find content in my DatoCMS project about "artificial intelligence". My API token is [your-api-token].
 
-### Scheduling a publication
+Claude: I'll search for content related to artificial intelligence in your DatoCMS project.
+[Claude uses QueryDatoCMSRecordsByString tool]
 
-```
-I need to schedule the publication of content with ID "123456" for tomorrow at 9:00 AM UTC.
-My API token is [your-api-token].
+I found 3 items matching your search:
+1. "Introduction to AI" - Blog post (ID: 12345)
+2. "Machine Learning Basics" - Tutorial (ID: 67890)
+3. "AI Ethics Guidelines" - Page (ID: 54321)
+
+Would you like more details about any of these items?
+
+User: Yes, can you get me the details of the AI Ethics Guidelines page?
+
+Claude: I'll retrieve the details for the AI Ethics Guidelines page.
+[Claude uses GetDatoCMSRecordById tool with the remembered API token]
+
+Here are the details for "AI Ethics Guidelines":
+[Content details provided]
+
+Would you like to schedule this content to be published at a specific time?
+
+User: Yes, please schedule it for tomorrow at 9:00 AM UTC.
+
+Claude: I'll set up the scheduled publication for you.
+[Claude uses CreateScheduledPublicationOnRecord tool with the remembered API token]
+
+Success! The "AI Ethics Guidelines" page has been scheduled for publication tomorrow at 9:00 AM UTC.
+
+User: Thanks! Can you also give me the URL to edit this page in the DatoCMS admin interface?
+
+Claude: I'll generate that URL for you.
+[Claude uses BuildDatoCMSRecordUrl tool]
+
+Here's the direct link to edit this page in your DatoCMS admin interface:
+[Editor URL provided]
 ```
 
 ## Troubleshooting
