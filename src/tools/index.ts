@@ -6,6 +6,7 @@
 export { registerQueryDatoCMSRecordsByString } from './QueryDatoCMSRecordsByString.js';
 export { registerBuildDatoCMSRecordUrl } from './BuildDatoCMSRecordUrl.js';
 export { registerGetDatoCMSRecordById } from './GetDatoCMSRecordById.js';
+export { registerGetDatoCMSProjectInfo } from './GetDatoCMSProjectInfo.js';
 
 // Scheduling tools
 export {

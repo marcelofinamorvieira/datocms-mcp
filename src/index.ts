@@ -10,6 +10,7 @@ import {
   registerCreateScheduledPublicationOnRecord,
   registerDestroyScheduledPublicationOnRecord,
   registerGetDatoCMSRecordById,
+  registerGetDatoCMSProjectInfo,
   registerCreateScheduledUnpublicationOnRecord,
   registerDestroyScheduledUnpublicationOnRecord
 } from "./tools/index.js";
@@ -30,6 +31,10 @@ const createServer = () => {
   });
 
   // Register all tools
+
+  //Project meta info
+
+  registerGetDatoCMSProjectInfo(server);
 
   //Record Querying
 

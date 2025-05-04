@@ -3,6 +3,7 @@ import { buildClient } from "@datocms/cma-client-node";
 import { isAuthorizationError, createErrorResponse } from "../utils/errorHandlers.js";
 import { createResponse } from "../utils/responseHandlers.js";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { returnMostPopulatedLocale } from "../utils/returnMostPopulatedLocale.js";
 
 /**
  * Registers the QueryDatoCMSRecordsByString tool with the MCP server
@@ -21,7 +22,7 @@ export const registerQueryDatoCMSRecordsByString = (server: McpServer) => {
     // Annotations for the tool
     {
       title: "Query DatoCMS Records",
-      description: "Searches and retrieves records from a DatoCMS project using a simple text query. This tool performs a raw text search across all record fields and returns matching items. It returns all information from that record. Including scheduled publications and unplications.",
+      description: "Searches and retrieves records from a DatoCMS project using a simple text query. This tool performs a raw text search across all record fields and returns matching items. For more info on those records use GetDatoCMSRecordById after",
       readOnlyHint: true // Indicates this tool doesn't modify any resources
     },
     // Handler function for the DatoCMS query operation
@@ -32,7 +33,7 @@ export const registerQueryDatoCMSRecordsByString = (server: McpServer) => {
         
         // Prepare query parameters
         const queryParams: Record<string, unknown> = {
-          filter: { query: filterQuery, type: modelName, nested: true },
+          filter: { query: filterQuery, type: modelName, nested: false },
           version
         };
         
@@ -40,9 +41,9 @@ export const registerQueryDatoCMSRecordsByString = (server: McpServer) => {
         try {
 
           const allItems = [];
-          
+
           for await (const item of client.items.listPagedIterator(queryParams)) {
-            allItems.push(item);
+            allItems.push(returnMostPopulatedLocale(item));
           }
           
           if(allItems.length === 0) {
