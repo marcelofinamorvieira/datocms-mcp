@@ -1,11 +1,28 @@
 # DatoCMS MCP Tools
 
-This project provides a Model Context Protocol (MCP) server that enables Claude AI models to interact with DatoCMS. It includes tools for querying DatoCMS records and generating editor URLs for direct access to content.
+This project provides a Model Context Protocol (MCP) server that enables Claude AI models to interact with DatoCMS. It includes tools for querying DatoCMS records, managing content publication, and generating editor URLs for direct access to content.
 
 ## Features
 
-- **QueryDatoCMSRecords**: Search for content in your DatoCMS project using simple text queries
-- **BuildDatoCMSRecordUrl**: Generate direct links to edit specific records in the DatoCMS admin interface
+- **Query DatoCMS Content**: Search for records with text queries and retrieve specific records by ID
+- **Content Publication Management**: Schedule or cancel content publications and unpublications
+- **Record References**: Find records that link to a specific record
+- **Project Information**: Retrieve metadata about your DatoCMS project
+- **Editor URLs**: Generate direct links to edit specific records in the DatoCMS admin interface
+
+## Tools Overview
+
+| Tool | Description | Parameters | Returns | 
+|------|-------------|------------|---------|
+| 🔍 QueryDatoCMSRecordsByString | Searches for content across your DatoCMS project using text queries | `apiToken`, `filterQuery`, `modelName` (optional), `version` (optional), `returnAllLocales` (optional) | Array of matching records |
+| 📋 GetDatoCMSRecordById | Retrieves a specific record by its ID | `apiToken`, `itemId`, `version` (optional), `returnAllLocales` (optional) | Single record object |
+| 🔗 BuildDatoCMSRecordUrl | Generates a direct editor URL for a specific record | `projectUrl`, `itemTypeId`, `itemId` | URL to edit the record |
+| 📊 GetDatoCMSProjectInfo | Retrieves information about the DatoCMS project | `apiToken` | Project configuration object |
+| 🔄 GetDatoCMSRecordReferences | Finds records that link to a specific record | `apiToken`, `itemId`, `returnAllLocales` (optional) | Array of referencing records |
+| 📅 CreateScheduledPublicationOnRecord | Schedules a record to be published at a specific time | `apiToken`, `itemId`, `publicationDate` | Scheduled publication object |
+| 🗑️ DestroyScheduledPublicationOnRecord | Cancels a scheduled publication | `apiToken`, `itemId` | Confirmation message |
+| 📆 CreateScheduledUnpublicationOnRecord | Schedules a record to be unpublished at a specific time | `apiToken`, `itemId`, `unpublicationDate` | Scheduled unpublication object |
+| 🗑️ DestroyScheduledUnpublicationOnRecord | Cancels a scheduled unpublication | `apiToken`, `itemId` | Confirmation message |
 
 ## Prerequisites
 
@@ -74,33 +91,28 @@ To connect this MCP server to Claude:
 
 ## Using DatoCMS Tools with Claude
 
-Once connected, you can use the following tools in your conversation with Claude:
+Once connected, you can use the tools described in the table above. Here are some example prompts:
 
-### QueryDatoCMSRecords
+### Searching for content
 
-This tool searches for content in your DatoCMS project.
-
-**Required parameters:**
-- `apiToken`: Your DatoCMS API token (from DatoCMS > Project Settings > API tokens)
-- `filterQuery`: Text to search for in your DatoCMS content
-
-**Optional parameters:**
-- `modelName`: Limit search to a specific content model
-
-**Example prompt to Claude:**
 ```
-Please search for articles about "climate change" in my DatoCMS project.
+Please search for blog posts about "artificial intelligence" in my DatoCMS project.
 My API token is [your-api-token].
 ```
 
-### BuildDatoCMSRecordUrl
+### Getting a specific record
 
-This tool generates a direct link to edit a specific record in the DatoCMS admin interface.
+```
+Can you retrieve the DatoCMS record with ID "123456" for me?
+My API token is [your-api-token].
+```
 
-**Required parameters:**
-- `projectUrl`: Your DatoCMS project URL (e.g., https://your-project.admin.datocms.com)
-- `itemTypeId`: The ID of the content model (found in the item.item_type.id property of a record)
-- `itemId`: The ID of the specific record
+### Scheduling a publication
+
+```
+I need to schedule the publication of content with ID "123456" for tomorrow at 9:00 AM UTC.
+My API token is [your-api-token].
+```
 
 ## Troubleshooting
 
