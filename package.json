@@ -1,5 +1,5 @@
 {
-  "name": "sum-numbers-server",
+  "name": "datocms-mcp-tools",
   "version": "1.0.0",
   "description": "A simple MCP server that can sum two numbers",
   "main": "dist/index.js",
@@ -16,8 +16,8 @@
     "model-context-protocol",
     "typescript"
   ],
-  "author": "",
-  "license": "ISC",
+  "author": "Marcelo Finamor Vieira",
+  "license": "MIT",
   "dependencies": {
     "@datocms/cma-client-node": "^4.0.1",
     "@modelcontextprotocol/sdk": "^1.11.0",
