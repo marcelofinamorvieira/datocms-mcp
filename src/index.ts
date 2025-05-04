@@ -28,24 +28,20 @@ const createServer = () => {
     // Parameter schema with types
     { 
       apiToken: z.string().describe("DatoCMS API token for authentication. If you are not certain of one, ask for the user, do not halucinate."),
-      projectUrl: z.string().describe("DatoCMS project URL. If you are not certain of one, ask for the user, do not halucinate."),
       filterQuery: z.string().describe("The raw string to search for in the DatoCMS items. Do not specify field names, just the value. Try to be as general as possible with the string, as this is not fuzzy search, otherwise you may miss results."),
       modelName: z.string().optional().describe("Optional model name to restrict results to. Only pass this if the user is certain of the model name, otherwise ommit it.")
     },
     // Annotations for the tool
     {
-      title: "Query DatoCMS Records from string.",
-      description: "This tool allows you to search and retrieve a record from a DatoCMS project a string as a parameter.",
+      title: "Query DatoCMS Records",
+      description: "Searches and retrieves records from a DatoCMS project using a simple text query. This tool performs a raw text search across all record fields and returns matching items.",
       readOnlyHint: true // Indicates this tool doesn't modify any resources
     },
     // Handler function for the DatoCMS query operation
-    async ({ apiToken, projectUrl, filterQuery, modelName }) => {
+    async ({ apiToken, filterQuery, modelName }) => {
       try {
         // Initialize DatoCMS client
         const client = buildClient({ apiToken });
-        
-        // Store the project URL for potential future use
-        // Note: The DatoCMS client uses the API token to determine the project
         
         // Prepare query parameters
         const queryParams: Record<string, unknown> = {
@@ -65,33 +61,10 @@ const createServer = () => {
             };
           }
 
-          // Add editor URL to each item
-          const itemsWithUrl = items.map(item => {
-            // Construct the editor URL using the item data
-            // The structure follows DatoCMS API response format
-            const itemTypeId = item.item_type.id;
-            return {
-              ...item,
-              editorUrl: `${projectUrl}/editor/item_types/${itemTypeId}/items/${item.id}/edit`
-            };
-          });
-
-          // Create a response with both formatted URLs and full data
-          const formattedResponse = {
-            message: "Records found matching your query. Here is the record content and its URL. Make sure to include the url at the end of your response, so the user knows where to find this info.",
-            recordIdsAndUrls: itemsWithUrl.map(item => {
-              return {
-                id: item.id,
-                url: item.editorUrl
-              };
-            }),
-            recordData: itemsWithUrl
-          };
-
           return {
             content: [{
               type: "text",
-              text: JSON.stringify(formattedResponse, null, 2)
+              text: JSON.stringify(items, null, 2)
             }]
           };
         } catch (apiError: unknown) {
@@ -119,6 +92,51 @@ const createServer = () => {
           content: [{
             type: "text",
             text: `Error querying DatoCMS: ${error instanceof Error ? error.message : String(error)}`
+          }]
+        };
+      }
+    }
+  );
+
+  // Add the DatoCMS URL builder tool with type validation via Zod
+  server.tool(
+    // Tool name
+    "BuildDatoCMSRecordUrl",
+    // Parameter schema with types
+    { 
+      projectUrl: z.string().describe("DatoCMS project URL. If the user did not provide one yet ask for it, do not halucinate."),
+      itemTypeId: z.string().describe("The item type ID from DatoCMS, typically available in the item.item_type.id property of a record."),
+      itemId: z.string().describe("The ID of the specific record you want to build a URL for.")
+    },
+    // Annotations for the tool
+    {
+      title: "Build DatoCMS Record Editor URL",
+      description: "Constructs a direct editor URL for a specific DatoCMS record. This allows users to click a link and go directly to editing a particular record in the DatoCMS interface.",
+      readOnlyHint: true // Indicates this tool doesn't modify any resources
+    },
+    // Handler function for the URL builder operation
+    async ({ projectUrl, itemTypeId, itemId }) => {
+      try {
+        // Sanitize the project URL by removing trailing slashes
+        const sanitizedProjectUrl = projectUrl.replace(/\/$/, '');
+        
+        // Construct the editor URL
+        const editorUrl = `${sanitizedProjectUrl}/editor/item_types/${itemTypeId}/items/${itemId}/edit`;
+        
+        return {
+          content: [{
+            type: "text",
+            text: JSON.stringify({
+              message: "Here is the URL for the DatoCMS record. You can use this to directly access the record in the DatoCMS editor.",
+              url: editorUrl
+            }, null, 2)
+          }]
+        };
+      } catch (error) {
+        return {
+          content: [{
+            type: "text",
+            text: `Error building DatoCMS URL: ${error instanceof Error ? error.message : String(error)}`
           }]
         };
       }
