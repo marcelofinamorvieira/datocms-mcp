@@ -91,7 +91,7 @@ To connect this MCP server to Claude:
 
 ## Using DatoCMS Tools with Claude
 
-Once connected, you can use the tools described in the table above. **Note that you only need to provide your API token once per conversation** - Claude will remember it for subsequent tool calls.
+Once connected, you can use the tools described in the table above.
 
 Here's an example conversation using the DatoCMS tools:
 
