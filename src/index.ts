@@ -12,7 +12,8 @@ import {
   registerGetDatoCMSRecordById,
   registerGetDatoCMSProjectInfo,
   registerCreateScheduledUnpublicationOnRecord,
-  registerDestroyScheduledUnpublicationOnRecord
+  registerDestroyScheduledUnpublicationOnRecord,
+  registerGetDatoCMSRecordReferences
 } from "./tools/index.js";
 
 // Polyfill fetch for DatoCMS client
@@ -40,6 +41,7 @@ const createServer = () => {
 
   registerGetDatoCMSRecordById(server);
   registerQueryDatoCMSRecordsByString(server);
+  registerGetDatoCMSRecordReferences(server);
 
   //Record Scheduling
 
