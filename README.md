@@ -20,7 +20,7 @@ This project provides a Model Context Protocol (MCP) server that enables Claude 
 ### Record Read Operations
 
 | Tool | Description | Parameters | Returns | 
-|------|-------------|------------|---------|  
+|------|-------------|------------|-------|
 | QueryDatoCMSRecords | Universal query tool for DatoCMS records. Can search by text query, fetch records by IDs, or get all records from a model. Supports pagination and locale handling. | `apiToken`, `filterQuery` (optional), `ids` (optional), `modelId` (optional), `modelName` (optional), `fields` (optional), `locale` (optional), `order_by` (optional), `version` (optional), `returnAllLocales` (optional), `returnOnlyIds` (optional), `limit` (optional), `offset` (optional), `nested` (optional) | Array of matching records or record IDs |
 | GetDatoCMSRecordById | Retrieves a specific record by its ID | `apiToken`, `itemId`, `version` (optional), `returnAllLocales` (optional) | Single record object |
 | BuildDatoCMSRecordUrl | Generates a direct editor URL for a specific record | `projectUrl`, `itemTypeId`, `itemId` | URL to edit the record |
@@ -64,7 +64,8 @@ This project provides a Model Context Protocol (MCP) server that enables Claude 
 
 | Tool | Description | Parameters | Returns | 
 |------|-------------|------------|-------|
-| GetDatoCMSUploadById | Retrieves a specific DatoCMS upload by its ID | `apiToken`, `uploadId` | Upload resource object |
+| GetDatoCMSUploadById | Retrieves a specific DatoCMS upload by its ID | `apiToken`, `uploadId`, `returnOnlyIds` (optional) | Upload resource object or just its ID |
+| GetDatoCMSUploadReferences | Retrieves all records that link to a specific DatoCMS upload/asset | `apiToken`, `uploadId`, `nested` (optional), `version` (optional), `returnOnlyIds` (optional) | Array of records referencing the upload, or just their IDs |
 | UpdateDatoCMSUpload | Updates a DatoCMS upload's metadata, renames it, or uploads a new version | `apiToken`, `uploadId`, `path` (optional), `basename` (optional), `copyright` (optional), `author` (optional), `notes` (optional), `tags` (optional), `default_field_metadata` (optional), `upload_collection` (optional) | Updated upload resource object |
 | DestroyDatoCMSUpload | Permanently deletes a DatoCMS upload | `apiToken`, `uploadId`, `confirmation`, `returnOnlyConfirmation` (optional) | Deleted upload data or confirmation message |
 | BulkDestroyDatoCMSUploads | Permanently deletes multiple DatoCMS uploads at once | `apiToken`, `uploadIds`, `confirmation` | Confirmation message with count of deleted uploads |

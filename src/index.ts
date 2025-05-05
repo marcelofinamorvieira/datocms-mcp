@@ -32,6 +32,7 @@ import {
   registerUnpublishDatoCMSRecord,
   registerBulkUnpublishDatoCMSRecords,
   registerGetDatoCMSUploadById,
+  registerGetDatoCMSUploadReferences,
   registerDestroyDatoCMSUpload,
   registerBulkDestroyDatoCMSUploads,
   registerBulkTagDatoCMSUploads,
@@ -100,6 +101,7 @@ const createServer = (): McpServer => {
   // Upload tools
   // These allow working with DatoCMS uploads (assets)
   registerGetDatoCMSUploadById(server);           // Read
+  registerGetDatoCMSUploadReferences(server);     // Find references
   registerDestroyDatoCMSUpload(server);           // Delete
   registerBulkDestroyDatoCMSUploads(server);      // Bulk Delete
   registerUpdateDatoCMSUpload(server);            // Update
