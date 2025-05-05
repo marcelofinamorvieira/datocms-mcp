@@ -9,6 +9,13 @@ export { registerGetDatoCMSRecordById } from './GetDatoCMSRecordById.js';
 export { registerGetDatoCMSProjectInfo } from './GetDatoCMSProjectInfo.js';
 export { registerGetDatoCMSRecordReferences } from './GetDatoCMSRecordReferences.js';
 
+// Record version tools
+export { 
+  registerListDatoCMSRecordVersions, 
+  registerGetDatoCMSRecordVersion, 
+  registerRestoreDatoCMSRecordVersion 
+} from './record-versions/index.js';
+
 // Scheduling tools
 export {
   registerCreateScheduledPublicationOnRecord,

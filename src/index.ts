@@ -20,7 +20,10 @@ import {
   registerGetDatoCMSProjectInfo,
   registerCreateScheduledUnpublicationOnRecord,
   registerDestroyScheduledUnpublicationOnRecord,
-  registerGetDatoCMSRecordReferences
+  registerGetDatoCMSRecordReferences,
+  registerListDatoCMSRecordVersions,
+  registerGetDatoCMSRecordVersion,
+  registerRestoreDatoCMSRecordVersion
 } from "./tools/index.js";
 
 // Apply fetch polyfill for DatoCMS client compatibility
@@ -51,6 +54,12 @@ const createServer = (): McpServer => {
   registerGetDatoCMSRecordById(server);
   registerQueryDatoCMSRecordsByString(server);
   registerGetDatoCMSRecordReferences(server);
+
+  // Record version tools
+  // These allow querying the version history of records
+  registerListDatoCMSRecordVersions(server);
+  registerGetDatoCMSRecordVersion(server);
+  registerRestoreDatoCMSRecordVersion(server);
 
   // Publication scheduling tools
   // These manage schedulings on records, for publications and unpublications
