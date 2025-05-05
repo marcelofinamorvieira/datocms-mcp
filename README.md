@@ -14,22 +14,49 @@ This project provides a Model Context Protocol (MCP) server that enables Claude 
 
 ## Tools Overview
 
+### Record Read Operations
+
 | Tool | Description | Parameters | Returns | 
 |------|-------------|------------|---------|
 | QueryDatoCMSRecordsByString | Searches for content across your DatoCMS project using text queries | `apiToken`, `filterQuery`, `modelName` (optional), `version` (optional), `returnAllLocales` (optional) | Array of matching records |
 | GetDatoCMSRecordById | Retrieves a specific record by its ID | `apiToken`, `itemId`, `version` (optional), `returnAllLocales` (optional) | Single record object |
 | BuildDatoCMSRecordUrl | Generates a direct editor URL for a specific record | `projectUrl`, `itemTypeId`, `itemId` | URL to edit the record |
-| GetDatoCMSProjectInfo | Retrieves information about the DatoCMS project | `apiToken` | Project configuration object |
 | GetDatoCMSRecordReferences | Finds records that link to a specific record | `apiToken`, `itemId`, `returnAllLocales` (optional) | Array of referencing records |
+
+### Record Create Operations
+
+| Tool | Description | Parameters | Returns | 
+|------|-------------|------------|---------|
+| DuplicateDatoCMSRecord | Creates a duplicate of an existing DatoCMS record | `apiToken`, `itemId`, `returnOnlyConfirmation` (optional) | Newly created record or confirmation message |
+
+### Record Delete Operations
+
+| Tool | Description | Parameters | Returns | 
+|------|-------------|------------|---------|
+| DestroyDatoCMSRecord | Permanently deletes one or more DatoCMS records | `apiToken`, `itemId`, `confirmation`, `returnOnlyConfirmation` (optional) | Deleted record data or confirmation message |
+
+### Record Version Operations
+
+| Tool | Description | Parameters | Returns | 
+|------|-------------|------------|---------|
 | ListDatoCMSRecordVersions | Lists all versions of a specific DatoCMS record | `apiToken`, `recordId`, `returnOnlyIds` (optional), `limit` (optional), `offset` (optional), `nested` (optional) | Array of version IDs or version objects |
 | GetDatoCMSRecordVersion | Retrieves a specific version of a DatoCMS record | `apiToken`, `versionId` | Single version object |
 | RestoreDatoCMSRecordVersion | Restores a record to a previous version state | `apiToken`, `versionId` | Restored version object |
+
+### Publication Scheduling Operations
+
+| Tool | Description | Parameters | Returns | 
+|------|-------------|------------|---------|
 | CreateScheduledPublicationOnRecord | Schedules a record to be published at a specific time | `apiToken`, `itemId`, `publicationDate` | Scheduled publication object |
 | DestroyScheduledPublicationOnRecord | Cancels a scheduled publication | `apiToken`, `itemId` | Confirmation message |
 | CreateScheduledUnpublicationOnRecord | Schedules a record to be unpublished at a specific time | `apiToken`, `itemId`, `unpublicationDate` | Scheduled unpublication object |
 | DestroyScheduledUnpublicationOnRecord | Cancels a scheduled unpublication | `apiToken`, `itemId` | Confirmation message |
-| DuplicateDatoCMSRecord | Creates a duplicate of an existing DatoCMS record | `apiToken`, `itemId`, `returnOnlyConfirmation` (optional) | Newly created record or confirmation message |
-| DestroyDatoCMSRecord | Permanently deletes one or more DatoCMS records | `apiToken`, `itemId`, `confirmation`, `returnOnlyConfirmation` (optional) | Deleted record data or confirmation message |
+
+### Project Operations
+
+| Tool | Description | Parameters | Returns | 
+|------|-------------|------------|---------|
+| GetDatoCMSProjectInfo | Retrieves information about the DatoCMS project | `apiToken` | Project configuration object |
 
 ## Prerequisites
 
