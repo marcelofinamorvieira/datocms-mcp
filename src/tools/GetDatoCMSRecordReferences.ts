@@ -16,7 +16,10 @@ export const registerGetDatoCMSRecordReferences = (server: McpServer) => {
     { 
       apiToken: z.string().describe("DatoCMS API token for authentication. If you are not certain of one, ask for the user, do not halucinate."),
       itemId: z.string().describe("The ID of the DatoCMS record for which to find referencing (linking) records that point to it."),
-      returnAllLocales: z.boolean().optional().describe("If true, returns all locale versions for each field instead of only the most populated locale. Default is false to save on token usage.")
+      version: z.enum(["published", "current"]).optional().describe("Whether to retrieve the published version ('published') or the latest draft ('current'). Default is 'current'."),
+      returnAllLocales: z.boolean().optional().describe("If true, returns all locale versions for each field instead of only the most populated locale. Default is false to save on token usage."),
+      nested: z.boolean().optional().describe("For Modular Content, Structured Text and Single Block fields. If set to true, returns full payload for nested blocks instead of just their IDs. Default is true."),
+      returnOnlyIds: z.boolean().optional().describe("If true, returns only an array of record IDs instead of complete records. Use this to save on tokens and context window space when only IDs are needed. These IDs can then be used with GetDatoCMSRecordById to get detailed information. Default is false.")
     },
     // Annotations for the tool
     {
@@ -25,14 +28,30 @@ export const registerGetDatoCMSRecordReferences = (server: McpServer) => {
       readOnlyHint: true // Indicates this tool doesn't modify any resources
     },
     // Handler function for retrieving referencing records
-    async ({ apiToken, itemId, returnAllLocales = false }) => {
+    async ({ apiToken, itemId, version = "current", returnAllLocales = false, nested = true, returnOnlyIds = false }) => {
       try {
         // Initialize DatoCMS client
         const client = buildClient({ apiToken });
         
         try {
-          // Retrieve records that reference the specified item
-          const referencingItems = await client.items.references(itemId);
+          // Retrieve records that reference the specified item with nested parameter
+          const referencingItems = await client.items.references(itemId, { nested, version });
+
+          // Return empty result message if no items found
+          if (referencingItems.length === 0) {
+            return {
+              content: [{
+                type: "text" as const,
+                text: "No items found linking to the specified record."
+              }]
+            };
+          }
+          
+          // If returnOnlyIds is true, return just the IDs using map for cleaner code
+          if (returnOnlyIds) {
+            const itemIds = referencingItems.map(item => item.id);
+            return createResponse(JSON.stringify(itemIds, null, 2));
+          }
           
           // Process the items to filter locales (saves on tokens) unless returnAllLocales is true
           const processedItems = returnMostPopulatedLocale(referencingItems, returnAllLocales);

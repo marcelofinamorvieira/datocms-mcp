@@ -17,7 +17,8 @@ export const registerGetDatoCMSRecordById = (server: McpServer) => {
       apiToken: z.string().describe("DatoCMS API token for authentication. If you are not certain of one, ask for the user, do not halucinate."),
       itemId: z.string().describe("The ID of the specific DatoCMS record to retrieve."),
       version: z.enum(["published", "current"]).optional().describe("Whether to retrieve the published version ('published') or the latest draft ('current'). Default is 'published'."),
-      returnAllLocales: z.boolean().optional().describe("If true, returns all locale versions for each field instead of only the most populated locale. Default is false to save on token usage.")
+      returnAllLocales: z.boolean().optional().describe("If true, returns all locale versions for each field instead of only the most populated locale. Default is false to save on token usage."),
+      nested: z.boolean().optional().describe("For Modular Content, Structured Text and Single Block fields. If set to true, returns full payload for nested blocks instead of just their IDs. Default is true.")
     },
     // Annotations for the tool
     {
@@ -26,7 +27,7 @@ export const registerGetDatoCMSRecordById = (server: McpServer) => {
       readOnlyHint: true // Indicates this tool doesn't modify any resources
     },
     // Handler function for retrieving a specific item
-    async ({ apiToken, itemId, version = "current", returnAllLocales = false }) => {
+    async ({ apiToken, itemId, version = "published", returnAllLocales = false, nested = true }) => {
       try {
         // Initialize DatoCMS client
         const client = buildClient({ apiToken });
@@ -35,7 +36,7 @@ export const registerGetDatoCMSRecordById = (server: McpServer) => {
           // Prepare query parameters
           const queryParams: Record<string, unknown> = {
             version,
-            nested: true
+            nested
           };
         
           // Retrieve the item
