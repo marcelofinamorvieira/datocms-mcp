@@ -1,9 +1,9 @@
 import { z } from "zod";
 import { buildClient } from "@datocms/cma-client-node";
-import { isAuthorizationError, createErrorResponse } from "../utils/errorHandlers.js";
-import { createResponse } from "../utils/responseHandlers.js";
+import { isAuthorizationError, createErrorResponse } from "../../../utils/errorHandlers.js";
+import { createResponse } from "../../../utils/responseHandlers.js";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { returnMostPopulatedLocale } from "../utils/returnMostPopulatedLocale.js";
+import { returnMostPopulatedLocale } from "../../../utils/returnMostPopulatedLocale.js";
 
 /**
  * Registers the QueryDatoCMSRecordsByString tool with the MCP server
