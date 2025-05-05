@@ -9,6 +9,7 @@ This project provides a Model Context Protocol (MCP) server that enables Claude 
 - **Record References**: Find records that link to a specific record
 - **Project Information**: Retrieve metadata about your DatoCMS project
 - **Editor URLs**: Generate direct links to edit specific records in the DatoCMS admin interface
+- **Version Management**: List, retrieve, and restore record versions
 
 ## Tools Overview
 
@@ -19,6 +20,9 @@ This project provides a Model Context Protocol (MCP) server that enables Claude 
 | BuildDatoCMSRecordUrl | Generates a direct editor URL for a specific record | `projectUrl`, `itemTypeId`, `itemId` | URL to edit the record |
 | GetDatoCMSProjectInfo | Retrieves information about the DatoCMS project | `apiToken` | Project configuration object |
 | GetDatoCMSRecordReferences | Finds records that link to a specific record | `apiToken`, `itemId`, `returnAllLocales` (optional) | Array of referencing records |
+| ListDatoCMSRecordVersions | Lists all versions of a specific DatoCMS record | `apiToken`, `recordId`, `returnOnlyIds` (optional), `limit` (optional), `offset` (optional), `nested` (optional) | Array of version IDs or version objects |
+| GetDatoCMSRecordVersion | Retrieves a specific version of a DatoCMS record | `apiToken`, `versionId` | Single version object |
+| RestoreDatoCMSRecordVersion | Restores a record to a previous version state | `apiToken`, `versionId` | Restored version object |
 | CreateScheduledPublicationOnRecord | Schedules a record to be published at a specific time | `apiToken`, `itemId`, `publicationDate` | Scheduled publication object |
 | DestroyScheduledPublicationOnRecord | Cancels a scheduled publication | `apiToken`, `itemId` | Confirmation message |
 | CreateScheduledUnpublicationOnRecord | Schedules a record to be unpublished at a specific time | `apiToken`, `itemId`, `unpublicationDate` | Scheduled unpublication object |
