@@ -1,8 +1,8 @@
 import { z } from "zod";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { buildClient } from "@datocms/cma-client-node";
-import { createErrorResponse } from "../../utils/errorHandlers.js";
-import { createResponse } from "../../utils/responseHandlers.js";
+import { createErrorResponse } from "../../../utils/errorHandlers.js";
+import { createResponse } from "../../../utils/responseHandlers.js";
 
 /**
  * Registers the RestoreDatoCMSRecordVersion tool with the MCP server
