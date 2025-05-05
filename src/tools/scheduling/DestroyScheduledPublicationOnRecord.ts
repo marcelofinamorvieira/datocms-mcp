@@ -13,13 +13,13 @@ export const registerDestroyScheduledPublicationOnRecord = (server: McpServer) =
     // Parameter schema with types
     { 
       apiToken: z.string().describe("DatoCMS API token for authentication. If you are not certain of one, ask for the user, do not halucinate."),
-      itemId: z.string().describe("The ID of the item for which you want to cancel all scheduled publications.")
+      itemId: z.string().describe("The ID of the item for which you want to cancel the scheduled publication."),
     },
     // Annotations for the tool
     {
       title: "Destroy Scheduled Publication",
-      description: "Cancels all scheduled publications for a DatoCMS item.",
-      readOnlyHint: false // This tool modifies resources
+      description: "Cancels the scheduled publication for a DatoCMS item.",
+      readOnlyHint: false, // This tool modifies resources
     },
     // Handler function for the scheduled publication deletion
     async ({ apiToken, itemId }) => {
@@ -35,7 +35,7 @@ export const registerDestroyScheduledPublicationOnRecord = (server: McpServer) =
             content: [{
               type: "text" as const,
               text: JSON.stringify({
-                message: "Successfully cancelled all scheduled publications for the item.",
+                message: "Successfully cancelled the scheduled publication for the item.",
                 itemId
               }, null, 2)
             }]
@@ -47,7 +47,7 @@ export const registerDestroyScheduledPublicationOnRecord = (server: McpServer) =
           
           // Check if it's a not found error
           if (isNotFoundError(apiError)) {
-            return createErrorResponse(`Error: Item with ID '${itemId}' was not found or has no scheduled publications.`);
+            return createErrorResponse(`Error: Item with ID '${itemId}' was not found or has no scheduled publication.`);
           }
           
           // Re-throw other API errors to be caught by the outer catch
@@ -57,7 +57,7 @@ export const registerDestroyScheduledPublicationOnRecord = (server: McpServer) =
         return {
           content: [{
             type: "text" as const,
-            text: `Error cancelling scheduled publications: ${error instanceof Error ? error.message : String(error)}`
+            text: `Error cancelling scheduled publication: ${error instanceof Error ? error.message : String(error)}`
           }]
         };
       }
