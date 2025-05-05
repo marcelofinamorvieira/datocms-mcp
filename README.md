@@ -10,6 +10,7 @@ This project provides a Model Context Protocol (MCP) server that enables Claude 
 - **Project Information**: Retrieve metadata about your DatoCMS project
 - **Editor URLs**: Generate direct links to edit specific records in the DatoCMS admin interface
 - **Version Management**: List, retrieve, and restore record versions
+- **Record Management**: Create duplicate records and delete existing records
 
 ## Tools Overview
 
@@ -27,6 +28,8 @@ This project provides a Model Context Protocol (MCP) server that enables Claude 
 | DestroyScheduledPublicationOnRecord | Cancels a scheduled publication | `apiToken`, `itemId` | Confirmation message |
 | CreateScheduledUnpublicationOnRecord | Schedules a record to be unpublished at a specific time | `apiToken`, `itemId`, `unpublicationDate` | Scheduled unpublication object |
 | DestroyScheduledUnpublicationOnRecord | Cancels a scheduled unpublication | `apiToken`, `itemId` | Confirmation message |
+| DuplicateDatoCMSRecord | Creates a duplicate of an existing DatoCMS record | `apiToken`, `itemId`, `returnOnlyConfirmation` (optional) | Newly created record or confirmation message |
+| DestroyDatoCMSRecord | Permanently deletes one or more DatoCMS records | `apiToken`, `itemId`, `confirmation`, `returnOnlyConfirmation` (optional) | Deleted record data or confirmation message |
 
 ## Prerequisites
 
