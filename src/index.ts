@@ -38,7 +38,8 @@ import {
   registerBulkDestroyDatoCMSUploads,
   registerBulkTagDatoCMSUploads,
   registerBulkSetDatoCMSUploadCollection,
-  registerUpdateDatoCMSUpload
+  registerUpdateDatoCMSUpload,
+  registerCreateDatoCMSUpload
 } from "./tools/index.js";
 
 // Apply fetch polyfill for DatoCMS client compatibility
@@ -104,6 +105,7 @@ const createServer = (): McpServer => {
   registerGetDatoCMSUploadById(server);           // Read
   registerGetDatoCMSUploadReferences(server);     // Find references
   registerQueryDatoCMSUploads(server);            // Query/filter uploads
+  registerCreateDatoCMSUpload(server);            // Create uploads
   registerDestroyDatoCMSUpload(server);           // Delete
   registerBulkDestroyDatoCMSUploads(server);      // Bulk Delete
   registerUpdateDatoCMSUpload(server);            // Update
