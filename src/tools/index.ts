@@ -12,4 +12,4 @@ export * from './Project/index.js';
 // Export Upload tools individually
 export { registerGetDatoCMSUploadById } from './Uploads/Read/index.js';
 export { registerDestroyDatoCMSUpload, registerBulkDestroyDatoCMSUploads } from './Uploads/Delete/index.js';
-export { registerBulkTagDatoCMSUploads, registerBulkSetDatoCMSUploadCollection } from './Uploads/Update/index.js';
+export { registerBulkTagDatoCMSUploads, registerBulkSetDatoCMSUploadCollection, registerUpdateDatoCMSUpload } from './Uploads/Update/index.js';
