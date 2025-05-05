@@ -20,7 +20,7 @@ This project provides a Model Context Protocol (MCP) server that enables Claude 
 
 | Tool | Description | Parameters | Returns | 
 |------|-------------|------------|---------|
-| QueryDatoCMSRecordsByString | Searches for content across your DatoCMS project using text queries | `apiToken`, `filterQuery`, `modelName` (optional), `version` (optional), `returnAllLocales` (optional) | Array of matching records |
+| QueryDatoCMSRecords | Universal query tool for DatoCMS records. Can search by text query, fetch records by IDs, or get all records from a model. Supports pagination and locale handling. | `apiToken`, `filterQuery` (optional), `ids` (optional), `modelId` (optional), `modelName` (optional), `fields` (optional), `locale` (optional), `order_by` (optional), `version` (optional), `returnAllLocales` (optional), `returnOnlyIds` (optional), `limit` (optional), `offset` (optional), `nested` (optional) | Array of matching records or record IDs |
 | GetDatoCMSRecordById | Retrieves a specific record by its ID | `apiToken`, `itemId`, `version` (optional), `returnAllLocales` (optional) | Single record object |
 | BuildDatoCMSRecordUrl | Generates a direct editor URL for a specific record | `projectUrl`, `itemTypeId`, `itemId` | URL to edit the record |
 | GetDatoCMSRecordReferences | Finds records that link to a specific record | `apiToken`, `itemId`, `returnAllLocales` (optional) | Array of referencing records |
@@ -140,7 +140,7 @@ Here's an example conversation using the DatoCMS tools:
 User: I need to find content in my DatoCMS project about "artificial intelligence". My API token is [your-api-token].
 
 Claude: I'll search for content related to artificial intelligence in your DatoCMS project.
-[Claude uses QueryDatoCMSRecordsByString tool]
+[Claude uses QueryDatoCMSRecords tool]
 
 I found 3 items matching your search:
 1. "Introduction to AI" - Blog post (ID: 12345)

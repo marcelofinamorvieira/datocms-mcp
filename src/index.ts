@@ -12,7 +12,7 @@ import fetch from "node-fetch";
 
 // Import all tool registration functions
 import {
-  registerQueryDatoCMSRecordsByString,
+  registerQueryDatoCMSRecords,
   registerBuildDatoCMSRecordUrl,
   registerCreateScheduledPublicationOnRecord,
   registerDestroyScheduledPublicationOnRecord,
@@ -59,7 +59,7 @@ const createServer = (): McpServer => {
   // Record query tools
   // These allow searching and retrieving content from DatoCMS Records
   registerGetDatoCMSRecordById(server);
-  registerQueryDatoCMSRecordsByString(server);
+  registerQueryDatoCMSRecords(server);
   registerGetDatoCMSRecordReferences(server);
 
   // Record version tools

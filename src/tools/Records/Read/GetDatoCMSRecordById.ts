@@ -23,7 +23,7 @@ export const registerGetDatoCMSRecordById = (server: McpServer) => {
     // Annotations for the tool
     {
       title: "Get DatoCMS Record By ID",
-      description: "Retrieves a specific DatoCMS record by its ID. This does not include any additional info with respect to QueryDatoCMSRecordsByString, it returns the same record object. If you already called for one tool for query, there is no need to call this tool again.",
+      description: "Retrieves a specific DatoCMS record by its ID. This does not include any additional info with respect to QueryDatoCMSRecords, it returns the same record object. If you already called for one tool for query, there is no need to call this tool again.",
       readOnlyHint: true // Indicates this tool doesn't modify any resources
     },
     // Handler function for retrieving a specific item
