@@ -25,7 +25,12 @@ import {
   registerGetDatoCMSRecordVersion,
   registerRestoreDatoCMSRecordVersion,
   registerDuplicateDatoCMSRecord,
-  registerDestroyDatoCMSRecord
+  registerDestroyDatoCMSRecord,
+  registerBulkDestroyDatoCMSRecords,
+  registerPublishDatoCMSRecord,
+  registerBulkPublishDatoCMSRecords,
+  registerUnpublishDatoCMSRecord,
+  registerBulkUnpublishDatoCMSRecords
 } from "./tools/index.js";
 
 // Apply fetch polyfill for DatoCMS client compatibility
@@ -70,6 +75,14 @@ const createServer = (): McpServer => {
   // Record deletion tools
   // These allow deleting existing records
   registerDestroyDatoCMSRecord(server);
+  registerBulkDestroyDatoCMSRecords(server);
+
+  // Publication tools
+  // These tools publish and unpublish records
+  registerPublishDatoCMSRecord(server);
+  registerBulkPublishDatoCMSRecords(server);
+  registerUnpublishDatoCMSRecord(server);
+  registerBulkUnpublishDatoCMSRecords(server);
 
   // Publication scheduling tools
   // These manage schedulings on records, for publications and unpublications

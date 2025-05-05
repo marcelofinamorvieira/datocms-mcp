@@ -11,6 +11,8 @@ This project provides a Model Context Protocol (MCP) server that enables Claude 
 - **Editor URLs**: Generate direct links to edit specific records in the DatoCMS admin interface
 - **Version Management**: List, retrieve, and restore record versions
 - **Record Management**: Create duplicate records and delete existing records
+- **Publication Control**: Publish and unpublish records individually or in bulk
+- **Bulk Operations**: Perform actions on multiple records at once, such as publishing, unpublishing, and deletion
 
 ## Tools Overview
 
@@ -33,7 +35,8 @@ This project provides a Model Context Protocol (MCP) server that enables Claude 
 
 | Tool | Description | Parameters | Returns | 
 |------|-------------|------------|---------|
-| DestroyDatoCMSRecord | Permanently deletes one or more DatoCMS records | `apiToken`, `itemId`, `confirmation`, `returnOnlyConfirmation` (optional) | Deleted record data or confirmation message |
+| DestroyDatoCMSRecord | Permanently deletes a DatoCMS record | `apiToken`, `itemId`, `confirmation`, `returnOnlyConfirmation` (optional) | Deleted record data or confirmation message |
+| BulkDestroyDatoCMSRecords | Permanently deletes multiple DatoCMS records at once | `apiToken`, `itemIds`, `confirmation` | Confirmation message with count of deleted records |
 
 ### Record Version Operations
 
@@ -43,10 +46,14 @@ This project provides a Model Context Protocol (MCP) server that enables Claude 
 | GetDatoCMSRecordVersion | Retrieves a specific version of a DatoCMS record | `apiToken`, `versionId` | Single version object |
 | RestoreDatoCMSRecordVersion | Restores a record to a previous version state | `apiToken`, `versionId` | Restored version object |
 
-### Publication Scheduling Operations
+### Publication Management Operations
 
 | Tool | Description | Parameters | Returns | 
 |------|-------------|------------|---------|
+| PublishDatoCMSRecord | Publishes a single DatoCMS record | `apiToken`, `itemId`, `content_in_locales` (optional), `recursive` (optional) | Published record object |
+| UnpublishDatoCMSRecord | Unpublishes a single DatoCMS record | `apiToken`, `itemId`, `content_in_locales` (optional), `recursive` (optional) | Unpublished record object |
+| BulkPublishDatoCMSRecords | Publishes multiple DatoCMS records at once | `apiToken`, `itemIds` | Confirmation message with published records data |
+| BulkUnpublishDatoCMSRecords | Unpublishes multiple DatoCMS records at once | `apiToken`, `itemIds` | Confirmation message with unpublished records data |
 | CreateScheduledPublicationOnRecord | Schedules a record to be published at a specific time | `apiToken`, `itemId`, `publicationDate` | Scheduled publication object |
 | DestroyScheduledPublicationOnRecord | Cancels a scheduled publication | `apiToken`, `itemId` | Confirmation message |
 | CreateScheduledUnpublicationOnRecord | Schedules a record to be unpublished at a specific time | `apiToken`, `itemId`, `unpublicationDate` | Scheduled unpublication object |
