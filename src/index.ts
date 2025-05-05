@@ -12,17 +12,17 @@ import fetch from "node-fetch";
 
 // Import all tool registration functions
 import {
-  registerQueryDatoCMSRecords,
   registerBuildDatoCMSRecordUrl,
   registerCreateScheduledPublicationOnRecord,
-  registerDestroyScheduledPublicationOnRecord,
-  registerGetDatoCMSRecordById,
-  registerGetDatoCMSProjectInfo,
   registerCreateScheduledUnpublicationOnRecord,
+  registerDestroyScheduledPublicationOnRecord,
   registerDestroyScheduledUnpublicationOnRecord,
+  registerGetDatoCMSProjectInfo,
+  registerGetDatoCMSRecordById,
   registerGetDatoCMSRecordReferences,
-  registerListDatoCMSRecordVersions,
   registerGetDatoCMSRecordVersion,
+  registerListDatoCMSRecordVersions,
+  registerQueryDatoCMSRecords,
   registerRestoreDatoCMSRecordVersion,
   registerDuplicateDatoCMSRecord,
   registerDestroyDatoCMSRecord,
@@ -33,6 +33,7 @@ import {
   registerBulkUnpublishDatoCMSRecords,
   registerGetDatoCMSUploadById,
   registerGetDatoCMSUploadReferences,
+  registerQueryDatoCMSUploads,
   registerDestroyDatoCMSUpload,
   registerBulkDestroyDatoCMSUploads,
   registerBulkTagDatoCMSUploads,
@@ -102,6 +103,7 @@ const createServer = (): McpServer => {
   // These allow working with DatoCMS uploads (assets)
   registerGetDatoCMSUploadById(server);           // Read
   registerGetDatoCMSUploadReferences(server);     // Find references
+  registerQueryDatoCMSUploads(server);            // Query/filter uploads
   registerDestroyDatoCMSUpload(server);           // Delete
   registerBulkDestroyDatoCMSUploads(server);      // Bulk Delete
   registerUpdateDatoCMSUpload(server);            // Update
