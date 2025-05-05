@@ -13,13 +13,14 @@ This project provides a Model Context Protocol (MCP) server that enables Claude 
 - **Record Management**: Create duplicate records and delete existing records
 - **Publication Control**: Publish and unpublish records individually or in bulk
 - **Bulk Operations**: Perform actions on multiple records at once, such as publishing, unpublishing, and deletion
+- **Upload Management**: Retrieve, delete, tag, and organize DatoCMS uploads/assets
 
 ## Tools Overview
 
 ### Record Read Operations
 
 | Tool | Description | Parameters | Returns | 
-|------|-------------|------------|---------|
+|------|-------------|------------|---------|  
 | QueryDatoCMSRecords | Universal query tool for DatoCMS records. Can search by text query, fetch records by IDs, or get all records from a model. Supports pagination and locale handling. | `apiToken`, `filterQuery` (optional), `ids` (optional), `modelId` (optional), `modelName` (optional), `fields` (optional), `locale` (optional), `order_by` (optional), `version` (optional), `returnAllLocales` (optional), `returnOnlyIds` (optional), `limit` (optional), `offset` (optional), `nested` (optional) | Array of matching records or record IDs |
 | GetDatoCMSRecordById | Retrieves a specific record by its ID | `apiToken`, `itemId`, `version` (optional), `returnAllLocales` (optional) | Single record object |
 | BuildDatoCMSRecordUrl | Generates a direct editor URL for a specific record | `projectUrl`, `itemTypeId`, `itemId` | URL to edit the record |
@@ -28,20 +29,20 @@ This project provides a Model Context Protocol (MCP) server that enables Claude 
 ### Record Create Operations
 
 | Tool | Description | Parameters | Returns | 
-|------|-------------|------------|---------|
+|------|-------------|------------|-------|
 | DuplicateDatoCMSRecord | Creates a duplicate of an existing DatoCMS record | `apiToken`, `itemId`, `returnOnlyConfirmation` (optional) | Newly created record or confirmation message |
 
 ### Record Delete Operations
 
 | Tool | Description | Parameters | Returns | 
-|------|-------------|------------|---------|
+|------|-------------|------------|-------|
 | DestroyDatoCMSRecord | Permanently deletes a DatoCMS record | `apiToken`, `itemId`, `confirmation`, `returnOnlyConfirmation` (optional) | Deleted record data or confirmation message |
 | BulkDestroyDatoCMSRecords | Permanently deletes multiple DatoCMS records at once | `apiToken`, `itemIds`, `confirmation` | Confirmation message with count of deleted records |
 
 ### Record Version Operations
 
 | Tool | Description | Parameters | Returns | 
-|------|-------------|------------|---------|
+|------|-------------|------------|-------|
 | ListDatoCMSRecordVersions | Lists all versions of a specific DatoCMS record | `apiToken`, `recordId`, `returnOnlyIds` (optional), `limit` (optional), `offset` (optional), `nested` (optional) | Array of version IDs or version objects |
 | GetDatoCMSRecordVersion | Retrieves a specific version of a DatoCMS record | `apiToken`, `versionId` | Single version object |
 | RestoreDatoCMSRecordVersion | Restores a record to a previous version state | `apiToken`, `versionId` | Restored version object |
@@ -49,20 +50,30 @@ This project provides a Model Context Protocol (MCP) server that enables Claude 
 ### Publication Management Operations
 
 | Tool | Description | Parameters | Returns | 
-|------|-------------|------------|---------|
+|------|-------------|------------|-------|
 | PublishDatoCMSRecord | Publishes a single DatoCMS record | `apiToken`, `itemId`, `content_in_locales` (optional), `recursive` (optional) | Published record object |
 | UnpublishDatoCMSRecord | Unpublishes a single DatoCMS record | `apiToken`, `itemId`, `content_in_locales` (optional), `recursive` (optional) | Unpublished record object |
-| BulkPublishDatoCMSRecords | Publishes multiple DatoCMS records at once | `apiToken`, `itemIds` | Confirmation message with published records data |
-| BulkUnpublishDatoCMSRecords | Unpublishes multiple DatoCMS records at once | `apiToken`, `itemIds` | Confirmation message with unpublished records data |
+| BulkPublishDatoCMSRecords | Publishes multiple DatoCMS records at once | `apiToken`, `itemIds` | Confirmation message with count of published records |
+| BulkUnpublishDatoCMSRecords | Unpublishes multiple DatoCMS records at once | `apiToken`, `itemIds` | Confirmation message with count of unpublished records |
 | CreateScheduledPublicationOnRecord | Schedules a record to be published at a specific time | `apiToken`, `itemId`, `publicationDate` | Scheduled publication object |
 | DestroyScheduledPublicationOnRecord | Cancels a scheduled publication | `apiToken`, `itemId` | Confirmation message |
 | CreateScheduledUnpublicationOnRecord | Schedules a record to be unpublished at a specific time | `apiToken`, `itemId`, `unpublicationDate` | Scheduled unpublication object |
 | DestroyScheduledUnpublicationOnRecord | Cancels a scheduled unpublication | `apiToken`, `itemId` | Confirmation message |
 
+### Upload Operations
+
+| Tool | Description | Parameters | Returns | 
+|------|-------------|------------|-------|
+| GetDatoCMSUploadById | Retrieves a specific DatoCMS upload by its ID | `apiToken`, `uploadId` | Upload resource object |
+| DestroyDatoCMSUpload | Permanently deletes a DatoCMS upload | `apiToken`, `uploadId`, `confirmation`, `returnOnlyConfirmation` (optional) | Deleted upload data or confirmation message |
+| BulkDestroyDatoCMSUploads | Permanently deletes multiple DatoCMS uploads at once | `apiToken`, `uploadIds`, `confirmation` | Confirmation message with count of deleted uploads |
+| BulkTagDatoCMSUploads | Adds specified tags to multiple DatoCMS uploads | `apiToken`, `uploadIds`, `tags` | Confirmation message with count of tagged uploads |
+| BulkSetDatoCMSUploadCollection | Assigns multiple DatoCMS uploads to a collection or removes them from collections | `apiToken`, `uploadIds`, `collectionId` | Confirmation message with count of updated uploads |
+
 ### Project Operations
 
 | Tool | Description | Parameters | Returns | 
-|------|-------------|------------|---------|
+|------|-------------|------------|-------|
 | GetDatoCMSProjectInfo | Retrieves information about the DatoCMS project | `apiToken` | Project configuration object |
 
 ## Prerequisites
