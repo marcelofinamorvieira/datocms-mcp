@@ -30,7 +30,12 @@ import {
   registerPublishDatoCMSRecord,
   registerBulkPublishDatoCMSRecords,
   registerUnpublishDatoCMSRecord,
-  registerBulkUnpublishDatoCMSRecords
+  registerBulkUnpublishDatoCMSRecords,
+  registerGetDatoCMSUploadById,
+  registerDestroyDatoCMSUpload,
+  registerBulkDestroyDatoCMSUploads,
+  registerBulkTagDatoCMSUploads,
+  registerBulkSetDatoCMSUploadCollection
 } from "./tools/index.js";
 
 // Apply fetch polyfill for DatoCMS client compatibility
@@ -90,6 +95,14 @@ const createServer = (): McpServer => {
   registerDestroyScheduledPublicationOnRecord(server);
   registerCreateScheduledUnpublicationOnRecord(server);
   registerDestroyScheduledUnpublicationOnRecord(server);
+
+  // Upload tools
+  // These allow working with DatoCMS uploads (assets)
+  registerGetDatoCMSUploadById(server);           // Read
+  registerDestroyDatoCMSUpload(server);           // Delete
+  registerBulkDestroyDatoCMSUploads(server);      // Bulk Delete
+  registerBulkTagDatoCMSUploads(server);          // Bulk Tag
+  registerBulkSetDatoCMSUploadCollection(server); // Bulk Collection Assignment
 
   // Utility tools
   registerBuildDatoCMSRecordUrl(server);

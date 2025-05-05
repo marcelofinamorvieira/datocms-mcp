@@ -5,40 +5,40 @@ import { createResponse } from "../../../utils/responseHandlers.js";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 
 /**
- * Registers the BulkDestroyDatoCMSRecords tool with the MCP server
+ * Registers the BulkDestroyDatoCMSUploads tool with the MCP server
  */
-export const registerBulkDestroyDatoCMSRecords = (server: McpServer) => {
+export const registerBulkDestroyDatoCMSUploads = (server: McpServer) => {
   server.tool(
     // Tool name
-    "BulkDestroyDatoCMSRecords",
+    "BulkDestroyDatoCMSUploads",
     // Parameter schema with types
     { 
       apiToken: z.string().describe("DatoCMS API token for authentication. If you are not certain of one, ask for the user, do not halucinate."),
-      itemIds: z.array(z.string()).describe("Array of record IDs to delete. Maximum 200 records per request."),
-      confirmation: z.boolean().describe("Explicit confirmation that you want to delete these records. This is a destructive action that cannot be undone.")
+      uploadIds: z.array(z.string()).describe("Array of upload IDs to delete. Maximum 200 uploads per request."),
+      confirmation: z.boolean().describe("Explicit confirmation that you want to delete these uploads. This is a destructive action that cannot be undone.")
     },
     // Annotations for the tool
     {
-      title: "Delete Multiple DatoCMS Records",
-      description: "Permanently deletes multiple DatoCMS records at once. This is a destructive action that cannot be undone. Returns confirmation of success with the number of records deleted.",
+      title: "Delete Multiple DatoCMS Uploads",
+      description: "Permanently deletes multiple DatoCMS uploads at once. This is a destructive action that cannot be undone. Returns confirmation of success with the number of uploads deleted.",
       readOnlyHint: false, // This tool modifies resources
       destructiveHint: true // This tool is destructive
     },
-    // Handler function for bulk deleting records
-    async ({ apiToken, itemIds, confirmation }) => {
+    // Handler function for bulk deleting uploads
+    async ({ apiToken, uploadIds, confirmation }) => {
       // Require explicit confirmation due to destructive nature
       if (!confirmation) {
-        return createErrorResponse("Error: Explicit confirmation is required to delete records. Set 'confirmation' parameter to true to proceed with deletion.");
+        return createErrorResponse("Error: Explicit confirmation is required to delete uploads. Set 'confirmation' parameter to true to proceed with deletion.");
       }
 
       // Check if we have any IDs to delete
-      if (itemIds.length === 0) {
-        return createErrorResponse("Error: No record IDs provided for deletion.");
+      if (uploadIds.length === 0) {
+        return createErrorResponse("Error: No upload IDs provided for deletion.");
       }
       
-      // Check maximum number of records (similar to bulk publish)
-      if (itemIds.length > 200) {
-        return createErrorResponse("Error: Maximum of 200 records allowed per bulk delete request.");
+      // Check maximum number of uploads (similar to bulk record delete)
+      if (uploadIds.length > 200) {
+        return createErrorResponse("Error: Maximum of 200 uploads allowed per bulk delete request.");
       }
 
       try {
@@ -47,15 +47,15 @@ export const registerBulkDestroyDatoCMSRecords = (server: McpServer) => {
         
         try {
           // Format input for bulkDestroy with explicit type annotation
-          const itemsToDelete = itemIds.map(id => ({ type: "item" as const, id }));
+          const uploadsToDelete = uploadIds.map(id => ({ type: "upload" as const, id }));
           
           // Call bulkDestroy API
-          await client.items.bulkDestroy({
-            items: itemsToDelete,
+          await client.uploads.bulkDestroy({
+            uploads: uploadsToDelete,
           });
 
           // For bulk operations, we only return confirmation since the API returns an empty array
-          return createResponse(`Successfully deleted ${itemIds.length} record(s) with IDs: ${itemIds.join(", ")}`);
+          return createResponse(`Successfully deleted ${uploadIds.length} upload(s) with IDs: ${uploadIds.join(", ")}`);
           
         } catch (apiError: unknown) {
           if (isAuthorizationError(apiError)) {
@@ -63,7 +63,7 @@ export const registerBulkDestroyDatoCMSRecords = (server: McpServer) => {
           }
           
           if (isNotFoundError(apiError)) {
-            return createErrorResponse("Error: One or more records in the provided IDs were not found.");
+            return createErrorResponse("Error: One or more uploads in the provided IDs were not found.");
           }
           
           // Re-throw other API errors to be caught by the outer catch
@@ -73,7 +73,7 @@ export const registerBulkDestroyDatoCMSRecords = (server: McpServer) => {
         return {
           content: [{
             type: "text" as const,
-            text: `Error deleting DatoCMS records: ${error instanceof Error ? error.message : String(error)}`
+            text: `Error deleting DatoCMS uploads: ${error instanceof Error ? error.message : String(error)}`
           }]
         };
       }

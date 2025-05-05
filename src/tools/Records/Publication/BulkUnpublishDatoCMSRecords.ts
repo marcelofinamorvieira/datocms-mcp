@@ -43,17 +43,12 @@ export const registerBulkUnpublishDatoCMSRecords = (server: McpServer) => {
           const itemsToUnpublish = itemIds.map(id => ({ type: "item" as const, id }));
           
           // Call bulkUnpublish API
-          const unpublishedItems = await client.items.bulkUnpublish({
+          await client.items.bulkUnpublish({
             items: itemsToUnpublish
           });
           
-          if (!unpublishedItems) {
-            return createErrorResponse("Error: Failed to unpublish records.");
-          }
-          
-          return createResponse(
-            `Successfully unpublished ${itemIds.length} record(s).\n\n${JSON.stringify(unpublishedItems, null, 2)}`
-          );
+          // Return only confirmation message
+          return createResponse(`Successfully unpublished ${itemIds.length} record(s).`);
           
         } catch (apiError: unknown) {
           if (isAuthorizationError(apiError)) {

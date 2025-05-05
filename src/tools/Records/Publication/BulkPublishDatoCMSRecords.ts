@@ -43,17 +43,12 @@ export const registerBulkPublishDatoCMSRecords = (server: McpServer) => {
           const itemsToPublish = itemIds.map(id => ({ type: "item" as const, id }));
           
           // Call bulkPublish API
-          const publishedItems = await client.items.bulkPublish({
+          await client.items.bulkPublish({
             items: itemsToPublish
           });
           
-          if (!publishedItems) {
-            return createErrorResponse("Error: Failed to publish records.");
-          }
-          
-          return createResponse(
-            `Successfully published ${itemIds.length} record(s).\n\n${JSON.stringify(publishedItems, null, 2)}`
-          );
+          // Return only confirmation message
+          return createResponse(`Successfully published ${itemIds.length} record(s).`);
           
         } catch (apiError: unknown) {
           if (isAuthorizationError(apiError)) {

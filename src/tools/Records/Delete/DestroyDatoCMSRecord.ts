@@ -22,7 +22,8 @@ export const registerDestroyDatoCMSRecord = (server: McpServer) => {
     {
       title: "Delete DatoCMS Record",
       description: "Permanently deletes a single DatoCMS record. This is a destructive action that cannot be undone. Returns the deleted record object or a confirmation message.",
-      readOnlyHint: false // This tool modifies resources
+      readOnlyHint: false, // This tool modifies resources
+      destructiveHint: true // This tool is destructive
     },
     // Handler function for deleting a single record
     async ({ apiToken, itemId, confirmation, returnOnlyConfirmation = false }) => {
