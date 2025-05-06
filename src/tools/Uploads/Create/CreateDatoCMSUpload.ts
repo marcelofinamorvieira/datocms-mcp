@@ -21,34 +21,17 @@ interface UploadRequestResponse {
   };
 }
 
-interface UploadJobResponse {
-  data: {
-    id: string;
-    type: string;
-    attributes: {
-      payload?: {
-        data?: Array<{
-          type: string;
-          id: string;
-          attributes?: {
-            details?: {
-              message?: string;
-              code?: string;
-            };
-          };
-        }>;
-      };
-      status?: number;
-      statusText?: string;
-    };
-  };
-}
-
-interface UploadResponse {
-  data: {
-    id: string;
-    type: string;
-  };
+interface UploadCreateSchema {
+  uploadId: string;
+  path: string; // Required by DatoCMS API
+  id?: string;
+  author?: string | null;
+  copyright?: string | null;
+  notes?: string | null;
+  tags?: string[];
+  default_field_metadata?: Record<string, Record<string, unknown>>;
+  upload_collection?: { type: 'upload_collection', id: string } | null;
+  skip_creation_if_already_exists?: boolean;
 }
 
 /**
@@ -84,7 +67,8 @@ export const registerCreateDatoCMSUpload = (server: McpServer) => {
       notes: z.string().nullable().optional().describe("Optional notes about the uploaded file"),
       tags: z.array(z.string()).optional().describe("Optional array of tags to assign to the uploaded file"),
       default_field_metadata: z.record(z.record(z.unknown())).optional().describe("For each of the project's locales, the default metadata to apply if nothing is specified at record's level. Example: { en: { title: 'default title', alt: 'default alt text', custom_data: { foo: 'bar' }, focal_point: { x: 0.5, y: 0.5 } } }"),
-      upload_collection: z.string().nullable().optional().describe("Optional upload collection ID to assign the upload to")
+      upload_collection: z.object({ type: z.literal('upload_collection'), id: z.string() }).nullable().optional().describe("Optional upload collection ID to assign the upload to"),
+      environment: z.string().optional().describe("The name of the DatoCMS environment to interact with. If not provided, the primary environment will be used.")
     },
     // Annotations for the tool
     {
@@ -93,13 +77,17 @@ export const registerCreateDatoCMSUpload = (server: McpServer) => {
       readOnlyHint: false // This tool modifies resources
     },
     // Handler function for creating uploads
-    async ({ apiToken, url, path: filePath, id, filename, skipCreationIfAlreadyExists, author, copyright, notes, tags, default_field_metadata, upload_collection }) => {
+    async ({ apiToken, url, path: filePath, id, filename, skipCreationIfAlreadyExists, author, copyright, notes, tags, default_field_metadata, upload_collection, environment }) => {
       try {
         // Validate that either url or path is provided
         if (!url && !filePath) {
           return createErrorResponse("Error: Either url or path must be provided to create an upload.");
         }
         
+        // Initialize DatoCMS client (for step 3)
+        const clientParameters = environment ? { apiToken, environment } : { apiToken };
+        const client = buildClient(clientParameters);
+
         let fileContent: Buffer;
         let fileContentType: string;
         let actualFilename: string;
@@ -151,6 +139,7 @@ export const registerCreateDatoCMSUpload = (server: McpServer) => {
               Accept: "application/json",
               "X-Api-Version": "3",
               "Content-Type": "application/vnd.api+json",
+              ...(environment ? { "X-Environment": environment } : {})
             },
             body: JSON.stringify({
               data: { 
@@ -203,126 +192,63 @@ export const registerCreateDatoCMSUpload = (server: McpServer) => {
           return createErrorResponse(`Error uploading file to bucket: ${err instanceof Error ? err.message : String(err)}`);
         }
         
-        // Step 3: Associate the uploaded file with a DatoCMS asset
-        let createUploadResponse: FetchResponse;
+        // Step 3: Create DatoCMS upload record
         try {
-          // Prepare metadata for the upload
-          const uploadAttributes: Record<string, unknown> = {
-            path: uploadId,
+          // Prepare the payload for the upload creation
+          const createUploadParams: UploadCreateSchema = { 
+            uploadId,
+            // The path parameter is required by the DatoCMS API but it will be automatically set to the uploadId
+            path: uploadId
           };
           
-          if (id) uploadAttributes.id = id;
-          if (author !== undefined) uploadAttributes.author = author;
-          if (copyright !== undefined) uploadAttributes.copyright = copyright;
-          if (notes !== undefined) uploadAttributes.notes = notes;
-          if (tags) uploadAttributes.tags = tags;
-          if (default_field_metadata) uploadAttributes.default_field_metadata = default_field_metadata;
-          
-          // Create upload body
-          const uploadBody = {
-            data: {
-              type: "upload",
-              attributes: uploadAttributes,
-            },
-          } as const;
-          
-          // Add upload collection if provided
-          const bodyWithRelationships = upload_collection !== undefined ? {
-            ...uploadBody,
-            data: {
-              ...uploadBody.data,
-              relationships: {
-                upload_collection: {
-                  data: upload_collection ? { type: "upload_collection" as const, id: upload_collection } : null
-                }
-              }
-            }
-          } : uploadBody;
-          
-          createUploadResponse = await fetch("https://site-api.datocms.com/uploads", {
-            method: "POST",
-            headers: {
-              Authorization: `Bearer ${apiToken}`,
-              Accept: "application/json",
-              "X-Api-Version": "3",
-              "Content-Type": "application/vnd.api+json",
-            },
-            body: JSON.stringify(bodyWithRelationships),
-          });
-          
-          if (!createUploadResponse.ok) {
-            const errorBody = await createUploadResponse.text();
-            return createErrorResponse(`Error associating file with DatoCMS asset: ${createUploadResponse.status} ${createUploadResponse.statusText} - ${errorBody}`);
+          // Add optional parameters if provided
+          if (id) {
+            createUploadParams.id = id;
           }
-        } catch (err) {
-          return createErrorResponse(`Error associating file with DatoCMS asset: ${err instanceof Error ? err.message : String(err)}`);
-        }
-        
-        const createUploadData = await createUploadResponse.json() as UploadResponse;
-        
-        if (!createUploadData?.data?.id) {
-          return createErrorResponse(`Invalid response from DatoCMS upload creation: ${JSON.stringify(createUploadData)}`);
-        }
-        
-        // Step 4: Poll for job completion
-        const jobId = createUploadData.data.id;
-        let jobResult: UploadJobResponse | null = null;
-        let attempts = 0;
-        const maxAttempts = 10; // Maximum number of polling attempts
-        
-        while (attempts < maxAttempts) {
-          attempts++;
           
-          try {
-            const jobStatusResponse = await fetch(`https://site-api.datocms.com/job-results/${jobId}`, {
-              method: "GET",
-              headers: {
-                Authorization: `Bearer ${apiToken}`,
-                Accept: "application/json",
-                "X-Api-Version": "3",
-                "Content-Type": "application/vnd.api+json",
-              },
-            });
-            
-            // If job is still processing, we'll get a 404
-            if (jobStatusResponse.status === 404) {
-              // Wait a second before trying again
-              await new Promise(resolve => setTimeout(resolve, 1000));
-              continue;
-            }
-            
-            // If we got an error other than 404, something went wrong
-            if (!jobStatusResponse.ok) {
-              const errorBody = await jobStatusResponse.text();
-              return createErrorResponse(`Error checking job status: ${jobStatusResponse.status} ${jobStatusResponse.statusText} - ${errorBody}`);
-            }
-            
-            // Job completed successfully
-            jobResult = await jobStatusResponse.json() as UploadJobResponse;
-            
-            // Check if there's an error in the job result
-            if (jobResult?.data?.attributes?.status && jobResult.data.attributes.status >= 400) {
-              const errorPayload = jobResult.data.attributes.payload;
-              const errorItems = errorPayload?.data || [];
-              const errorDetails = errorItems.find((item) => item.type === 'api_error');
-              const errorMessage = errorDetails?.attributes?.details?.message || 'Unknown error occurred';
-              
-              return createErrorResponse(`DatoCMS upload failed: ${errorMessage}`);
-            }
-            
-            // We have a successful result
-            break;
-          } catch (err) {
-            return createErrorResponse(`Error polling job status: ${err instanceof Error ? err.message : String(err)}`);
+          if (author !== undefined) {
+            createUploadParams.author = author;
           }
+          
+          if (copyright !== undefined) {
+            createUploadParams.copyright = copyright;
+          }
+          
+          if (notes !== undefined) {
+            createUploadParams.notes = notes;
+          }
+          
+          if (tags) {
+            createUploadParams.tags = tags;
+          }
+          
+          if (default_field_metadata) {
+            createUploadParams.default_field_metadata = default_field_metadata;
+          }
+          
+          if (upload_collection) {
+            createUploadParams.upload_collection = upload_collection;
+          }
+          
+          // Only use this parameter for URL uploads (it doesn't apply to file uploads)
+          if (url && skipCreationIfAlreadyExists) {
+            createUploadParams.skip_creation_if_already_exists = skipCreationIfAlreadyExists;
+          }
+          
+          // Create the upload
+          const upload = await client.uploads.create(createUploadParams);
+          
+          // Return the created upload
+          return createResponse(JSON.stringify(upload, null, 2));
+          
+        } catch (apiError: unknown) {
+          if (isAuthorizationError(apiError)) {
+            return createErrorResponse("Error: Please provide a valid DatoCMS API token. The token you provided was rejected by the DatoCMS API.");
+          }
+          
+          // Re-throw other API errors to be caught by the outer catch
+          throw apiError;
         }
-        
-        if (!jobResult) {
-          return createErrorResponse(`Upload job did not complete after ${maxAttempts} attempts. It might still be processing. You can check the status manually with job ID: ${jobId}`);
-        }
-        
-        // Return the successful upload data
-        return createResponse(JSON.stringify(jobResult, null, 2));
       } catch (error) {
         return {
           content: [{

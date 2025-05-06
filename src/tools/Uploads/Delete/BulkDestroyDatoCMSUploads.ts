@@ -15,7 +15,8 @@ export const registerBulkDestroyDatoCMSUploads = (server: McpServer) => {
     { 
       apiToken: z.string().describe("DatoCMS API token for authentication. If you are not certain of one, ask for the user, do not halucinate."),
       uploadIds: z.array(z.string()).describe("Array of upload IDs to delete. Maximum 200 uploads per request."),
-      confirmation: z.boolean().describe("Explicit confirmation that you want to delete these uploads. This is a destructive action that cannot be undone.")
+      confirmation: z.boolean().describe("Explicit confirmation that you want to delete these uploads. This is a destructive action that cannot be undone."),
+      environment: z.string().optional().describe("The name of the DatoCMS environment to interact with. If not provided, the primary environment will be used.")
     },
     // Annotations for the tool
     {
@@ -25,7 +26,7 @@ export const registerBulkDestroyDatoCMSUploads = (server: McpServer) => {
       destructiveHint: true // This tool is destructive
     },
     // Handler function for bulk deleting uploads
-    async ({ apiToken, uploadIds, confirmation }) => {
+    async ({ apiToken, uploadIds, confirmation, environment }) => {
       // Require explicit confirmation due to destructive nature
       if (!confirmation) {
         return createErrorResponse("Error: Explicit confirmation is required to delete uploads. Set 'confirmation' parameter to true to proceed with deletion.");
@@ -43,7 +44,8 @@ export const registerBulkDestroyDatoCMSUploads = (server: McpServer) => {
 
       try {
         // Initialize DatoCMS client
-        const client = buildClient({ apiToken });
+        const clientParameters = environment ? { apiToken, environment } : { apiToken };
+        const client = buildClient(clientParameters);
         
         try {
           // Format input for bulkDestroy with explicit type annotation

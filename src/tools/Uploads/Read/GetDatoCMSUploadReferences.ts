@@ -17,7 +17,8 @@ export const registerGetDatoCMSUploadReferences = (server: McpServer) => {
       uploadId: z.string().describe("The ID of the DatoCMS upload to find references for."),
       nested: z.boolean().default(true).optional().describe("For Modular Content, Structured Text and Single Block fields, return full payload for nested blocks instead of just IDs."),
       version: z.enum(["current", "published", "published-or-current"]).default("current").optional().describe("Retrieve only the selected type of version that is linked to the upload: 'current', 'published'"),
-      returnOnlyIds: z.boolean().default(false).optional().describe("If true, returns only an array of record IDs instead of complete records. Use this to save on tokens and context window space when only IDs are needed.")
+      returnOnlyIds: z.boolean().default(false).optional().describe("If true, returns only an array of record IDs instead of complete records. Use this to save on tokens and context window space when only IDs are needed."),
+      environment: z.string().optional().describe("The name of the DatoCMS environment to interact with. If not provided, the primary environment will be used.")
     },
     // Annotations for the tool
     {
@@ -26,10 +27,11 @@ export const registerGetDatoCMSUploadReferences = (server: McpServer) => {
       readOnlyHint: true // This tool doesn't modify any resources
     },
     // Handler function for retrieving references to an upload
-    async ({ apiToken, uploadId, nested, version, returnOnlyIds}) => {
+    async ({ apiToken, uploadId, nested, version, returnOnlyIds, environment}) => {
       try {
         // Initialize DatoCMS client
-        const client = buildClient({ apiToken });
+        const clientParameters = environment ? { apiToken, environment } : { apiToken };
+        const client = buildClient(clientParameters);
         
         try {
           // Build query parameters

@@ -18,7 +18,8 @@ export const registerListDatoCMSRecordVersions = (server: McpServer) => {
       returnOnlyIds: z.boolean().optional().default(true).describe("If true, returns only an array of version IDs instead of complete version objects. Default is true to save on tokens and context window space since version responses can be colossal."),
       limit: z.number().optional().default(5).describe("Maximum number of versions to return (defaults to 5). Use pagination with limit and offset to retrieve more results if needed. Be careful with large values as they consume tokens and context window space quickly."),
       offset: z.number().optional().default(0).describe("The (zero-based) offset of the first version returned. Defaults to 0 for the first page of results."),
-      nested: z.boolean().optional().default(true).describe("For Modular Content, Structured Text and Single Block fields. If set to true, returns full payload for nested blocks instead of just their IDs. Default is true.")
+      nested: z.boolean().optional().default(true).describe("For Modular Content, Structured Text and Single Block fields. If set to true, returns full payload for nested blocks instead of just their IDs. Default is true."),
+      environment: z.string().optional().describe("The name of the DatoCMS environment to interact with. If not provided, the primary environment will be used.")
     },
     // Annotations for the tool
     {
@@ -27,10 +28,11 @@ export const registerListDatoCMSRecordVersions = (server: McpServer) => {
       readOnlyHint: true // This tool doesn't modify resources
     },
     // Handler function for retrieving versions
-    async ({ apiToken, recordId, returnOnlyIds, limit, offset, nested }) => {
+    async ({ apiToken, recordId, returnOnlyIds, limit, offset, nested, environment }) => {
       try {
         // Create DatoCMS client
-        const client = buildClient({ apiToken });
+        const clientParameters = environment ? { apiToken, environment } : { apiToken };
+        const client = buildClient(clientParameters);
         
         // Initialize arrays to store versions and version IDs
         const versions = [];

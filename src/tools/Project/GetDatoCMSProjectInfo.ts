@@ -13,7 +13,8 @@ export const registerGetDatoCMSProjectInfo = (server: McpServer) => {
     "GetDatoCMSProjectInfo",
     // Parameter schema with types
     { 
-      apiToken: z.string().describe("DatoCMS API token for authentication. If you are not certain of one, ask for the user, do not hallucinate.")
+      apiToken: z.string().describe("DatoCMS API token for authentication. If you are not certain of one, ask for the user, do not hallucinate."),
+      environment: z.string().optional().describe("The name of the DatoCMS environment to interact with. If not provided, the primary environment will be used.")
     },
     // Annotations for the tool
     {
@@ -22,10 +23,11 @@ export const registerGetDatoCMSProjectInfo = (server: McpServer) => {
       readOnlyHint: true // Indicates this tool doesn't modify any resources
     },
     // Handler function for retrieving site information
-    async ({ apiToken }) => {
+    async ({ apiToken, environment }) => {
       try {
         // Initialize DatoCMS client
-        const client = buildClient({ apiToken });
+        const clientParameters = environment ? { apiToken, environment } : { apiToken };
+        const client = buildClient(clientParameters);
         
         try {
           // Retrieve the project information

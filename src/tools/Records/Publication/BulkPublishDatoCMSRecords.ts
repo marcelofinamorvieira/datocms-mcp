@@ -14,7 +14,8 @@ export const registerBulkPublishDatoCMSRecords = (server: McpServer) => {
     // Parameter schema with types
     { 
       apiToken: z.string().describe("DatoCMS API token for authentication."),
-      itemIds: z.array(z.string()).describe("Array of record IDs to publish (maximum 200 records per request).")
+      itemIds: z.array(z.string()).describe("Array of record IDs to publish (maximum 200 records per request)."),
+      environment: z.string().optional().describe("The name of the DatoCMS environment to interact with. If not provided, the primary environment will be used.")
     },
     // Annotations for the tool
     {
@@ -23,10 +24,11 @@ export const registerBulkPublishDatoCMSRecords = (server: McpServer) => {
       readOnlyHint: false // This tool modifies resources
     },
     // Handler function for bulk publishing records
-    async ({ apiToken, itemIds }) => {
+    async ({ apiToken, itemIds, environment }) => {
       try {
         // Initialize DatoCMS client
-        const client = buildClient({ apiToken });
+        const clientParameters = environment ? { apiToken, environment } : { apiToken };
+        const client = buildClient(clientParameters);
         
         // Check if we have any IDs to publish
         if (itemIds.length === 0) {

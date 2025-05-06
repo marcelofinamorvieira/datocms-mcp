@@ -14,7 +14,8 @@ export const registerGetDatoCMSRecordVersion = (server: McpServer) => {
     // Parameter schema with types
     {
       apiToken: z.string().describe("DatoCMS API token with proper permissions."),
-      versionId: z.string().describe("The ID of the specific record version you want to retrieve.")
+      versionId: z.string().describe("The ID of the specific record version you want to retrieve."),
+      environment: z.string().optional().describe("The name of the DatoCMS environment to interact with. If not provided, the primary environment will be used.")
     },
     // Annotations for the tool
     {
@@ -23,10 +24,11 @@ export const registerGetDatoCMSRecordVersion = (server: McpServer) => {
       readOnlyHint: true // Indicates this tool doesn't modify any resources
     },
     // Handler function for fetching a specific record version
-    async ({ apiToken, versionId }) => {
+    async ({ apiToken, versionId, environment }) => {
       try {
-        // Create DatoCMS client
-        const client = buildClient({ apiToken });
+        // Initialize DatoCMS client
+        const clientParameters = environment ? { apiToken, environment } : { apiToken };
+        const client = buildClient(clientParameters);
         
         try {
           // Fetch the specific version of the record

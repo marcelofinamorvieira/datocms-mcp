@@ -25,7 +25,8 @@ export const registerUpdateDatoCMSUpload = (server: McpServer) => {
       upload_collection: z.object({
         type: z.literal("upload_collection"),
         id: z.string()
-      }).nullable().optional().describe("Upload collection to which the asset belongs. Set to null to remove from collection.")
+      }).nullable().optional().describe("Upload collection to which the asset belongs. Set to null to remove from collection."),
+      environment: z.string().optional().describe("The name of the DatoCMS environment to interact with. If not provided, the primary environment will be used.")
     },
     // Annotations for the tool
     {
@@ -35,10 +36,11 @@ export const registerUpdateDatoCMSUpload = (server: McpServer) => {
       destructiveHint: false // This tool is not destructive
     },
     // Handler function for updating an upload
-    async ({ apiToken, uploadId, ...updateData }) => {
+    async ({ apiToken, uploadId, environment, ...updateData }) => {
       try {
         // Initialize DatoCMS client
-        const client = buildClient({ apiToken });
+        const clientParameters = environment ? { apiToken, environment } : { apiToken };
+        const client = buildClient(clientParameters);
         
         try {
           // Update the upload with the provided data

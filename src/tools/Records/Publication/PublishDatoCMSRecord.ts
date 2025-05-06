@@ -17,7 +17,8 @@ export const registerPublishDatoCMSRecord = (server: McpServer) => {
       itemId: z.string().describe("The ID of the DatoCMS record to publish."),
       content_in_locales: z.array(z.string()).optional().describe("Optional array of locale codes to publish. If not provided, all locales will be published. If provided, non_localized_content must be provided as well."),
       non_localized_content: z.boolean().optional().describe("Whether non-localized content will be published. If not provided and content_in_locales is missing, all content will be published. If provided, content_in_locales must be provided as well."),
-      recursive: z.boolean().optional().default(false).describe("When true, if the record belongs to a tree-like collection and any parent records aren't published, those parent records will be published as well. When false, an UNPUBLISHED_PARENT error will occur in such cases.")
+      recursive: z.boolean().optional().default(false).describe("When true, if the record belongs to a tree-like collection and any parent records aren't published, those parent records will be published as well. When false, an UNPUBLISHED_PARENT error will occur in such cases."),
+      environment: z.string().optional().describe("The name of the DatoCMS environment to interact with. If not provided, the primary environment will be used.")
     },
     // Annotations for the tool
     {
@@ -26,10 +27,11 @@ export const registerPublishDatoCMSRecord = (server: McpServer) => {
       readOnlyHint: false // This tool modifies resources
     },
     // Handler function for publishing records
-    async ({ apiToken, itemId, content_in_locales, non_localized_content, recursive = false }) => {
+    async ({ apiToken, itemId, content_in_locales, non_localized_content, recursive = false, environment }) => {
       try {
         // Initialize DatoCMS client
-        const client = buildClient({ apiToken });
+        const clientParameters = environment ? { apiToken, environment } : { apiToken };
+        const client = buildClient(clientParameters);
         
         try {
           let publishedItem: unknown;

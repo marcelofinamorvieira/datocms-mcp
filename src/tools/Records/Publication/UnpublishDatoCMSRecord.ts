@@ -16,7 +16,8 @@ export const registerUnpublishDatoCMSRecord = (server: McpServer) => {
       apiToken: z.string().describe("DatoCMS API token for authentication."),
       itemId: z.string().describe("The ID of the DatoCMS record to unpublish."),
       content_in_locales: z.array(z.string()).optional().describe("Optional array of locale codes to unpublish. If not provided, all locales will be unpublished. You can only unpublish locales that are currently published."),
-      recursive: z.boolean().optional().default(false).describe("When true, if the record belongs to a tree-like collection and any parent records aren't published, those parent records will be published as well. When false, an UNPUBLISHED_PARENT error will occur in such cases.")
+      recursive: z.boolean().optional().default(false).describe("When true, if the record belongs to a tree-like collection and any parent records aren't published, those parent records will be published as well. When false, an UNPUBLISHED_PARENT error will occur in such cases."),
+      environment: z.string().optional().describe("The name of the DatoCMS environment to interact with. If not provided, the primary environment will be used.")
     },
     // Annotations for the tool
     {
@@ -25,10 +26,11 @@ export const registerUnpublishDatoCMSRecord = (server: McpServer) => {
       readOnlyHint: false // This tool modifies resources
     },
     // Handler function for unpublishing records
-    async ({ apiToken, itemId, content_in_locales, recursive = false }) => {
+    async ({ apiToken, itemId, content_in_locales, recursive = false, environment }) => {
       try {
         // Initialize DatoCMS client
-        const client = buildClient({ apiToken });
+        const clientParameters = environment ? { apiToken, environment } : { apiToken };
+        const client = buildClient(clientParameters);
         
         try {
           let unpublishedItem: unknown;

@@ -15,7 +15,8 @@ export const registerBulkSetDatoCMSUploadCollection = (server: McpServer) => {
     { 
       apiToken: z.string().describe("DatoCMS API token for authentication. If you are not certain of one, ask for the user, do not halucinate."),
       uploadIds: z.array(z.string()).describe("Array of DatoCMS upload IDs to assign to the collection."),
-      collectionId: z.string().nullable().describe("The ID of the DatoCMS upload collection to add the uploads to. Set to null to remove uploads from their current collection.")
+      collectionId: z.string().nullable().describe("The ID of the DatoCMS upload collection to add the uploads to. Set to null to remove uploads from their current collection."),
+      environment: z.string().optional().describe("The name of the DatoCMS environment to interact with. If not provided, the primary environment will be used.")
     },
     // Annotations for the tool
     {
@@ -25,10 +26,11 @@ export const registerBulkSetDatoCMSUploadCollection = (server: McpServer) => {
       destructiveHint: false // This tool is not destructive
     },
     // Handler function for bulk assignment to collection
-    async ({ apiToken, uploadIds, collectionId }) => {
+    async ({ apiToken, uploadIds, collectionId, environment }) => {
       try {
         // Initialize DatoCMS client
-        const client = buildClient({ apiToken });
+        const clientParameters = environment ? { apiToken, environment } : { apiToken };
+        const client = buildClient(clientParameters);
         
         try {
           // Format uploads array as required by the API

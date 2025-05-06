@@ -33,7 +33,8 @@ export const registerQueryDatoCMSRecords = (server: McpServer) => {
       returnOnlyIds: z.boolean().optional().default(false).describe("If true, returns only an array of record IDs instead of complete records. Use this to save on tokens and context window space when only IDs are needed. These IDs can then be used with GetDatoCMSRecordById to get detailed information. Default is false."),
       limit: z.number().optional().default(5).describe("Maximum number of records to return (defaults to 5). Use pagination with limit and offset to retrieve more results if needed. Be careful with large values as they consume tokens and context window space quickly."),
       offset: z.number().optional().default(0).describe("The (zero-based) offset of the first record returned. Defaults to 0 for the first page of results."),
-      nested: z.boolean().optional().default(true).describe("For Modular Content, Structured Text and Single Block fields. If set to true, returns full payload for nested blocks instead of just their IDs. Default is true.")
+      nested: z.boolean().optional().default(true).describe("For Modular Content, Structured Text and Single Block fields. If set to true, returns full payload for nested blocks instead of just their IDs. Default is true."),
+      environment: z.string().optional().describe("The name of the DatoCMS environment to interact with. If not provided, the primary environment will be used.")
     },
     // Annotations for the tool
     {
@@ -42,10 +43,11 @@ export const registerQueryDatoCMSRecords = (server: McpServer) => {
       readOnlyHint: true // Indicates this tool doesn't modify any resources
     },
     // Handler function for the DatoCMS query operation
-    async ({ apiToken, filterQuery, ids, modelId, modelName, version, returnAllLocales, returnOnlyIds, limit, offset, nested, order_by, fields, locale }) => {
+    async ({ apiToken, filterQuery, ids, modelId, modelName, version, returnAllLocales, returnOnlyIds, limit, offset, nested, order_by, fields, locale, environment }) => {
       try {
         // Initialize DatoCMS client
-        const client = buildClient({ apiToken });
+        const clientParameters = environment ? { apiToken, environment } : { apiToken };
+        const client = buildClient(clientParameters);
         
         // Prepare query parameters
         const queryParams: Record<string, unknown> = {

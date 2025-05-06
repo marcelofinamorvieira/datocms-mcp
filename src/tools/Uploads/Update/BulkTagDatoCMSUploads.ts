@@ -15,7 +15,8 @@ export const registerBulkTagDatoCMSUploads = (server: McpServer) => {
     { 
       apiToken: z.string().describe("DatoCMS API token for authentication. If you are not certain of one, ask for the user, do not halucinate."),
       uploadIds: z.array(z.string()).describe("Array of DatoCMS upload IDs to add tags to."),
-      tags: z.array(z.string()).describe("Array of tags to add to the specified uploads.")
+      tags: z.array(z.string()).describe("Array of tags to add to the specified uploads."),
+      environment: z.string().optional().describe("The name of the DatoCMS environment to interact with. If not provided, the primary environment will be used.")
     },
     // Annotations for the tool
     {
@@ -25,10 +26,11 @@ export const registerBulkTagDatoCMSUploads = (server: McpServer) => {
       destructiveHint: false // This tool is not destructive
     },
     // Handler function for bulk tagging uploads
-    async ({ apiToken, uploadIds, tags }) => {
+    async ({ apiToken, uploadIds, tags, environment }) => {
       try {
         // Initialize DatoCMS client
-        const client = buildClient({ apiToken });
+        const clientParameters = environment ? { apiToken, environment } : { apiToken };
+        const client = buildClient(clientParameters);
         
         try {
           // Format uploads array as required by the API

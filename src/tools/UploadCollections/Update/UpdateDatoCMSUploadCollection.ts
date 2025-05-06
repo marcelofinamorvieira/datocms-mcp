@@ -31,7 +31,8 @@ export const registerUpdateDatoCMSUploadCollection = (server: McpServer) => {
           type: z.literal("upload_collection"),
           id: z.string()
         })
-      ).optional().describe("Underlying upload collections")
+      ).optional().describe("Underlying upload collections"),
+      environment: z.string().optional().describe("The name of the DatoCMS environment to interact with. If not provided, the primary environment will be used.")
     },
     // Annotations for the tool
     {
@@ -41,10 +42,11 @@ export const registerUpdateDatoCMSUploadCollection = (server: McpServer) => {
       destructiveHint: false // This tool modifies resources but doesn't destroy them
     },
     // Handler function for updating an upload collection
-    async ({ apiToken, uploadCollectionId, label, position, parent, children }) => {
+    async ({ apiToken, uploadCollectionId, label, position, parent, children, environment }) => {
       try {
         // Initialize DatoCMS client
-        const client = buildClient({ apiToken });
+        const clientParameters = environment ? { apiToken, environment } : { apiToken };
+        const client = buildClient(clientParameters);
         
         // Prepare update parameters
         const updateParams: {

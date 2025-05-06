@@ -12,9 +12,10 @@ export const registerDeleteDatoCMSUploadCollection = (server: McpServer) => {
     // Tool name
     "DeleteDatoCMSUploadCollection",
     // Parameter schema with types
-    {
+    { 
       apiToken: z.string().describe("DatoCMS API token for authentication. If you are not certain of one, ask for the user, do not hallucinate."),
-      uploadCollectionId: z.string().describe("ID of the upload collection to delete")
+      uploadCollectionId: z.string().describe("ID of the upload collection to delete"),
+      environment: z.string().optional().describe("The name of the DatoCMS environment to interact with. If not provided, the primary environment will be used.")
     },
     // Annotations for the tool
     {
@@ -24,10 +25,11 @@ export const registerDeleteDatoCMSUploadCollection = (server: McpServer) => {
       destructiveHint: true // This tool modifies resources
     },
     // Handler function for deleting an upload collection
-    async ({ apiToken, uploadCollectionId }) => {
+    async ({ apiToken, uploadCollectionId, environment }) => {
       try {
         // Initialize DatoCMS client
-        const client = buildClient({ apiToken });
+        const clientParameters = environment ? { apiToken, environment } : { apiToken };
+        const client = buildClient(clientParameters);
         
         try {
           // Delete the upload collection and return its data

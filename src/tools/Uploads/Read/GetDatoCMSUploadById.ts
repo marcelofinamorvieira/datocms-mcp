@@ -14,7 +14,8 @@ export const registerGetDatoCMSUploadById = (server: McpServer) => {
     // Parameter schema with types
     { 
       apiToken: z.string().describe("DatoCMS API token for authentication. If you are not certain of one, ask for the user, do not halucinate."),
-      uploadId: z.string().describe("The ID of the specific DatoCMS upload to retrieve.")
+      uploadId: z.string().describe("The ID of the specific DatoCMS upload to retrieve."),
+      environment: z.string().optional().describe("The name of the DatoCMS environment to interact with. If not provided, the primary environment will be used.")
     },
     // Annotations for the tool
     {
@@ -23,10 +24,11 @@ export const registerGetDatoCMSUploadById = (server: McpServer) => {
       readOnlyHint: true // Indicates this tool doesn't modify any resources
     },
     // Handler function for retrieving a specific upload
-    async ({ apiToken, uploadId }) => {
+    async ({ apiToken, uploadId, environment }) => {
       try {
         // Initialize DatoCMS client
-        const client = buildClient({ apiToken });
+        const clientParameters = environment ? { apiToken, environment } : { apiToken };
+        const client = buildClient(clientParameters);
         
         try {
           // Retrieve the upload

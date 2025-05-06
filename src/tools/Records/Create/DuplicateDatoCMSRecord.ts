@@ -15,7 +15,8 @@ export const registerDuplicateDatoCMSRecord = (server: McpServer) => {
     { 
       apiToken: z.string().describe("DatoCMS API token for authentication. If you are not certain of one, ask for the user, do not halucinate."),
       itemId: z.string().describe("The ID of the DatoCMS record to duplicate."),
-      returnOnlyConfirmation: z.boolean().optional().describe("If true, returns only a success confirmation message instead of the full record data. Use this to save on token usage. Default is false.")
+      returnOnlyConfirmation: z.boolean().optional().describe("If true, returns only a success confirmation message instead of the full record data. Use this to save on token usage. Default is false."),
+      environment: z.string().optional().describe("The name of the DatoCMS environment to interact with. If not provided, the primary environment will be used.")
     },
     // Annotations for the tool
     {
@@ -24,10 +25,11 @@ export const registerDuplicateDatoCMSRecord = (server: McpServer) => {
       readOnlyHint: false // This tool modifies resources
     },
     // Handler function for duplicating a record
-    async ({ apiToken, itemId, returnOnlyConfirmation = false }) => {
+    async ({ apiToken, itemId, returnOnlyConfirmation = false, environment }) => {
       try {
         // Initialize DatoCMS client
-        const client = buildClient({ apiToken });
+        const clientParameters = environment ? { apiToken, environment } : { apiToken };
+        const client = buildClient(clientParameters);
         
         try {
           // Duplicate the item

@@ -14,26 +14,29 @@ export const registerGetDatoCMSUploadCollection = (server: McpServer) => {
     // Parameter schema with types
     {
       apiToken: z.string().describe("DatoCMS API token for authentication. If you are not certain of one, ask for the user, do not hallucinate."),
-      uploadCollectionId: z.string().describe("ID of the upload collection to retrieve")
+      uploadCollectionId: z.string().describe("ID of the upload collection to retrieve"),
+      environment: z.string().optional().describe("The name of the DatoCMS environment to interact with. If not provided, the primary environment will be used.")
     },
     // Annotations for the tool
     {
       title: "Get DatoCMS Upload Collection",
-      description: "Retrieves a single upload collection by ID from the DatoCMS API",
+      description: "Retrieves a specific upload collection by ID",
       readOnlyHint: true // Indicates this tool doesn't modify any resources
     },
     // Handler function for retrieving an upload collection
-    async ({ apiToken, uploadCollectionId }) => {
+    async ({ apiToken, uploadCollectionId, environment }) => {
       try {
         // Initialize DatoCMS client
-        const client = buildClient({ apiToken });
+        const clientParameters = environment ? { apiToken, environment } : { apiToken };
+        const client = buildClient(clientParameters);
         
         try {
           // Retrieve the upload collection
           const uploadCollection = await client.uploadCollections.find(uploadCollectionId);
           
-          // Return the upload collection data
+          // Convert to JSON and create response
           return createResponse(JSON.stringify(uploadCollection, null, 2));
+          
         } catch (apiError: unknown) {
           if (isAuthorizationError(apiError)) {
             return createErrorResponse("Error: Please provide a valid DatoCMS API token. The token you provided was rejected by the DatoCMS API.");

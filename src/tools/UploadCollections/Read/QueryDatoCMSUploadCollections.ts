@@ -12,11 +12,10 @@ export const registerQueryDatoCMSUploadCollections = (server: McpServer) => {
     // Tool name
     "QueryDatoCMSUploadCollections",
     // Parameter schema with types
-    {
+    { 
       apiToken: z.string().describe("DatoCMS API token for authentication. If you are not certain of one, ask for the user, do not hallucinate."),
-      
-      // Query filters - optional parameters for filtering
-      ids: z.string().optional().describe("Comma-separated list of DatoCMS upload collection IDs to fetch (with no spaces), e.g.: 'id1,id2,id3'")
+      ids: z.string().optional().describe("Comma-separated list of DatoCMS upload collection IDs to fetch (with no spaces), e.g.: 'id1,id2,id3'"),
+      environment: z.string().optional().describe("The name of the DatoCMS environment to interact with. If not provided, the primary environment will be used.")
     },
     // Annotations for the tool
     {
@@ -25,10 +24,11 @@ export const registerQueryDatoCMSUploadCollections = (server: McpServer) => {
       readOnlyHint: true // Indicates this tool doesn't modify any resources
     },
     // Handler function for the DatoCMS upload collections query operation
-    async ({ apiToken, ids }) => {
+    async ({ apiToken, ids, environment }) => {
       try {
         // Initialize DatoCMS client
-        const client = buildClient({ apiToken });
+        const clientParameters = environment ? { apiToken, environment } : { apiToken };
+        const client = buildClient(clientParameters);
         
         // Prepare query parameters
         const queryParams: Record<string, unknown> = {};

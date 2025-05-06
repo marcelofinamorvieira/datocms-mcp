@@ -16,7 +16,8 @@ export const registerDestroyDatoCMSRecord = (server: McpServer) => {
       apiToken: z.string().describe("DatoCMS API token for authentication. If you are not certain of one, ask for the user, do not halucinate."),
       itemId: z.string().describe("The ID of the DatoCMS record to delete."),
       confirmation: z.boolean().describe("Explicit confirmation that you want to delete this record. This is a destructive action that cannot be undone."),
-      returnOnlyConfirmation: z.boolean().optional().describe("If true, returns only a success confirmation message instead of the full record data. Use this to save on token usage. Default is false.")
+      returnOnlyConfirmation: z.boolean().optional().describe("If true, returns only a success confirmation message instead of the full record data. Use this to save on token usage. Default is false."),
+      environment: z.string().optional().describe("The name of the DatoCMS environment to interact with. If not provided, the primary environment will be used.")
     },
     // Annotations for the tool
     {
@@ -26,7 +27,7 @@ export const registerDestroyDatoCMSRecord = (server: McpServer) => {
       destructiveHint: true // This tool is destructive
     },
     // Handler function for deleting a single record
-    async ({ apiToken, itemId, confirmation, returnOnlyConfirmation = false }) => {
+    async ({ apiToken, itemId, confirmation, returnOnlyConfirmation = false, environment }) => {
       // Require explicit confirmation due to destructive nature
       if (!confirmation) {
         return createErrorResponse("Error: Explicit confirmation is required to delete the record. Set 'confirmation' parameter to true to proceed with deletion.");
@@ -34,7 +35,8 @@ export const registerDestroyDatoCMSRecord = (server: McpServer) => {
 
       try {
         // Initialize DatoCMS client
-        const client = buildClient({ apiToken });
+        const clientParameters = environment ? { apiToken, environment } : { apiToken };
+        const client = buildClient(clientParameters);
         
         try {
           const deletedItem = await client.items.destroy(itemId);
