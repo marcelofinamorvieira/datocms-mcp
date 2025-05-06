@@ -1,17 +1,20 @@
 import { z } from "zod";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { recordsSchemas, recordActionsList } from "./Records/schemas.js";
+import { projectSchemas, projectActionsList } from "./Project/schemas.js";
 import { createResponse } from "../utils/responseHandlers.js";
 
 // Define schema map for all resources
 const schemas = {
-  records: recordsSchemas
+  records: recordsSchemas,
+  project: projectSchemas
 };
 
 type SchemaMap = typeof schemas;
 
 // Create a type-safe action enum for each resource type
 type RecordActions = typeof recordActionsList[number];
+type ProjectActions = typeof projectActionsList[number];
 
 /**
  * Helper function to extract and format Zod schema into a more user-friendly format
@@ -150,8 +153,11 @@ export const registerGetParametersTool = (server: McpServer) => {
     "datocms_parameters",
     // Parameter schema with types
     {
-      resource: z.enum(["records"]).describe("The resource type to get parameters for (currently only 'records' is supported)"),
-      action: z.enum(recordActionsList as [RecordActions, ...RecordActions[]]).describe("The specific action you want to perform (e.g., 'query', 'get', 'publish', etc.)")
+      resource: z.enum(["records", "project"]).describe("The resource type to get parameters for (currently 'records' and 'project' are supported)"),
+      action: z.union([
+        z.enum(recordActionsList as [RecordActions, ...RecordActions[]]).describe("The specific action you want to perform for records (e.g., 'query', 'get', 'publish', etc.)"),
+        z.enum(projectActionsList as [ProjectActions, ...ProjectActions[]]).describe("The specific action you want to perform for project (e.g., 'query', 'get', 'publish', etc.)")
+      ])
     },
     // Annotations for the tool - Much stronger emphasis on using this first
     {

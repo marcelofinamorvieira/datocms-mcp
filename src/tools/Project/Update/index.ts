@@ -1,5 +1,4 @@
 /**
- * Barrel file exporting all Project update tool registration functions
+ * Export all Project Update handlers
  */
-
-export { registerUpdateDatoCMSSiteSettings } from './UpdateDatoCMSSiteSettings.js';
+export * from './handlers/index.js';

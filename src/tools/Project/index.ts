@@ -1,6 +1,11 @@
 /**
  * Project information tools for DatoCMS
  */
-export { registerGetDatoCMSProjectInfo } from './GetDatoCMSProjectInfo.js';
-export { registerUpdateDatoCMSSiteSettings } from './Update/index.js';
+/**
+ * Export all Project related modules
+ */
+export * from './Info/index.js';
+export * from './Update/index.js';
 export * from './Subscription/index.js';
+// Export the Project Router Tool directly
+export { registerProjectRouter, destroy } from './ProjectRouterTool.js';

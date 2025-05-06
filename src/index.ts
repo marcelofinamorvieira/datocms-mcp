@@ -14,10 +14,8 @@ import fetch from "node-fetch";
 // Records tools are now consolidated into a router tool
 import { registerRecordsRouter } from "./tools/Records/RecordsRouterTool.js";
 import { registerGetParametersTool } from "./tools/DocumentationTool.js";
-
-import {
-  registerGetDatoCMSProjectInfo,
-  registerUpdateDatoCMSSiteSettings,
+import { 
+  registerProjectRouter, 
   registerGetDatoCMSUploadById,
   registerGetDatoCMSUploadReferences,
   registerQueryDatoCMSUploads,
@@ -25,8 +23,6 @@ import {
   registerDestroyDatoCMSUpload,
   registerListDatoCMSEnvironments,
   registerForkDatoCMSEnvironment,
-  registerListDatoCMSUsagesAndSubscriptionLimits,
-  registerListDatoCMSSubscriptionFeatures,
   registerGetDatoCMSModel,
   registerListDatoCMSModels,
   registerDuplicateDatoCMSModel,
@@ -58,63 +54,24 @@ const createServer = (): McpServer => {
 
   // Register DatoCMS tools with clear order (parameters first, then execution)
   registerGetParametersTool(server); // Parameters tool MUST be registered FIRST
-  registerRecordsRouter(server);     // Execute tool comes AFTER parameters
+  registerRecordsRouter(server);     // Execute tool for records
+  registerProjectRouter(server);     // Execute tool for project operations
 
-  // Project information tools
-  // These provide metadata about the DatoCMS project configuration
-  // registerGetDatoCMSProjectInfo(server);
-  // registerUpdateDatoCMSSiteSettings(server);      // Update site settings
+  // Upload tools
+  // registerGetDatoCMSUploadById(server);
+  // registerGetDatoCMSUploadReferences(server);
+  // registerQueryDatoCMSUploads(server);
+  // registerBulkDestroyDatoCMSUploads(server);
+  // registerDestroyDatoCMSUpload(server);
 
   // Environment tools
-  // These allow retrieving and managing environment information
-  // registerListDatoCMSEnvironments(server);        // List all
-  // registerRetrieveDatoCMSEnvironment(server);     // Read
-  // registerDeleteDatoCMSEnvironment(server);       // Delete
-  // registerRenameDatoCMSEnvironment(server);       // Update
-  // registerPromoteDatoCMSEnvironment(server);      // Promote
-  // registerForkDatoCMSEnvironment(server);         // Fork
+  // registerListDatoCMSEnvironments(server);
+  // registerForkDatoCMSEnvironment(server);
 
-  // // Subscription tools
-  // // These allow retrieving subscription information
-  // registerListDatoCMSUsagesAndSubscriptionLimits(server);  // List usage and limits
-  // registerListDatoCMSSubscriptionFeatures(server); // List available features
-
-  // // Upload tools
-  // // These allow working with DatoCMS uploads (assets)
-  // registerGetDatoCMSUploadById(server);           // Read
-  // registerGetDatoCMSUploadReferences(server);     // Find references
-  // registerQueryDatoCMSUploads(server);            // Query/filter uploads
-  // registerCreateDatoCMSUpload(server);            // Create uploads
-  // registerDestroyDatoCMSUpload(server);           // Delete
-  // registerBulkDestroyDatoCMSUploads(server);      // Bulk Delete
-  // registerUpdateDatoCMSUpload(server);            // Update
-  // registerBulkTagDatoCMSUploads(server);          // Bulk Tag
-  // registerBulkSetDatoCMSUploadCollection(server); // Bulk Collection Assignment
-  // registerListDatoCMSUploadTags(server);          // List Upload Tags
-  // registerCreateDatoCMSUploadTag(server);         // Create Upload Tag
-  // registerListDatoCMSUploadSmartTags(server);     // List Upload Smart Tags
-
-  // // Upload Collection tools
-  // // These allow working with DatoCMS upload collections (asset folders)
-  // registerGetDatoCMSUploadCollection(server);      // Read
-  // registerQueryDatoCMSUploadCollections(server);   // Query/filter collections
-  // registerCreateDatoCMSUploadCollection(server);   // Create collections
-  // registerUpdateDatoCMSUploadCollection(server);   // Update collections
-  // registerDeleteDatoCMSUploadCollection(server);   // Delete collections
-
-  // // Maintenance Mode tools
-  // // These allow managing maintenance mode for the primary environment
-  // registerActivateMaintenanceMode(server);
-  // registerDeactivateMaintenanceMode(server);
-  // registerFetchMaintenanceMode(server);
-
-  // // Model tools
+  // Model tools
   // registerGetDatoCMSModel(server);
   // registerListDatoCMSModels(server);
   // registerDuplicateDatoCMSModel(server);
-  // registerCreateDatoCMSModel(server);
-  // registerUpdateDatoCMSModel(server);
-  // registerDeleteDatoCMSModel(server);
 
   return server;
 };

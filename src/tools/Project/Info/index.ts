@@ -1,4 +1,4 @@
 /**
- * Export all Project Subscription handlers
+ * Export all Project Info handlers
  */
 export * from './handlers/index.js';
