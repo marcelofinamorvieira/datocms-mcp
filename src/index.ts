@@ -64,6 +64,7 @@ import {
   registerListDatoCMSModels,
   registerDuplicateDatoCMSModel,
   registerCreateDatoCMSModel,
+  registerUpdateDatoCMSModel,
   registerDeleteDatoCMSModel,
 } from "./tools/index.js";
 
@@ -174,6 +175,7 @@ const createServer = (): McpServer => {
   registerListDatoCMSModels(server);
   registerDuplicateDatoCMSModel(server);
   registerCreateDatoCMSModel(server);
+  registerUpdateDatoCMSModel(server);
   registerDeleteDatoCMSModel(server);
 
   // Utility tools
