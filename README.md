@@ -18,6 +18,7 @@ This project provides a Model Context Protocol (MCP) server that enables Claude 
 - **Maintenance Mode**: Activate or deactivate maintenance mode to set the primary environment to read-only or allow normal operations
 - **Environment Management**: Retrieve environment information
 - **Subscription Management**: View usage and subscription limits
+- **Model Operations**: Retrieve model information
 
 ## Tools Overview
 
@@ -97,7 +98,7 @@ This project provides a Model Context Protocol (MCP) server that enables Claude 
 | Tool | Description | Parameters | Returns | 
 |------|-------------|------------|-------|
 | GetDatoCMSProjectInfo | Retrieves information about the DatoCMS project | `apiToken`, `environment` (optional) | Project configuration object |
-| UpdateDatoCMSSiteSettings | Updates the settings of a DatoCMS site, including SEO, locales, and other project configurations | `apiToken`, `no_index` (optional), `favicon` (optional), `name` (optional), `theme` (optional), `locales` (optional), `timezone` (optional), `require_2fa` (optional), `ip_tracking_enabled` (optional), `force_use_of_sandbox_environments` (optional), `global_seo` (optional), `meta` (optional), `sso_default_role` (optional) | Site resource object |
+| UpdateDatoCMSSiteSettings | Updates the general site settings for a DatoCMS project | `apiToken`, `name` (optional), `noIndex` (optional), `favicon` (optional), `timezone` (optional), `environment` (optional) | Site resource object |
 
 ### Environment Operations
 
@@ -124,6 +125,12 @@ This project provides a Model Context Protocol (MCP) server that enables Claude 
 | FetchMaintenanceMode | Retrieves the current state of maintenance mode for the primary environment | `apiToken` | Resource object of type maintenance_mode |
 | ActivateMaintenanceMode | Activates maintenance mode which makes the primary environment read-only | `apiToken`, `force` (optional) | Resource object of type maintenance_mode |
 | DeactivateMaintenanceMode | Deactivates maintenance mode, allowing normal operations on the primary environment | `apiToken` | Resource object of type maintenance_mode |
+
+### Model Operations
+
+| Tool | Description | ReadOnly | Parameters |
+|------|-------------|----------|------------|
+| GetDatoCMSModel | Retrieves a specific model (item type) from your DatoCMS project by ID or API key. | ✓ | apiToken, modelIdOrApiKey, environment (optional) |
 
 ## Prerequisites
 

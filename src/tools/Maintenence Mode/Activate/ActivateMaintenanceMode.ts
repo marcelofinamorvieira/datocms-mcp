@@ -12,21 +12,24 @@ export const registerActivateMaintenanceMode = (server: McpServer) => {
     // Tool name
     "ActivateMaintenanceMode",
     // Parameter schema with types
-    { 
+    {
       apiToken: z.string().describe("DatoCMS API token for authentication."),
+      environment: z.string().optional().describe("The ID of a specific environment to target (defaults to primary environment)."),
       force: z.boolean().optional().default(false).describe("Force the activation, even if there are collaborators editing some records.")
     },
     // Annotations for the tool
     {
       title: "Activate Maintenance Mode",
-      description: "Activates maintenance mode which makes the primary environment read-only.",
-      readOnlyHint: false // This tool modifies resources
+      description: "Activates maintenance mode in a DatoCMS project.",
+      readOnlyHint: false, // This tool modifies resources
+      destructiveHint: false // This tool doesn't destroy anything
     },
     // Handler function for activating maintenance mode
-    async ({ apiToken, force }) => {
+    async ({ apiToken, environment, force }) => {
       try {
         // Initialize DatoCMS client
-        const client = buildClient({ apiToken });
+        const clientParameters = environment ? { apiToken, environment } : { apiToken };
+        const client = buildClient(clientParameters);
         
         try {
           // Activate maintenance mode

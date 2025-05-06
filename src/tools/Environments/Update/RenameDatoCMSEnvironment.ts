@@ -12,22 +12,25 @@ export const registerRenameDatoCMSEnvironment = (server: McpServer) => {
     // Tool name
     "RenameDatoCMSEnvironment",
     // Parameter schema with types
-    { 
+    {
       apiToken: z.string().describe("DatoCMS API token for authentication."),
       environmentId: z.string().describe("The ID of the environment to rename."),
-      newId: z.string().describe("The new ID for the environment. Should be kebab case")
+      newId: z.string().describe("The new ID for the environment. Should be kebab case"),
+      targetEnvironment: z.string().optional().describe("The ID of a specific environment where you want to perform this operation (defaults to primary environment).")
     },
     // Annotations for the tool
     {
       title: "Rename DatoCMS Environment",
       description: "Renames a DatoCMS environment by changing its ID.",
-      readOnlyHint: false // This tool modifies resources
+      readOnlyHint: false, // This tool modifies resources
+      destructiveHint: false // This tool doesn't destroy anything
     },
     // Handler function for renaming an environment
-    async ({ apiToken, environmentId, newId }) => {
+    async ({ apiToken, environmentId, newId, targetEnvironment }) => {
       try {
         // Initialize DatoCMS client
-        const client = buildClient({ apiToken });
+        const clientParameters = targetEnvironment ? { apiToken, environment: targetEnvironment } : { apiToken };
+        const client = buildClient(clientParameters);
         
         try {
           // Rename the environment

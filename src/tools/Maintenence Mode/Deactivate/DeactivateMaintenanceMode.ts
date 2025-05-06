@@ -12,20 +12,22 @@ export const registerDeactivateMaintenanceMode = (server: McpServer) => {
     // Tool name
     "DeactivateMaintenanceMode",
     // Parameter schema with types
-    { 
-      apiToken: z.string().describe("DatoCMS API token for authentication.")
+    {
+      apiToken: z.string().describe("DatoCMS API token for authentication."),
+      environment: z.string().optional().describe("The ID of a specific environment to target (defaults to primary environment).")
     },
     // Annotations for the tool
     {
       title: "Deactivate Maintenance Mode",
-      description: "Deactivates maintenance mode, allowing normal operations on the primary environment.",
+      description: "Deactivates maintenance mode in a DatoCMS project.",
       readOnlyHint: false // This tool modifies resources
     },
     // Handler function for deactivating maintenance mode
-    async ({ apiToken }) => {
+    async ({ apiToken, environment }) => {
       try {
         // Initialize DatoCMS client
-        const client = buildClient({ apiToken });
+        const clientParameters = environment ? { apiToken, environment } : { apiToken };
+        const client = buildClient(clientParameters);
         
         try {
           // Deactivate maintenance mode

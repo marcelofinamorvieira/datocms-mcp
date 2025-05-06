@@ -12,27 +12,23 @@ export const registerListDatoCMSUploadTags = (server: McpServer) => {
     // Tool name
     "ListDatoCMSUploadTags",
     // Parameter schema with types
-    { 
+    {
       apiToken: z.string().describe("DatoCMS API token for authentication."),
-      filter: z.object({
-        query: z.string().optional().describe("Textual query to match the tag names against.")
-      }).optional().describe("Attributes to filter tags."),
-      page: z.object({
-        offset: z.number().int().optional().describe("The (zero-based) offset of the first entity returned in the collection (defaults to 0)."),
-        limit: z.number().int().optional().describe("The maximum number of entities to return (defaults to 50, maximum is 500).")
-      }).optional().describe("Parameters to control offset-based pagination.")
+      filter: z.string().optional().describe("Optional filter to apply when listing tags. Use 'used' to only show tags that are being used, or 'unused' to show tags that are not being used."),
+      environment: z.string().optional().describe("The ID of a specific environment to target (defaults to primary environment).")
     },
     // Annotations for the tool
     {
       title: "List DatoCMS Upload Tags",
-      description: "Retrieves all manually created upload tags for the DatoCMS project, with optional filtering and pagination.",
+      description: "Lists all the upload tags in the DatoCMS project.",
       readOnlyHint: true // This tool only reads resources
     },
     // Handler function for listing upload tags
-    async ({ apiToken, filter, page }) => {
+    async ({ apiToken, filter, environment }) => {
       try {
         // Initialize DatoCMS client
-        const client = buildClient({ apiToken });
+        const clientParameters = environment ? { apiToken, environment } : { apiToken };
+        const client = buildClient(clientParameters);
         
         try {
           // Prepare the query options
@@ -42,11 +38,7 @@ export const registerListDatoCMSUploadTags = (server: McpServer) => {
           } = {};
           
           if (filter) {
-            queryOptions.filter = filter;
-          }
-          
-          if (page) {
-            queryOptions.page = page;
+            queryOptions.filter = { query: filter };
           }
           
           // List all upload tags with provided filters and pagination

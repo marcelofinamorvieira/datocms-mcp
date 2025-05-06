@@ -1,50 +1,48 @@
 import { z } from "zod";
 import { buildClient } from "@datocms/cma-client-node";
-import { isAuthorizationError, createErrorResponse } from "../../../utils/errorHandlers.js";
+import { isAuthorizationError, isNotFoundError, createErrorResponse } from "../../../utils/errorHandlers.js";
 import { createResponse } from "../../../utils/responseHandlers.js";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 
 /**
- * Registers the CreateDatoCMSUploadTag tool with the MCP server
+ * Registers the GetDatoCMSModel tool with the MCP server
  */
-export const registerCreateDatoCMSUploadTag = (server: McpServer) => {
+export const registerGetDatoCMSModel = (server: McpServer) => {
   server.tool(
     // Tool name
-    "CreateDatoCMSUploadTag",
+    "GetDatoCMSModel",
     // Parameter schema with types
-    { 
+    {
       apiToken: z.string().describe("DatoCMS API token for authentication."),
-      name: z.string().describe("The tag name to create."),
+      modelIdOrApiKey: z.string().describe("The ID or API key of the model to retrieve."),
       environment: z.string().optional().describe("The ID of a specific environment to target (defaults to primary environment).")
     },
     // Annotations for the tool
     {
-      title: "Create DatoCMS Upload Tag",
-      description: "Creates a new upload tag in the DatoCMS project.",
-      readOnlyHint: false, // This tool creates resources, so it's not read-only
-      destructiveHint: false // This tool doesn't destroy anything
+      title: "Get DatoCMS Model",
+      description: "Retrieves a specific model (item type) from your DatoCMS project by ID or API key.",
+      readOnlyHint: true // This tool only reads resources
     },
-    // Handler function for creating an upload tag
-    async ({ apiToken, name, environment }) => {
+    // Handler function for getting a model
+    async ({ apiToken, modelIdOrApiKey, environment }) => {
       try {
         // Initialize DatoCMS client
         const clientParameters = environment ? { apiToken, environment } : { apiToken };
         const client = buildClient(clientParameters);
         
         try {
-          // Prepare the create options
-          const createOptions = {
-            name
-          };
+          // Retrieve the model using the provided ID or API key
+          const model = await client.itemTypes.find(modelIdOrApiKey);
           
-          // Create an upload tag
-          const uploadTag = await client.uploadTags.create(createOptions);
-          
-          return createResponse(JSON.stringify(uploadTag, null, 2));
+          return createResponse(JSON.stringify(model, null, 2));
           
         } catch (apiError: unknown) {
           if (isAuthorizationError(apiError)) {
             return createErrorResponse("Error: Please provide a valid DatoCMS API token. The token you provided was rejected by the DatoCMS API.");
+          }
+          
+          if (isNotFoundError(apiError)) {
+            return createErrorResponse(`Error: Model with ID or API key '${modelIdOrApiKey}' was not found.`);
           }
           
           // Re-throw other API errors to be caught by the outer catch
@@ -54,7 +52,7 @@ export const registerCreateDatoCMSUploadTag = (server: McpServer) => {
         return {
           content: [{
             type: "text" as const,
-            text: `Error creating upload tag: ${error instanceof Error ? error.message : String(error)}`
+            text: `Error retrieving model: ${error instanceof Error ? error.message : String(error)}`
           }]
         };
       }

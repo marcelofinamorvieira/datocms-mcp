@@ -12,20 +12,22 @@ export const registerFetchMaintenanceMode = (server: McpServer) => {
     // Tool name
     "FetchMaintenanceMode",
     // Parameter schema with types
-    { 
-      apiToken: z.string().describe("DatoCMS API token for authentication.")
+    {
+      apiToken: z.string().describe("DatoCMS API token for authentication."),
+      environment: z.string().optional().describe("The ID of a specific environment to target (defaults to primary environment).")
     },
     // Annotations for the tool
     {
-      title: "Fetch Maintenance Mode",
-      description: "Retrieves the current state of maintenance mode for the primary environment.",
+      title: "Fetch Maintenance Mode Status",
+      description: "Fetches the current maintenance mode status from a DatoCMS project.",
       readOnlyHint: true // This tool only reads resources
     },
     // Handler function for fetching maintenance mode status
-    async ({ apiToken }) => {
+    async ({ apiToken, environment }) => {
       try {
         // Initialize DatoCMS client
-        const client = buildClient({ apiToken });
+        const clientParameters = environment ? { apiToken, environment } : { apiToken };
+        const client = buildClient(clientParameters);
         
         try {
           // Fetch maintenance mode status

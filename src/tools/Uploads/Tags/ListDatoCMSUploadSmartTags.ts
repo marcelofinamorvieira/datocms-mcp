@@ -12,7 +12,7 @@ export const registerListDatoCMSUploadSmartTags = (server: McpServer) => {
     // Tool name
     "ListDatoCMSUploadSmartTags",
     // Parameter schema with types
-    { 
+    {
       apiToken: z.string().describe("DatoCMS API token for authentication."),
       filter: z.object({
         query: z.string().optional().describe("Textual query to match the tag names against.")
@@ -20,7 +20,8 @@ export const registerListDatoCMSUploadSmartTags = (server: McpServer) => {
       page: z.object({
         offset: z.number().int().optional().describe("The (zero-based) offset of the first entity returned in the collection (defaults to 0)."),
         limit: z.number().int().optional().describe("The maximum number of entities to return (defaults to 50, maximum is 500).")
-      }).optional().describe("Parameters to control offset-based pagination.")
+      }).optional().describe("Parameters to control offset-based pagination."),
+      environment: z.string().optional().describe("The ID of a specific environment to target (defaults to primary environment).")
     },
     // Annotations for the tool
     {
@@ -29,10 +30,11 @@ export const registerListDatoCMSUploadSmartTags = (server: McpServer) => {
       readOnlyHint: true // This tool only reads resources
     },
     // Handler function for listing upload smart tags
-    async ({ apiToken, filter, page }) => {
+    async ({ apiToken, filter, page, environment }) => {
       try {
         // Initialize DatoCMS client
-        const client = buildClient({ apiToken });
+        const clientParameters = environment ? { apiToken, environment } : { apiToken };
+        const client = buildClient(clientParameters);
         
         try {
           // Prepare the query options

@@ -59,7 +59,8 @@ import {
   registerListDatoCMSUploadTags,
   registerCreateDatoCMSUploadTag,
   registerListDatoCMSUploadSmartTags,
-  registerUpdateDatoCMSSiteSettings
+  registerUpdateDatoCMSSiteSettings,
+  registerGetDatoCMSModel,
 } from "./tools/index.js";
 
 // Apply fetch polyfill for DatoCMS client compatibility
@@ -160,9 +161,15 @@ const createServer = (): McpServer => {
 
   // Maintenance Mode tools
   // These allow managing maintenance mode for the primary environment
-  registerFetchMaintenanceMode(server);           // Read
-  registerActivateMaintenanceMode(server);        // Activate
-  registerDeactivateMaintenanceMode(server);      // Deactivate
+  registerActivateMaintenanceMode(server);
+  registerDeactivateMaintenanceMode(server);
+  registerFetchMaintenanceMode(server);
+
+  // Model tools
+  registerGetDatoCMSModel(server);
+
+  // Project information tools
+  registerGetDatoCMSProjectInfo(server);
 
   // Utility tools
   registerBuildDatoCMSRecordUrl(server);

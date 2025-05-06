@@ -23,6 +23,9 @@ export { registerActivateMaintenanceMode } from "./Maintenence Mode/Activate/Act
 export { registerDeactivateMaintenanceMode } from "./Maintenence Mode/Deactivate/DeactivateMaintenanceMode.js";
 export { registerFetchMaintenanceMode } from "./Maintenence Mode/Fetch/FetchMaintenanceMode.js";
 
+// Export Model tools
+export * from "./Model/index.js";
+
 // Export Upload tools individually
 export { registerGetDatoCMSUploadById, registerGetDatoCMSUploadReferences, registerQueryDatoCMSUploads } from './Uploads/Read/index.js';
 export { registerDestroyDatoCMSUpload, registerBulkDestroyDatoCMSUploads } from './Uploads/Delete/index.js';
