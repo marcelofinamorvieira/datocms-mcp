@@ -28,3 +28,4 @@ export { registerGetDatoCMSUploadById, registerGetDatoCMSUploadReferences, regis
 export { registerDestroyDatoCMSUpload, registerBulkDestroyDatoCMSUploads } from './Uploads/Delete/index.js';
 export { registerBulkTagDatoCMSUploads, registerBulkSetDatoCMSUploadCollection, registerUpdateDatoCMSUpload } from './Uploads/Update/index.js';
 export { registerCreateDatoCMSUpload } from './Uploads/Create/index.js';
+export { registerListDatoCMSUploadTags, registerCreateDatoCMSUploadTag, registerListDatoCMSUploadSmartTags } from './Uploads/Tags/index.js';

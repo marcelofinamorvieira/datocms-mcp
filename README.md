@@ -77,6 +77,9 @@ This project provides a Model Context Protocol (MCP) server that enables Claude 
 | BulkDestroyDatoCMSUploads | Permanently deletes multiple DatoCMS uploads at once | `apiToken`, `uploadIds`, `confirmation`, `environment` (optional) | Confirmation message with count of deleted uploads |
 | BulkTagDatoCMSUploads | Adds specified tags to multiple DatoCMS uploads | `apiToken`, `uploadIds`, `tags`, `environment` (optional) | Confirmation message with count of tagged uploads |
 | BulkSetDatoCMSUploadCollection | Assigns multiple DatoCMS uploads to a collection or removes them from collections | `apiToken`, `uploadIds`, `collectionId`, `environment` (optional) | Confirmation message with count of updated uploads |
+| ListDatoCMSUploadTags | Retrieves all manually created upload tags for the DatoCMS project, with optional filtering and pagination | `apiToken`, `filter` (optional), `page` (optional) | Array of resource objects of type upload_tag |
+| CreateDatoCMSUploadTag | Creates a new upload tag in the DatoCMS project | `apiToken`, `name` | Resource object of type upload_tag |
+| ListDatoCMSUploadSmartTags | Retrieves all automatically created upload smart tags for the DatoCMS project, with optional filtering and pagination | `apiToken`, `filter` (optional), `page` (optional) | Array of resource objects of type upload_smart_tag |
 
 ### Upload Collections Operations
 
