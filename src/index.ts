@@ -39,7 +39,12 @@ import {
   registerBulkTagDatoCMSUploads,
   registerBulkSetDatoCMSUploadCollection,
   registerUpdateDatoCMSUpload,
-  registerCreateDatoCMSUpload
+  registerCreateDatoCMSUpload,
+  registerGetDatoCMSUploadCollection,
+  registerQueryDatoCMSUploadCollections,
+  registerCreateDatoCMSUploadCollection,
+  registerUpdateDatoCMSUploadCollection,
+  registerDeleteDatoCMSUploadCollection
 } from "./tools/index.js";
 
 // Apply fetch polyfill for DatoCMS client compatibility
@@ -111,6 +116,14 @@ const createServer = (): McpServer => {
   registerUpdateDatoCMSUpload(server);            // Update
   registerBulkTagDatoCMSUploads(server);          // Bulk Tag
   registerBulkSetDatoCMSUploadCollection(server); // Bulk Collection Assignment
+
+  // Upload Collection tools
+  // These allow working with DatoCMS upload collections (asset folders)
+  registerGetDatoCMSUploadCollection(server);      // Read
+  registerQueryDatoCMSUploadCollections(server);   // Query/filter collections
+  registerCreateDatoCMSUploadCollection(server);   // Create collections
+  registerUpdateDatoCMSUploadCollection(server);   // Update collections
+  registerDeleteDatoCMSUploadCollection(server);   // Delete collections
 
   // Utility tools
   registerBuildDatoCMSRecordUrl(server);

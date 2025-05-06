@@ -14,6 +14,7 @@ This project provides a Model Context Protocol (MCP) server that enables Claude 
 - **Publication Control**: Publish and unpublish records individually or in bulk
 - **Bulk Operations**: Perform actions on multiple records at once, such as publishing, unpublishing, and deletion
 - **Upload Management**: Retrieve, delete, tag, and organize DatoCMS uploads/assets
+- **Upload Collections Management**: Create, retrieve, update, and delete upload collections (asset folders)
 
 ## Tools Overview
 
@@ -73,6 +74,16 @@ This project provides a Model Context Protocol (MCP) server that enables Claude 
 | BulkDestroyDatoCMSUploads | Permanently deletes multiple DatoCMS uploads at once | `apiToken`, `uploadIds`, `confirmation` | Confirmation message with count of deleted uploads |
 | BulkTagDatoCMSUploads | Adds specified tags to multiple DatoCMS uploads | `apiToken`, `uploadIds`, `tags` | Confirmation message with count of tagged uploads |
 | BulkSetDatoCMSUploadCollection | Assigns multiple DatoCMS uploads to a collection or removes them from collections | `apiToken`, `uploadIds`, `collectionId` | Confirmation message with count of updated uploads |
+
+### Upload Collections Operations
+
+| Tool | Description | Parameters | Returns | 
+|------|-------------|------------|-------|
+| GetDatoCMSUploadCollection | Retrieves a specific upload collection by ID | `apiToken`, `uploadCollectionId` | Upload collection resource object |
+| QueryDatoCMSUploadCollections | Lists all upload collections with optional filtering by IDs | `apiToken`, `ids` (optional) | Array of upload collection resource objects |
+| CreateDatoCMSUploadCollection | Creates a new upload collection in DatoCMS | `apiToken`, `label`, `id` (optional), `position` (optional), `parent` (optional) | Created upload collection resource object |
+| UpdateDatoCMSUploadCollection | Updates an existing upload collection | `apiToken`, `uploadCollectionId`, `label` (optional), `position` (optional), `parent` (optional), `children` (optional) | Updated upload collection resource object |
+| DeleteDatoCMSUploadCollection | Deletes an upload collection by ID | `apiToken`, `uploadCollectionId` | Deleted upload collection resource object |
 
 ### Project Operations
 

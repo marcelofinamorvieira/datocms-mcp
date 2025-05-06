@@ -9,6 +9,9 @@ export * from './Records/index.js';
 // Import all tools from the Project directory
 export * from './Project/index.js';
 
+// Import all tools from the UploadCollections directory
+export * from './UploadCollections/index.js';
+
 // Export Upload tools individually
 export { registerGetDatoCMSUploadById, registerGetDatoCMSUploadReferences, registerQueryDatoCMSUploads } from './Uploads/Read/index.js';
 export { registerDestroyDatoCMSUpload, registerBulkDestroyDatoCMSUploads } from './Uploads/Delete/index.js';
