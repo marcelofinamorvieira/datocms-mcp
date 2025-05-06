@@ -1,6 +1,7 @@
 /**
- * Barrel file for exporting record version tools
+ * Export all version-related handlers via the handlers directory
+ * The individual tool files are being removed during refactoring
  */
-export { registerListDatoCMSRecordVersions } from './ListDatoCMSRecordVersions.js';
-export { registerGetDatoCMSRecordVersion } from './GetDatoCMSRecordVersion.js';
-export { registerRestoreDatoCMSRecordVersion } from './RestoreDatoCMSRecordVersion.js';
+
+// Export all handlers
+export * from './handlers/index.js';

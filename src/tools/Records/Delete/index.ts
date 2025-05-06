@@ -1,5 +1,7 @@
 /**
- * Exports record deletion tools for DatoCMS
+ * Export all delete operation handlers via the handlers directory
+ * The individual tool files are being removed during refactoring
  */
-export { registerDestroyDatoCMSRecord } from './DestroyDatoCMSRecord.js';
-export { registerBulkDestroyDatoCMSRecords } from './BulkDestroyDatoCMSRecords.js';
+
+// Export all handlers
+export * from './handlers/index.js';

@@ -1,4 +1,7 @@
 /**
- * Exports record creation and duplication tools for DatoCMS
+ * Export all creation operation handlers via the handlers directory
+ * The individual tool files are being removed during refactoring
  */
-export { registerDuplicateDatoCMSRecord } from './DuplicateDatoCMSRecord.js';
+
+// Export all handlers
+export * from './handlers/index.js';

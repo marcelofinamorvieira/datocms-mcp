@@ -1,7 +1,7 @@
 /**
- * Exports read-only record manipulation tools for DatoCMS
+ * Export all read operations handlers via the handlers directory
+ * The individual tool files are being removed during refactoring
  */
-export { registerQueryDatoCMSRecords } from './QueryDatoCMSRecords.js';
-export { registerGetDatoCMSRecordById } from './GetDatoCMSRecordById.js';
-export { registerGetDatoCMSRecordReferences } from './GetDatoCMSRecordReferences.js';
-export { registerBuildDatoCMSRecordUrl } from './BuildDatoCMSRecordUrl.js';
+
+// Export all handlers
+export * from './handlers/index.js';

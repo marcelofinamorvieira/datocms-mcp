@@ -21,3 +21,12 @@ export { registerDestroyDatoCMSUpload, registerBulkDestroyDatoCMSUploads } from 
 export { registerBulkTagDatoCMSUploads, registerBulkSetDatoCMSUploadCollection, registerUpdateDatoCMSUpload } from './Uploads/Update/index.js';
 export { registerCreateDatoCMSUpload } from './Uploads/Create/index.js';
 export { registerListDatoCMSUploadTags, registerCreateDatoCMSUploadTag, registerListDatoCMSUploadSmartTags } from './Uploads/Tags/index.js';
+
+// Export Upload Collections tools
+export {
+  registerGetDatoCMSUploadCollection,
+  registerQueryDatoCMSUploadCollections,
+  registerDeleteDatoCMSUploadCollection,
+  registerCreateDatoCMSUploadCollection,
+  registerUpdateDatoCMSUploadCollection
+} from './Uploads/UploadCollections/index.js';

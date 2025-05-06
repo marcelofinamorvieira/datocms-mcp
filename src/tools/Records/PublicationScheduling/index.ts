@@ -1,8 +1,7 @@
 /**
- * Barrel file exporting all scheduling-related tool registration functions
+ * Export all publication scheduling operation handlers via the handlers directory
+ * The individual tool files are being removed during refactoring
  */
 
-export { registerCreateScheduledPublicationOnRecord } from './CreateScheduledPublicationOnRecord.js';
-export { registerDestroyScheduledPublicationOnRecord } from './DestroyScheduledPublicationOnRecord.js';
-export { registerCreateScheduledUnpublicationOnRecord } from './CreateScheduledUnpublicationOnRecord.js';
-export { registerDestroyScheduledUnpublicationOnRecord } from './DestroyScheduledUnpublicationOnRecord.js';
+// Export all handlers
+export * from './handlers/index.js';

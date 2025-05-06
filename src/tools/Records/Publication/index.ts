@@ -1,4 +1,7 @@
-export * from './PublishDatoCMSRecord.js';
-export * from './BulkPublishDatoCMSRecords.js';
-export * from './UnpublishDatoCMSRecord.js';
-export * from './BulkUnpublishDatoCMSRecords.js';
+/**
+ * Export all publication operation handlers via the handlers directory
+ * The individual tool files are being removed during refactoring
+ */
+
+// Export all handlers
+export * from './handlers/index.js';
