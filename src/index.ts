@@ -61,6 +61,10 @@ import {
   registerListDatoCMSUploadSmartTags,
   registerUpdateDatoCMSSiteSettings,
   registerGetDatoCMSModel,
+  registerListDatoCMSModels,
+  registerDuplicateDatoCMSModel,
+  registerCreateDatoCMSModel,
+  registerDeleteDatoCMSModel,
 } from "./tools/index.js";
 
 // Apply fetch polyfill for DatoCMS client compatibility
@@ -167,9 +171,10 @@ const createServer = (): McpServer => {
 
   // Model tools
   registerGetDatoCMSModel(server);
-
-  // Project information tools
-  registerGetDatoCMSProjectInfo(server);
+  registerListDatoCMSModels(server);
+  registerDuplicateDatoCMSModel(server);
+  registerCreateDatoCMSModel(server);
+  registerDeleteDatoCMSModel(server);
 
   // Utility tools
   registerBuildDatoCMSRecordUrl(server);

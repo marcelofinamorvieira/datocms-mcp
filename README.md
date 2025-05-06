@@ -18,7 +18,7 @@ This project provides a Model Context Protocol (MCP) server that enables Claude 
 - **Maintenance Mode**: Activate or deactivate maintenance mode to set the primary environment to read-only or allow normal operations
 - **Environment Management**: Retrieve environment information
 - **Subscription Management**: View usage and subscription limits
-- **Model Operations**: Retrieve model information
+- **Model Operations**: Retrieve model information, list models, create models, duplicate models, delete models
 
 ## Tools Overview
 
@@ -130,7 +130,11 @@ This project provides a Model Context Protocol (MCP) server that enables Claude 
 
 | Tool | Description | ReadOnly | Parameters |
 |------|-------------|----------|------------|
+| ListDatoCMSModels | Retrieves all models (item types) from your DatoCMS project. | ✓ | apiToken, environment (optional) |
 | GetDatoCMSModel | Retrieves a specific model (item type) from your DatoCMS project by ID or API key. | ✓ | apiToken, modelIdOrApiKey, environment (optional) |
+| CreateDatoCMSModel | Creates a new model (item type) in your DatoCMS project. |  | apiToken, name, api_key, id (optional), singleton (optional), all_locales_required (optional), sortable (optional), modular_block (optional), draft_mode_active (optional), draft_saving_active (optional), tree (optional), ordering_direction (optional), ordering_meta (optional), collection_appearance (optional), hint (optional), inverse_relationships_enabled (optional), skip_menu_item_creation (optional), menu_item_id (optional), schema_menu_item_id (optional), environment (optional) |
+| DuplicateDatoCMSModel | Creates a duplicate of an existing model (item type) in your DatoCMS project. |  | apiToken, modelIdOrApiKey, environment (optional) |
+| DeleteDatoCMSModel | Permanently deletes a model (item type) from your DatoCMS project. |  | apiToken, modelIdOrApiKey, environment (optional) |
 
 ## Prerequisites
 
