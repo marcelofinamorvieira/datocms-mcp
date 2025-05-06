@@ -15,6 +15,7 @@ This project provides a Model Context Protocol (MCP) server that enables Claude 
 - **Bulk Operations**: Perform actions on multiple records at once, such as publishing, unpublishing, and deletion
 - **Upload Management**: Retrieve, delete, tag, and organize DatoCMS uploads/assets
 - **Upload Collections Management**: Create, retrieve, update, and delete upload collections (asset folders)
+- **Maintenance Mode**: Activate or deactivate maintenance mode to set the primary environment to read-only or allow normal operations
 
 ## Tools Overview
 
@@ -90,6 +91,14 @@ This project provides a Model Context Protocol (MCP) server that enables Claude 
 | Tool | Description | Parameters | Returns | 
 |------|-------------|------------|-------|
 | GetDatoCMSProjectInfo | Retrieves information about the DatoCMS project | `apiToken`, `environment` (optional) | Project configuration object |
+
+### Maintenance Mode Operations
+
+| Tool | Description | Parameters | Returns | 
+|------|-------------|------------|-------|
+| FetchMaintenanceMode | Retrieves the current state of maintenance mode for the primary environment | `apiToken` | Resource object of type maintenance_mode |
+| ActivateMaintenanceMode | Activates maintenance mode which makes the primary environment read-only | `apiToken`, `force` (optional) | Resource object of type maintenance_mode |
+| DeactivateMaintenanceMode | Deactivates maintenance mode, allowing normal operations on the primary environment | `apiToken` | Resource object of type maintenance_mode |
 
 ## Prerequisites
 

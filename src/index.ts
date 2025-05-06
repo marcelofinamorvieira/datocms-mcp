@@ -44,7 +44,10 @@ import {
   registerQueryDatoCMSUploadCollections,
   registerCreateDatoCMSUploadCollection,
   registerUpdateDatoCMSUploadCollection,
-  registerDeleteDatoCMSUploadCollection
+  registerDeleteDatoCMSUploadCollection,
+  registerActivateMaintenanceMode,
+  registerDeactivateMaintenanceMode,
+  registerFetchMaintenanceMode
 } from "./tools/index.js";
 
 // Apply fetch polyfill for DatoCMS client compatibility
@@ -124,6 +127,12 @@ const createServer = (): McpServer => {
   registerCreateDatoCMSUploadCollection(server);   // Create collections
   registerUpdateDatoCMSUploadCollection(server);   // Update collections
   registerDeleteDatoCMSUploadCollection(server);   // Delete collections
+
+  // Maintenance Mode tools
+  // These allow managing maintenance mode for the primary environment
+  registerFetchMaintenanceMode(server);           // Read
+  registerActivateMaintenanceMode(server);        // Activate
+  registerDeactivateMaintenanceMode(server);      // Deactivate
 
   // Utility tools
   registerBuildDatoCMSRecordUrl(server);
