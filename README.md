@@ -22,74 +22,74 @@ This project provides a Model Context Protocol (MCP) server that enables Claude 
 
 | Tool | Description | Parameters | Returns | 
 |------|-------------|------------|-------|
-| QueryDatoCMSRecords | Universal query tool for DatoCMS records. Can search by text query, fetch records by IDs, or get all records from a model. Supports pagination and locale handling. | `apiToken`, `filterQuery` (optional), `ids` (optional), `modelId` (optional), `modelName` (optional), `fields` (optional), `locale` (optional), `order_by` (optional), `version` (optional), `returnAllLocales` (optional), `returnOnlyIds` (optional), `limit` (optional), `offset` (optional), `nested` (optional) | Array of matching records or record IDs |
-| GetDatoCMSRecordById | Retrieves a specific record by its ID | `apiToken`, `itemId`, `version` (optional), `returnAllLocales` (optional) | Single record object |
+| QueryDatoCMSRecords | Universal query tool for DatoCMS records. Can search by text query, fetch records by IDs, or get all records from a model. Supports pagination and locale handling. | `apiToken`, `filterQuery` (optional), `ids` (optional), `modelId` (optional), `modelName` (optional), `fields` (optional), `locale` (optional), `order_by` (optional), `version` (optional), `returnAllLocales` (optional), `returnOnlyIds` (optional), `limit` (optional), `offset` (optional), `nested` (optional), `environment` (optional) | Array of matching records or record IDs |
+| GetDatoCMSRecordById | Retrieves a specific record by its ID | `apiToken`, `itemId`, `version` (optional), `returnAllLocales` (optional), `nested` (optional), `environment` (optional) | Single record object |
 | BuildDatoCMSRecordUrl | Generates a direct editor URL for a specific record | `projectUrl`, `itemTypeId`, `itemId` | URL to edit the record |
-| GetDatoCMSRecordReferences | Finds records that link to a specific record | `apiToken`, `itemId`, `returnAllLocales` (optional) | Array of referencing records |
+| GetDatoCMSRecordReferences | Finds records that link to a specific record | `apiToken`, `itemId`, `returnAllLocales` (optional), `environment` (optional) | Array of referencing records |
 
 ### Record Create Operations
 
 | Tool | Description | Parameters | Returns | 
 |------|-------------|------------|-------|
-| DuplicateDatoCMSRecord | Creates a duplicate of an existing DatoCMS record | `apiToken`, `itemId`, `returnOnlyConfirmation` (optional) | Newly created record or confirmation message |
+| DuplicateDatoCMSRecord | Creates a duplicate of an existing DatoCMS record | `apiToken`, `itemId`, `returnOnlyConfirmation` (optional), `environment` (optional) | Newly created record or confirmation message |
 
 ### Record Delete Operations
 
 | Tool | Description | Parameters | Returns | 
 |------|-------------|------------|-------|
-| DestroyDatoCMSRecord | Permanently deletes a DatoCMS record | `apiToken`, `itemId`, `confirmation`, `returnOnlyConfirmation` (optional) | Deleted record data or confirmation message |
-| BulkDestroyDatoCMSRecords | Permanently deletes multiple DatoCMS records at once | `apiToken`, `itemIds`, `confirmation` | Confirmation message with count of deleted records |
+| DestroyDatoCMSRecord | Permanently deletes a DatoCMS record | `apiToken`, `itemId`, `confirmation`, `returnOnlyConfirmation` (optional), `environment` (optional) | Deleted record data or confirmation message |
+| BulkDestroyDatoCMSRecords | Permanently deletes multiple DatoCMS records at once | `apiToken`, `itemIds`, `confirmation`, `environment` (optional) | Confirmation message with count of deleted records |
 
 ### Record Version Operations
 
 | Tool | Description | Parameters | Returns | 
 |------|-------------|------------|-------|
-| ListDatoCMSRecordVersions | Lists all versions of a specific DatoCMS record | `apiToken`, `recordId`, `returnOnlyIds` (optional), `limit` (optional), `offset` (optional), `nested` (optional) | Array of version IDs or version objects |
-| GetDatoCMSRecordVersion | Retrieves a specific version of a DatoCMS record | `apiToken`, `versionId` | Single version object |
-| RestoreDatoCMSRecordVersion | Restores a record to a previous version state | `apiToken`, `versionId` | Restored version object |
+| ListDatoCMSRecordVersions | Lists all versions of a specific DatoCMS record | `apiToken`, `recordId`, `returnOnlyIds` (optional), `limit` (optional), `offset` (optional), `nested` (optional), `environment` (optional) | Array of version IDs or version objects |
+| GetDatoCMSRecordVersion | Retrieves a specific version of a DatoCMS record | `apiToken`, `versionId`, `environment` (optional) | Single version object |
+| RestoreDatoCMSRecordVersion | Restores a record to a previous version state | `apiToken`, `versionId`, `environment` (optional) | Restored version object |
 
 ### Publication Management Operations
 
 | Tool | Description | Parameters | Returns | 
 |------|-------------|------------|-------|
-| PublishDatoCMSRecord | Publishes a single DatoCMS record | `apiToken`, `itemId`, `content_in_locales` (optional), `recursive` (optional) | Published record object |
-| UnpublishDatoCMSRecord | Unpublishes a single DatoCMS record | `apiToken`, `itemId`, `content_in_locales` (optional), `recursive` (optional) | Unpublished record object |
-| BulkPublishDatoCMSRecords | Publishes multiple DatoCMS records at once | `apiToken`, `itemIds` | Confirmation message with count of published records |
-| BulkUnpublishDatoCMSRecords | Unpublishes multiple DatoCMS records at once | `apiToken`, `itemIds` | Confirmation message with count of unpublished records |
-| CreateScheduledPublicationOnRecord | Schedules a record to be published at a specific time | `apiToken`, `itemId`, `publicationDate` | Scheduled publication object |
-| DestroyScheduledPublicationOnRecord | Cancels a scheduled publication | `apiToken`, `itemId` | Confirmation message |
-| CreateScheduledUnpublicationOnRecord | Schedules a record to be unpublished at a specific time | `apiToken`, `itemId`, `unpublicationDate` | Scheduled unpublication object |
-| DestroyScheduledUnpublicationOnRecord | Cancels a scheduled unpublication | `apiToken`, `itemId` | Confirmation message |
+| PublishDatoCMSRecord | Publishes a single DatoCMS record | `apiToken`, `itemId`, `content_in_locales` (optional), `non_localized_content` (optional), `recursive` (optional), `environment` (optional) | Published record object |
+| UnpublishDatoCMSRecord | Unpublishes a single DatoCMS record | `apiToken`, `itemId`, `content_in_locales` (optional), `non_localized_content` (optional), `recursive` (optional), `environment` (optional) | Unpublished record object |
+| BulkPublishDatoCMSRecords | Publishes multiple DatoCMS records at once | `apiToken`, `itemIds`, `environment` (optional) | Confirmation message with count of published records |
+| BulkUnpublishDatoCMSRecords | Unpublishes multiple DatoCMS records at once | `apiToken`, `itemIds`, `environment` (optional) | Confirmation message with count of unpublished records |
+| CreateScheduledPublicationOnRecord | Schedules a record to be published at a specific time | `apiToken`, `itemId`, `publicationDate`, `environment` (optional) | Scheduled publication object |
+| DestroyScheduledPublicationOnRecord | Cancels a scheduled publication | `apiToken`, `itemId`, `environment` (optional) | Confirmation message |
+| CreateScheduledUnpublicationOnRecord | Schedules a record to be unpublished at a specific time | `apiToken`, `itemId`, `unpublicationDate`, `environment` (optional) | Scheduled unpublication object |
+| DestroyScheduledUnpublicationOnRecord | Cancels a scheduled unpublication | `apiToken`, `itemId`, `environment` (optional) | Confirmation message |
 
 ### Upload Operations
 
 | Tool | Description | Parameters | Returns | 
 |------|-------------|------------|-------|
-| GetDatoCMSUploadById | Retrieves a specific DatoCMS upload by its ID | `apiToken`, `uploadId`, `returnOnlyIds` (optional) | Upload resource object or just its ID |
-| GetDatoCMSUploadReferences | Retrieves all records that link to a specific DatoCMS upload/asset | `apiToken`, `uploadId`, `nested` (optional), `version` (optional), `returnOnlyIds` (optional) | Array of records referencing the upload, or just their IDs |
-| QueryDatoCMSUploads | Query and filter DatoCMS uploads (assets) | `apiToken`, `ids` (optional), `query` (optional), `fields` (optional), `locale` (optional), `order_by` (optional), `limit` (optional), `offset` (optional), `returnOnlyIds` (optional) | Array of upload resource objects or just their IDs |
-| CreateDatoCMSUpload | Creates a new upload (asset) in DatoCMS from a remote URL or local path | `apiToken`, `url` or `path` (one is required), `id` (optional), `filename` (optional), `skipCreationIfAlreadyExists` (optional), `author` (optional), `copyright` (optional), `notes` (optional), `tags` (optional), `default_field_metadata` (optional), `upload_collection` (optional) | Created upload resource object |
-| UpdateDatoCMSUpload | Updates a DatoCMS upload's metadata, renames it, or uploads a new version | `apiToken`, `uploadId`, `path` (optional), `basename` (optional), `copyright` (optional), `author` (optional), `notes` (optional), `tags` (optional), `default_field_metadata` (optional), `upload_collection` (optional) | Updated upload resource object |
-| DestroyDatoCMSUpload | Permanently deletes a DatoCMS upload | `apiToken`, `uploadId`, `confirmation`, `returnOnlyConfirmation` (optional) | Deleted upload data or confirmation message |
-| BulkDestroyDatoCMSUploads | Permanently deletes multiple DatoCMS uploads at once | `apiToken`, `uploadIds`, `confirmation` | Confirmation message with count of deleted uploads |
-| BulkTagDatoCMSUploads | Adds specified tags to multiple DatoCMS uploads | `apiToken`, `uploadIds`, `tags` | Confirmation message with count of tagged uploads |
-| BulkSetDatoCMSUploadCollection | Assigns multiple DatoCMS uploads to a collection or removes them from collections | `apiToken`, `uploadIds`, `collectionId` | Confirmation message with count of updated uploads |
+| GetDatoCMSUploadById | Retrieves a specific DatoCMS upload by its ID | `apiToken`, `uploadId`, `returnOnlyIds` (optional), `environment` (optional) | Upload resource object or just its ID |
+| GetDatoCMSUploadReferences | Retrieves all records that link to a specific DatoCMS upload/asset | `apiToken`, `uploadId`, `nested` (optional), `version` (optional), `returnOnlyIds` (optional), `environment` (optional) | Array of records referencing the upload, or just their IDs |
+| QueryDatoCMSUploads | Query and filter DatoCMS uploads (assets) | `apiToken`, `ids` (optional), `query` (optional), `fields` (optional), `locale` (optional), `order_by` (optional), `limit` (optional), `offset` (optional), `returnOnlyIds` (optional), `environment` (optional) | Array of upload resource objects or just their IDs |
+| CreateDatoCMSUpload | Creates a new upload (asset) in DatoCMS from a remote URL or local path | `apiToken`, `url` or `path` (one is required), `id` (optional), `filename` (optional), `skipCreationIfAlreadyExists` (optional), `author` (optional), `copyright` (optional), `notes` (optional), `tags` (optional), `default_field_metadata` (optional), `upload_collection` (optional), `environment` (optional) | Created upload resource object |
+| UpdateDatoCMSUpload | Updates a DatoCMS upload's metadata, renames it, or uploads a new version | `apiToken`, `uploadId`, `path` (optional), `basename` (optional), `copyright` (optional), `author` (optional), `notes` (optional), `tags` (optional), `default_field_metadata` (optional), `upload_collection` (optional), `environment` (optional) | Updated upload resource object |
+| DestroyDatoCMSUpload | Permanently deletes a DatoCMS upload | `apiToken`, `uploadId`, `confirmation`, `returnOnlyConfirmation` (optional), `environment` (optional) | Deleted upload data or confirmation message |
+| BulkDestroyDatoCMSUploads | Permanently deletes multiple DatoCMS uploads at once | `apiToken`, `uploadIds`, `confirmation`, `environment` (optional) | Confirmation message with count of deleted uploads |
+| BulkTagDatoCMSUploads | Adds specified tags to multiple DatoCMS uploads | `apiToken`, `uploadIds`, `tags`, `environment` (optional) | Confirmation message with count of tagged uploads |
+| BulkSetDatoCMSUploadCollection | Assigns multiple DatoCMS uploads to a collection or removes them from collections | `apiToken`, `uploadIds`, `collectionId`, `environment` (optional) | Confirmation message with count of updated uploads |
 
 ### Upload Collections Operations
 
 | Tool | Description | Parameters | Returns | 
 |------|-------------|------------|-------|
-| GetDatoCMSUploadCollection | Retrieves a specific upload collection by ID | `apiToken`, `uploadCollectionId` | Upload collection resource object |
-| QueryDatoCMSUploadCollections | Lists all upload collections with optional filtering by IDs | `apiToken`, `ids` (optional) | Array of upload collection resource objects |
-| CreateDatoCMSUploadCollection | Creates a new upload collection in DatoCMS | `apiToken`, `label`, `id` (optional), `position` (optional), `parent` (optional) | Created upload collection resource object |
-| UpdateDatoCMSUploadCollection | Updates an existing upload collection | `apiToken`, `uploadCollectionId`, `label` (optional), `position` (optional), `parent` (optional), `children` (optional) | Updated upload collection resource object |
-| DeleteDatoCMSUploadCollection | Deletes an upload collection by ID | `apiToken`, `uploadCollectionId` | Deleted upload collection resource object |
+| GetDatoCMSUploadCollection | Retrieves a specific upload collection by ID | `apiToken`, `uploadCollectionId`, `environment` (optional) | Upload collection resource object |
+| QueryDatoCMSUploadCollections | Lists all upload collections with optional filtering by IDs | `apiToken`, `ids` (optional), `environment` (optional) | Array of upload collection resource objects |
+| CreateDatoCMSUploadCollection | Creates a new upload collection in DatoCMS | `apiToken`, `label`, `id` (optional), `position` (optional), `parent` (optional), `environment` (optional) | Created upload collection resource object |
+| UpdateDatoCMSUploadCollection | Updates an existing upload collection | `apiToken`, `uploadCollectionId`, `label` (optional), `position` (optional), `parent` (optional), `children` (optional), `environment` (optional) | Updated upload collection resource object |
+| DeleteDatoCMSUploadCollection | Deletes an upload collection by ID | `apiToken`, `uploadCollectionId`, `environment` (optional) | Deleted upload collection resource object |
 
 ### Project Operations
 
 | Tool | Description | Parameters | Returns | 
 |------|-------------|------------|-------|
-| GetDatoCMSProjectInfo | Retrieves information about the DatoCMS project | `apiToken` | Project configuration object |
+| GetDatoCMSProjectInfo | Retrieves information about the DatoCMS project | `apiToken`, `environment` (optional) | Project configuration object |
 
 ## Prerequisites
 
