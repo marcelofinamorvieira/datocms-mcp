@@ -16,6 +16,7 @@ This project provides a Model Context Protocol (MCP) server that enables Claude 
 - **Upload Management**: Retrieve, delete, tag, and organize DatoCMS uploads/assets
 - **Upload Collections Management**: Create, retrieve, update, and delete upload collections (asset folders)
 - **Maintenance Mode**: Activate or deactivate maintenance mode to set the primary environment to read-only or allow normal operations
+- **Environment Management**: Retrieve environment information
 
 ## Tools Overview
 
@@ -91,6 +92,17 @@ This project provides a Model Context Protocol (MCP) server that enables Claude 
 | Tool | Description | Parameters | Returns | 
 |------|-------------|------------|-------|
 | GetDatoCMSProjectInfo | Retrieves information about the DatoCMS project | `apiToken`, `environment` (optional) | Project configuration object |
+
+### Environment Operations
+
+| Tool | Description | Parameters | Returns | 
+|------|-------------|------------|-------|
+| ListDatoCMSEnvironments | Retrieves a list of all environments in the DatoCMS project | `apiToken` | Array of resource objects of type environment |
+| RetrieveDatoCMSEnvironment | Retrieves information about a specific DatoCMS environment by its ID | `apiToken`, `environmentId` | Resource object of type environment |
+| DeleteDatoCMSEnvironment | Permanently deletes a DatoCMS environment by its ID | `apiToken`, `environmentId`, `confirmation` | Resource object of type environment |
+| RenameDatoCMSEnvironment | Renames a DatoCMS environment by changing its ID | `apiToken`, `environmentId`, `newId` | Resource object of type environment |
+| PromoteDatoCMSEnvironment | Promotes a DatoCMS environment to primary status | `apiToken`, `environmentId` | Resource object of type environment |
+| ForkDatoCMSEnvironment | Creates a new environment by forking an existing one | `apiToken`, `environmentId`, `newId`, `fast` (optional), `force` (optional) | Resource object of type environment |
 
 ### Maintenance Mode Operations
 

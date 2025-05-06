@@ -47,7 +47,13 @@ import {
   registerDeleteDatoCMSUploadCollection,
   registerActivateMaintenanceMode,
   registerDeactivateMaintenanceMode,
-  registerFetchMaintenanceMode
+  registerFetchMaintenanceMode,
+  registerRetrieveDatoCMSEnvironment,
+  registerDeleteDatoCMSEnvironment,
+  registerRenameDatoCMSEnvironment,
+  registerListDatoCMSEnvironments,
+  registerPromoteDatoCMSEnvironment,
+  registerForkDatoCMSEnvironment
 } from "./tools/index.js";
 
 // Apply fetch polyfill for DatoCMS client compatibility
@@ -107,6 +113,15 @@ const createServer = (): McpServer => {
   registerDestroyScheduledPublicationOnRecord(server);
   registerCreateScheduledUnpublicationOnRecord(server);
   registerDestroyScheduledUnpublicationOnRecord(server);
+
+  // Environment tools
+  // These allow retrieving and managing environment information
+  registerListDatoCMSEnvironments(server);        // List all
+  registerRetrieveDatoCMSEnvironment(server);     // Read
+  registerDeleteDatoCMSEnvironment(server);       // Delete
+  registerRenameDatoCMSEnvironment(server);       // Update
+  registerPromoteDatoCMSEnvironment(server);      // Promote
+  registerForkDatoCMSEnvironment(server);         // Fork
 
   // Upload tools
   // These allow working with DatoCMS uploads (assets)
