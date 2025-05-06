@@ -53,7 +53,9 @@ import {
   registerRenameDatoCMSEnvironment,
   registerListDatoCMSEnvironments,
   registerPromoteDatoCMSEnvironment,
-  registerForkDatoCMSEnvironment
+  registerForkDatoCMSEnvironment,
+  registerListDatoCMSUsagesAndSubscriptionLimits,
+  registerListDatoCMSSubscriptionFeatures
 } from "./tools/index.js";
 
 // Apply fetch polyfill for DatoCMS client compatibility
@@ -122,6 +124,11 @@ const createServer = (): McpServer => {
   registerRenameDatoCMSEnvironment(server);       // Update
   registerPromoteDatoCMSEnvironment(server);      // Promote
   registerForkDatoCMSEnvironment(server);         // Fork
+
+  // Subscription tools
+  // These allow retrieving subscription information
+  registerListDatoCMSUsagesAndSubscriptionLimits(server);  // List usage and limits
+  registerListDatoCMSSubscriptionFeatures(server); // List available features
 
   // Upload tools
   // These allow working with DatoCMS uploads (assets)

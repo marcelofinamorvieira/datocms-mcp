@@ -17,6 +17,7 @@ This project provides a Model Context Protocol (MCP) server that enables Claude 
 - **Upload Collections Management**: Create, retrieve, update, and delete upload collections (asset folders)
 - **Maintenance Mode**: Activate or deactivate maintenance mode to set the primary environment to read-only or allow normal operations
 - **Environment Management**: Retrieve environment information
+- **Subscription Management**: View usage and subscription limits
 
 ## Tools Overview
 
@@ -103,6 +104,13 @@ This project provides a Model Context Protocol (MCP) server that enables Claude 
 | RenameDatoCMSEnvironment | Renames a DatoCMS environment by changing its ID | `apiToken`, `environmentId`, `newId` | Resource object of type environment |
 | PromoteDatoCMSEnvironment | Promotes a DatoCMS environment to primary status | `apiToken`, `environmentId` | Resource object of type environment |
 | ForkDatoCMSEnvironment | Creates a new environment by forking an existing one | `apiToken`, `environmentId`, `newId`, `fast` (optional), `force` (optional) | Resource object of type environment |
+
+### Subscription Operations
+
+| Tool | Description | Parameters | Returns | 
+|------|-------------|------------|-------|
+| ListDatoCMSUsagesAndSubscriptionLimits | Retrieves all the usage and subscription limits for the DatoCMS project | `apiToken` | Array of resource objects of type subscription_limit |
+| ListDatoCMSSubscriptionFeatures | Retrieves all the subscription features for the DatoCMS project, showing which special features are enabled for the current plan | `apiToken` | Array of resource objects of type subscription_feature |
 
 ### Maintenance Mode Operations
 
