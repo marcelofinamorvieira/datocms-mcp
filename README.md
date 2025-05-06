@@ -97,6 +97,7 @@ This project provides a Model Context Protocol (MCP) server that enables Claude 
 | Tool | Description | Parameters | Returns | 
 |------|-------------|------------|-------|
 | GetDatoCMSProjectInfo | Retrieves information about the DatoCMS project | `apiToken`, `environment` (optional) | Project configuration object |
+| UpdateDatoCMSSiteSettings | Updates the settings of a DatoCMS site, including SEO, locales, and other project configurations | `apiToken`, `no_index` (optional), `favicon` (optional), `name` (optional), `theme` (optional), `locales` (optional), `timezone` (optional), `require_2fa` (optional), `ip_tracking_enabled` (optional), `force_use_of_sandbox_environments` (optional), `global_seo` (optional), `meta` (optional), `sso_default_role` (optional) | Site resource object |
 
 ### Environment Operations
 

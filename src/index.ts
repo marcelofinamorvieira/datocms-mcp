@@ -58,7 +58,8 @@ import {
   registerListDatoCMSSubscriptionFeatures,
   registerListDatoCMSUploadTags,
   registerCreateDatoCMSUploadTag,
-  registerListDatoCMSUploadSmartTags
+  registerListDatoCMSUploadSmartTags,
+  registerUpdateDatoCMSSiteSettings
 } from "./tools/index.js";
 
 // Apply fetch polyfill for DatoCMS client compatibility
@@ -83,6 +84,7 @@ const createServer = (): McpServer => {
   // Project information tools
   // These provide metadata about the DatoCMS project configuration
   registerGetDatoCMSProjectInfo(server);
+  registerUpdateDatoCMSSiteSettings(server);      // Update site settings
 
   // Record query tools
   // These allow searching and retrieving content from DatoCMS Records
