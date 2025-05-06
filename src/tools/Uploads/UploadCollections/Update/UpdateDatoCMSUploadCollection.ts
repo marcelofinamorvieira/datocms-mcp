@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { buildClient } from "@datocms/cma-client-node";
-import { isAuthorizationError, isNotFoundError, createErrorResponse } from "../../../utils/errorHandlers.js";
-import { createResponse } from "../../../utils/responseHandlers.js";
+import { isAuthorizationError, isNotFoundError, createErrorResponse } from "../../../../utils/errorHandlers.js";
+import { createResponse } from "../../../../utils/responseHandlers.js";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 
 /**

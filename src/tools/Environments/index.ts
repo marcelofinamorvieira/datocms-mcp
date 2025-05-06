@@ -19,3 +19,8 @@ export { registerPromoteDatoCMSEnvironment } from './Promote/PromoteDatoCMSEnvir
 
 // Export the ForkDatoCMSEnvironment tool
 export { registerForkDatoCMSEnvironment } from './Fork/ForkDatoCMSEnvironment.js';
+
+// Export Maintenance Mode tools
+export { registerActivateMaintenanceMode } from './Maintenence Mode/Activate/ActivateMaintenanceMode.js';
+export { registerDeactivateMaintenanceMode } from './Maintenence Mode/Deactivate/DeactivateMaintenanceMode.js';
+export { registerFetchMaintenanceMode } from './Maintenence Mode/Fetch/FetchMaintenanceMode.js';

@@ -4,6 +4,9 @@ import { registerDestroyDatoCMSUpload, registerBulkDestroyDatoCMSUploads } from 
 import { registerBulkTagDatoCMSUploads, registerBulkSetDatoCMSUploadCollection } from "./Update/index.js";
 import { registerListDatoCMSUploadTags, registerCreateDatoCMSUploadTag, registerListDatoCMSUploadSmartTags } from "./Tags/index.js";
 
+// Export all upload collection tools
+export * from './UploadCollections/index.js';
+
 export const registerUploadsTools = (server: McpServer) => {
   // Register Read tools
   registerGetDatoCMSUploadById(server);
