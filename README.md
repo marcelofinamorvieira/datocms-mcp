@@ -25,7 +25,7 @@ This project provides a Model Context Protocol (MCP) server that enables Claude 
 
 | Tool | Description | Parameters | Returns | 
 |------|-------------|------------|-------|
-| QueryDatoCMSRecords | Universal query tool for DatoCMS records. Can search by text query, fetch records by IDs, or get all records from a model. Supports pagination and locale handling. | `apiToken`, `filterQuery` (optional), `ids` (optional), `modelId` (optional), `modelName` (optional), `fields` (optional), `locale` (optional), `order_by` (optional), `version` (optional), `returnAllLocales` (optional), `returnOnlyIds` (optional), `limit` (optional), `offset` (optional), `nested` (optional), `environment` (optional) | Array of matching records or record IDs |
+| QueryDatoCMSRecords | Universal query tool for DatoCMS records. Can search by text query, fetch records by IDs, or get all records from a model. Supports pagination and locale handling. | `apiToken`, `filterQuery` (optional), `ids` (optional), `modelId` (optional), `modelName` (optional), `fields` (optional), `locale` (optional), `order_by` (optional), `version` (optional), `returnAllLocales` (optional), `returnOnlyIds` (optional), `page` (optional), `nested` (optional), `environment` (optional) | Array of matching records or record IDs |
 | GetDatoCMSRecordById | Retrieves a specific record by its ID | `apiToken`, `itemId`, `version` (optional), `returnAllLocales` (optional), `nested` (optional), `environment` (optional) | Single record object |
 | BuildDatoCMSRecordUrl | Generates a direct editor URL for a specific record | `projectUrl`, `itemTypeId`, `itemId` | URL to edit the record |
 | GetDatoCMSRecordReferences | Finds records that link to a specific record | `apiToken`, `itemId`, `returnAllLocales` (optional), `environment` (optional) | Array of referencing records |
@@ -47,7 +47,7 @@ This project provides a Model Context Protocol (MCP) server that enables Claude 
 
 | Tool | Description | Parameters | Returns | 
 |------|-------------|------------|-------|
-| ListDatoCMSRecordVersions | Lists all versions of a specific DatoCMS record | `apiToken`, `recordId`, `returnOnlyIds` (optional), `limit` (optional), `offset` (optional), `nested` (optional), `environment` (optional) | Array of version IDs or version objects |
+| ListDatoCMSRecordVersions | Lists all versions of a specific DatoCMS record | `apiToken`, `recordId`, `returnOnlyIds` (optional), `page` (optional), `nested` (optional), `environment` (optional) | Array of version IDs or version objects |
 | GetDatoCMSRecordVersion | Retrieves a specific version of a DatoCMS record | `apiToken`, `versionId`, `environment` (optional) | Single version object |
 | RestoreDatoCMSRecordVersion | Restores a record to a previous version state | `apiToken`, `versionId`, `environment` (optional) | Restored version object |
 
@@ -70,7 +70,7 @@ This project provides a Model Context Protocol (MCP) server that enables Claude 
 |------|-------------|------------|-------|
 | GetDatoCMSUploadById | Retrieves a specific DatoCMS upload by its ID | `apiToken`, `uploadId`, `returnOnlyIds` (optional), `environment` (optional) | Upload resource object or just its ID |
 | GetDatoCMSUploadReferences | Retrieves all records that link to a specific DatoCMS upload/asset | `apiToken`, `uploadId`, `nested` (optional), `version` (optional), `returnOnlyIds` (optional), `environment` (optional) | Array of records referencing the upload, or just their IDs |
-| QueryDatoCMSUploads | Query and filter DatoCMS uploads (assets) | `apiToken`, `ids` (optional), `query` (optional), `fields` (optional), `locale` (optional), `order_by` (optional), `limit` (optional), `offset` (optional), `returnOnlyIds` (optional), `environment` (optional) | Array of upload resource objects or just their IDs |
+| QueryDatoCMSUploads | Query and filter DatoCMS uploads (assets) | `apiToken`, `ids` (optional), `query` (optional), `fields` (optional), `locale` (optional), `order_by` (optional), `page` (optional), `returnOnlyIds` (optional), `environment` (optional) | Array of upload resource objects or just their IDs |
 | CreateDatoCMSUpload | Creates a new upload (asset) in DatoCMS from a remote URL or local path | `apiToken`, `url` or `path` (one is required), `id` (optional), `filename` (optional), `skipCreationIfAlreadyExists` (optional), `author` (optional), `copyright` (optional), `notes` (optional), `tags` (optional), `default_field_metadata` (optional), `upload_collection` (optional), `environment` (optional) | Created upload resource object |
 | UpdateDatoCMSUpload | Updates a DatoCMS upload's metadata, renames it, or uploads a new version | `apiToken`, `uploadId`, `path` (optional), `basename` (optional), `copyright` (optional), `author` (optional), `notes` (optional), `tags` (optional), `default_field_metadata` (optional), `upload_collection` (optional), `environment` (optional) | Updated upload resource object |
 | DestroyDatoCMSUpload | Permanently deletes a DatoCMS upload | `apiToken`, `uploadId`, `confirmation`, `returnOnlyConfirmation` (optional), `environment` (optional) | Deleted upload data or confirmation message |
@@ -80,6 +80,7 @@ This project provides a Model Context Protocol (MCP) server that enables Claude 
 | ListDatoCMSUploadTags | Retrieves all manually created upload tags for the DatoCMS project, with optional filtering and pagination | `apiToken`, `filter` (optional), `page` (optional) | Array of resource objects of type upload_tag |
 | CreateDatoCMSUploadTag | Creates a new upload tag in the DatoCMS project | `apiToken`, `name` | Resource object of type upload_tag |
 | ListDatoCMSUploadSmartTags | Retrieves all automatically created upload smart tags for the DatoCMS project, with optional filtering and pagination | `apiToken`, `filter` (optional), `page` (optional) | Array of resource objects of type upload_smart_tag |
+| ListDatoCMSSubscriptionFeatures | Retrieves all the subscription features for the DatoCMS project, showing which special features are enabled for the current plan | `apiToken` | Array of resource objects of type subscription_feature |
 
 ### Upload Collections Operations
 

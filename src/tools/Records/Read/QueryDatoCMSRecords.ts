@@ -31,8 +31,10 @@ export const registerQueryDatoCMSRecords = (server: McpServer) => {
       version: z.enum(["published", "current"]).optional().default("current").describe("Whether to retrieve the published version ('published') or the latest draft ('current'). Default is 'current'."),
       returnAllLocales: z.boolean().optional().default(false).describe("If true, returns all locale versions for each field instead of only the most populated locale. Default is false to save on token usage."),
       returnOnlyIds: z.boolean().optional().default(false).describe("If true, returns only an array of record IDs instead of complete records. Use this to save on tokens and context window space when only IDs are needed. These IDs can then be used with GetDatoCMSRecordById to get detailed information. Default is false."),
-      limit: z.number().optional().default(5).describe("Maximum number of records to return (defaults to 5). Use pagination with limit and offset to retrieve more results if needed. Be careful with large values as they consume tokens and context window space quickly."),
-      offset: z.number().optional().default(0).describe("The (zero-based) offset of the first record returned. Defaults to 0 for the first page of results."),
+      page: z.object({
+        offset: z.number().int().optional().describe("The (zero-based) offset of the first entity returned in the collection (defaults to 0)."),
+        limit: z.number().int().optional().describe("The maximum number of entities to return (defaults to 5, maximum is 500).")
+      }).optional().describe("Parameters to control offset-based pagination."),
       nested: z.boolean().optional().default(true).describe("For Modular Content, Structured Text and Single Block fields. If set to true, returns full payload for nested blocks instead of just their IDs. Default is true."),
       environment: z.string().optional().describe("The name of the DatoCMS environment to interact with. If not provided, the primary environment will be used.")
     },
@@ -43,7 +45,7 @@ export const registerQueryDatoCMSRecords = (server: McpServer) => {
       readOnlyHint: true // Indicates this tool doesn't modify any resources
     },
     // Handler function for the DatoCMS query operation
-    async ({ apiToken, filterQuery, ids, modelId, modelName, version, returnAllLocales, returnOnlyIds, limit, offset, nested, order_by, fields, locale, environment }) => {
+    async ({ apiToken, filterQuery, ids, modelId, modelName, version, returnAllLocales, returnOnlyIds, page, nested, order_by, fields, locale, environment }) => {
       try {
         // Initialize DatoCMS client
         const clientParameters = environment ? { apiToken, environment } : { apiToken };
@@ -59,6 +61,18 @@ export const registerQueryDatoCMSRecords = (server: McpServer) => {
         if (order_by && (modelId || modelName)) {
           queryParams.order_by = order_by;
         }
+        
+        // Convert pagination parameters
+        const pageParams = page ? {
+          limit: page.limit ?? 5,
+          offset: page.offset ?? 0
+        } : {
+          limit: 5,
+          offset: 0
+        };
+        
+        // Add pagination parameters
+        queryParams.page = pageParams;
         
         // Handle filter logic based on provided parameters
         if (filterQuery) {
@@ -92,12 +106,6 @@ export const registerQueryDatoCMSRecords = (server: McpServer) => {
           return createErrorResponse("Error: You must provide at least one of: filterQuery, ids, or modelId/modelName parameter.");
         }
         
-        // Always use pagination
-        queryParams.page = {
-          limit,
-          offset
-        };
-        
         // Execute the query
         try {
           const paginatedItems = await client.items.list(queryParams);
@@ -117,8 +125,8 @@ export const registerQueryDatoCMSRecords = (server: McpServer) => {
             const allItemIds = paginatedItems.map(item => item.id);
             return createResponse(JSON.stringify({
               totalCount: paginatedItems.length,
-              startingOffset: offset,
-              limit: limit,
+              startingOffset: pageParams.offset,
+              limit: pageParams.limit,
               recordIds: allItemIds
             }, null, 2));
           }
@@ -131,8 +139,8 @@ export const registerQueryDatoCMSRecords = (server: McpServer) => {
           // Return processed items
           return createResponse(JSON.stringify({
             totalCount: paginatedItems.length,
-            startingOffset: offset,
-            limit: limit,
+            startingOffset: pageParams.offset,
+            limit: pageParams.limit,
             records: allItems
           }, null, 2));
         } catch (apiError: unknown) {

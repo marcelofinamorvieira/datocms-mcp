@@ -16,8 +16,10 @@ export const registerListDatoCMSRecordVersions = (server: McpServer) => {
       apiToken: z.string().describe("DatoCMS API token with proper permissions."),
       recordId: z.string().describe("The ID of the record whose versions you want to list."),
       returnOnlyIds: z.boolean().optional().default(true).describe("If true, returns only an array of version IDs instead of complete version objects. Default is true to save on tokens and context window space since version responses can be colossal."),
-      limit: z.number().optional().default(5).describe("Maximum number of versions to return (defaults to 5). Use pagination with limit and offset to retrieve more results if needed. Be careful with large values as they consume tokens and context window space quickly."),
-      offset: z.number().optional().default(0).describe("The (zero-based) offset of the first version returned. Defaults to 0 for the first page of results."),
+      page: z.object({
+        offset: z.number().int().optional().describe("The (zero-based) offset of the first entity returned in the collection (defaults to 0)."),
+        limit: z.number().int().optional().describe("The maximum number of entities to return (defaults to 5, maximum is 500).")
+      }).optional().describe("Parameters to control offset-based pagination."),
       nested: z.boolean().optional().default(true).describe("For Modular Content, Structured Text and Single Block fields. If set to true, returns full payload for nested blocks instead of just their IDs. Default is true."),
       environment: z.string().optional().describe("The name of the DatoCMS environment to interact with. If not provided, the primary environment will be used.")
     },
@@ -28,7 +30,7 @@ export const registerListDatoCMSRecordVersions = (server: McpServer) => {
       readOnlyHint: true // This tool doesn't modify resources
     },
     // Handler function for retrieving versions
-    async ({ apiToken, recordId, returnOnlyIds, limit, offset, nested, environment }) => {
+    async ({ apiToken, recordId, returnOnlyIds, page, nested, environment }) => {
       try {
         // Create DatoCMS client
         const clientParameters = environment ? { apiToken, environment } : { apiToken };
@@ -43,8 +45,8 @@ export const registerListDatoCMSRecordVersions = (server: McpServer) => {
           const queryParams = {
             nested,
             page: {
-              limit,
-              offset
+              limit: page?.limit ?? 5,
+              offset: page?.offset ?? 0
             }
           };
           
@@ -66,16 +68,16 @@ export const registerListDatoCMSRecordVersions = (server: McpServer) => {
           if (returnOnlyIds) {
             return createResponse(JSON.stringify({
               totalCount: paginatedVersions.length,
-              startingOffset: offset,
-              limit: limit,
+              startingOffset: page?.offset ?? 0,
+              limit: page?.limit ?? 5,
               versionIds
             }, null, 2));
           }
           
           return createResponse(JSON.stringify({
             totalCount: paginatedVersions.length,
-            startingOffset: offset,
-            limit: limit,
+            startingOffset: page?.offset ?? 0,
+            limit: page?.limit ?? 5,
             versions
           }, null, 2));
         } catch (error) {

@@ -25,8 +25,10 @@ export const registerQueryDatoCMSUploads = (server: McpServer) => {
       
       // Additional query parameters
       order_by: z.string().optional().describe("Fields used to order results. Format: <field_name>_(ASC|DESC). You can pass multiple comma-separated rules. Example: '_created_at_DESC,size_ASC'"),
-      limit: z.number().optional().default(15).describe("Maximum number of uploads to return (defaults to 15). Use pagination with limit and offset to retrieve more results if needed. Be careful with large values as they consume tokens and context window space quickly."),
-      offset: z.number().optional().default(0).describe("The (zero-based) offset of the first upload returned. Defaults to 0 for the first page of results."),
+      page: z.object({
+        offset: z.number().int().optional().describe("The (zero-based) offset of the first entity returned in the collection (defaults to 0)."),
+        limit: z.number().int().optional().describe("The maximum number of entities to return (defaults to 15, maximum is 500).")
+      }).optional().describe("Parameters to control offset-based pagination."),
       returnOnlyIds: z.boolean().optional().default(false).describe("If true, returns only an array of upload IDs instead of complete upload objects. Use this to save on tokens and context window space when only IDs are needed."),
       environment: z.string().optional().describe("The name of the DatoCMS environment to interact with. If not provided, the primary environment will be used.")
     },
@@ -37,7 +39,7 @@ export const registerQueryDatoCMSUploads = (server: McpServer) => {
       readOnlyHint: true // Indicates this tool doesn't modify any resources
     },
     // Handler function for the DatoCMS uploads query operation
-    async ({ apiToken, ids, query, fields, locale, order_by, limit, offset, returnOnlyIds, environment }) => {
+    async ({ apiToken, ids, query, fields, locale, order_by, page, returnOnlyIds, environment }) => {
       try {
         // Initialize DatoCMS client
         const clientParameters = environment ? { apiToken, environment } : { apiToken };
@@ -84,13 +86,18 @@ export const registerQueryDatoCMSUploads = (server: McpServer) => {
           queryParams.order_by = order_by;
         }
         
+        // Add pagination parameters
+        const pageParams = page ? {
+          limit: page.limit ?? 15,
+          offset: page.offset ?? 0
+        } : {
+          limit: 15,
+          offset: 0
+        };
+        
+        queryParams.page = pageParams;
+        
         try {
-          // Always use pagination
-          queryParams.page = {
-            offset,
-            limit
-          };
-          
           const uploads = await client.uploads.list(queryParams);
           
           // Return empty result message if no uploads found
