@@ -21,11 +21,12 @@
   "dependencies": {
     "@datocms/cma-client-node": "^4.0.1",
     "@modelcontextprotocol/sdk": "^1.11.0",
-    "node-fetch": "^2.7.0",
+    "node-fetch": "^3.3.2",
     "typescript": "^5.8.3",
     "zod": "^3.24.3"
   },
   "devDependencies": {
+    "@types/mime-types": "^2.1.4",
     "@types/node": "^22.15.3",
     "@types/node-fetch": "^2.6.12"
   }
