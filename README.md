@@ -1,141 +1,103 @@
 # DatoCMS MCP Tools
 
-This project provides a Model Context Protocol (MCP) server that enables Claude AI models to interact with DatoCMS. It includes tools for querying DatoCMS records, managing content publication, and generating editor URLs for direct access to content.
+This project provides a Model Context Protocol (MCP) server that enables Claude AI models to interact with DatoCMS. It includes tools for managing DatoCMS content, collaborators, environments, models, projects, records, roles, and uploads through a standardized interface.
 
 ## Features
 
-- **Query DatoCMS Content**: Search for records with text queries and retrieve specific records by ID
-- **Content Publication Management**: Schedule or cancel content publications and unpublications
-- **Record References**: Find records that link to a specific record
-- **Project Information**: Retrieve metadata about your DatoCMS project
-- **Editor URLs**: Generate direct links to edit specific records in the DatoCMS admin interface
-- **Version Management**: List, retrieve, and restore record versions
-- **Record Management**: Create duplicate records and delete existing records
-- **Publication Control**: Publish and unpublish records individually or in bulk
-- **Bulk Operations**: Perform actions on multiple records at once, such as publishing, unpublishing, and deletion
-- **Upload Management**: Retrieve, delete, tag, and organize DatoCMS uploads/assets
-- **Upload Collections Management**: Create, retrieve, update, and delete upload collections (asset folders)
-- **Maintenance Mode**: Activate or deactivate maintenance mode to set the primary environment to read-only or allow normal operations
-- **Environment Management**: Retrieve environment information
-- **Subscription Management**: View usage and subscription limits
-- **Model Operations**: Retrieve model information, list models, create models, update models, duplicate models, delete models
+- **Content Management**: Query, create, read, update, and delete DatoCMS records
+- **Publication Management**: Publish, unpublish, and schedule content publications
+- **Collaborator Management**: Manage users and roles in your DatoCMS project
+- **Environment Management**: Create, fork, promote, and maintain DatoCMS environments
+- **Upload Management**: Manage media assets, collections, and tags
+- **Project Configuration**: Retrieve and update project settings
+- **Model Operations**: Create, read, update, and duplicate content models
 
-## Tools Overview
+## Architecture
 
-### Record Read Operations
+The codebase follows a modular architecture organized around domain-specific routers. This design provides a clean separation of concerns while maintaining consistency across different resource types.
 
-| Tool | Description | Parameters | Returns | 
-|------|-------------|------------|-------|
-| QueryDatoCMSRecords | Universal query tool for DatoCMS records. Can search by text query, fetch records by IDs, or get all records from a model. Supports pagination and locale handling. | `apiToken`, `filterQuery` (optional), `ids` (optional), `modelId` (optional), `modelName` (optional), `fields` (optional), `locale` (optional), `order_by` (optional), `version` (optional), `returnAllLocales` (optional), `returnOnlyIds` (optional), `page` (optional), `nested` (optional), `environment` (optional) | Array of matching records or record IDs |
-| GetDatoCMSRecordById | Retrieves a specific record by its ID | `apiToken`, `itemId`, `version` (optional), `returnAllLocales` (optional), `nested` (optional), `environment` (optional) | Single record object |
-| BuildDatoCMSRecordUrl | Generates a direct editor URL for a specific record | `projectUrl`, `itemTypeId`, `itemId` | URL to edit the record |
-| GetDatoCMSRecordReferences | Finds records that link to a specific record | `apiToken`, `itemId`, `returnAllLocales` (optional), `environment` (optional) | Array of referencing records |
+### Router Architecture
 
-### Record Create Operations
+The server implements a router-based architecture with a uniform pattern:
 
-| Tool | Description | Parameters | Returns | 
-|------|-------------|------------|-------|
-| DuplicateDatoCMSRecord | Creates a duplicate of an existing DatoCMS record | `apiToken`, `itemId`, `returnOnlyConfirmation` (optional), `environment` (optional) | Newly created record or confirmation message |
+1. **Router Tool**: Each domain has a main router tool that handles all operations for that resource type
+   - Example: `RecordsRouterTool.ts`, `ProjectRouterTool.ts`
 
-### Record Delete Operations
+2. **Domain-Specific Organization**: Each router organizes operations into subdirectories by type
+   - Example: `Records/Read/`, `Records/Publication/`, `Records/Delete/`
 
-| Tool | Description | Parameters | Returns | 
-|------|-------------|------------|-------|
-| DestroyDatoCMSRecord | Permanently deletes a DatoCMS record | `apiToken`, `itemId`, `confirmation`, `returnOnlyConfirmation` (optional), `environment` (optional) | Deleted record data or confirmation message |
-| BulkDestroyDatoCMSRecords | Permanently deletes multiple DatoCMS records at once | `apiToken`, `itemIds`, `confirmation`, `environment` (optional) | Confirmation message with count of deleted records |
+3. **Handler Implementation**: Individual operation handlers are implemented in their own files
+   - Example: `getRecordByIdHandler.ts`, `publishRecordHandler.ts`
 
-### Record Version Operations
+4. **Schema Validation**: Each domain defines Zod schemas for parameter validation in a `schemas.ts` file
 
-| Tool | Description | Parameters | Returns | 
-|------|-------------|------------|-------|
-| ListDatoCMSRecordVersions | Lists all versions of a specific DatoCMS record | `apiToken`, `recordId`, `returnOnlyIds` (optional), `page` (optional), `nested` (optional), `environment` (optional) | Array of version IDs or version objects |
-| GetDatoCMSRecordVersion | Retrieves a specific version of a DatoCMS record | `apiToken`, `versionId`, `environment` (optional) | Single version object |
-| RestoreDatoCMSRecordVersion | Restores a record to a previous version state | `apiToken`, `versionId`, `environment` (optional) | Restored version object |
+### Router Tools
 
-### Publication Management Operations
+All operations are coordinated through these main router tools:
 
-| Tool | Description | Parameters | Returns | 
-|------|-------------|------------|-------|
-| PublishDatoCMSRecord | Publishes a single DatoCMS record | `apiToken`, `itemId`, `content_in_locales` (optional), `non_localized_content` (optional), `recursive` (optional), `environment` (optional) | Published record object |
-| UnpublishDatoCMSRecord | Unpublishes a single DatoCMS record | `apiToken`, `itemId`, `content_in_locales` (optional), `non_localized_content` (optional), `recursive` (optional), `environment` (optional) | Unpublished record object |
-| BulkPublishDatoCMSRecords | Publishes multiple DatoCMS records at once | `apiToken`, `itemIds`, `environment` (optional) | Confirmation message with count of published records |
-| BulkUnpublishDatoCMSRecords | Unpublishes multiple DatoCMS records at once | `apiToken`, `itemIds`, `environment` (optional) | Confirmation message with count of unpublished records |
-| CreateScheduledPublicationOnRecord | Schedules a record to be published at a specific time | `apiToken`, `itemId`, `publicationDate`, `environment` (optional) | Scheduled publication object |
-| DestroyScheduledPublicationOnRecord | Cancels a scheduled publication | `apiToken`, `itemId`, `environment` (optional) | Confirmation message |
-| CreateScheduledUnpublicationOnRecord | Schedules a record to be unpublished at a specific time | `apiToken`, `itemId`, `unpublicationDate`, `environment` (optional) | Scheduled unpublication object |
-| DestroyScheduledUnpublicationOnRecord | Cancels a scheduled unpublication | `apiToken`, `itemId`, `environment` (optional) | Confirmation message |
+| Router Tool | Description | Examples |
+|-------------|-------------|----------|
+| `RecordsRouterTool` | Manages record CRUD, publication, and versioning | Query records, publish/unpublish, manage versions |
+| `ProjectRouterTool` | Handles project-level operations | Get project info, update site settings |
+| `EnvironmentRouterTool` | Manages DatoCMS environments | List environments, retrieve environment details |
+| `CollaboratorsRouterTool` | Manages users and invitations | Create/delete users, manage invitations |
+| `RolesRouterTool` | Manages user roles and permissions | Create/update/delete roles |
+| `UploadsRouterTool` | Manages media assets | Query uploads, manage upload collections |
 
-### Upload Operations
+### Parameter Description System
 
-| Tool | Description | Parameters | Returns | 
-|------|-------------|------------|-------|
-| GetDatoCMSUploadById | Retrieves a specific DatoCMS upload by its ID | `apiToken`, `uploadId`, `returnOnlyIds` (optional), `environment` (optional) | Upload resource object or just its ID |
-| GetDatoCMSUploadReferences | Retrieves all records that link to a specific DatoCMS upload/asset | `apiToken`, `uploadId`, `nested` (optional), `version` (optional), `returnOnlyIds` (optional), `environment` (optional) | Array of records referencing the upload, or just their IDs |
-| QueryDatoCMSUploads | Query and filter DatoCMS uploads (assets) | `apiToken`, `ids` (optional), `query` (optional), `fields` (optional), `locale` (optional), `order_by` (optional), `page` (optional), `returnOnlyIds` (optional), `environment` (optional) | Array of upload resource objects or just their IDs |
-| CreateDatoCMSUpload | Creates a new upload (asset) in DatoCMS from a remote URL or local path | `apiToken`, `url` or `path` (one is required), `id` (optional), `filename` (optional), `skipCreationIfAlreadyExists` (optional), `author` (optional), `copyright` (optional), `notes` (optional), `tags` (optional), `default_field_metadata` (optional), `upload_collection` (optional), `environment` (optional) | Created upload resource object |
-| UpdateDatoCMSUpload | Updates a DatoCMS upload's metadata, renames it, or uploads a new version | `apiToken`, `uploadId`, `path` (optional), `basename` (optional), `copyright` (optional), `author` (optional), `notes` (optional), `tags` (optional), `default_field_metadata` (optional), `upload_collection` (optional), `environment` (optional) | Updated upload resource object |
-| DestroyDatoCMSUpload | Permanently deletes a DatoCMS upload | `apiToken`, `uploadId`, `confirmation`, `returnOnlyConfirmation` (optional), `environment` (optional) | Deleted upload data or confirmation message |
-| BulkDestroyDatoCMSUploads | Permanently deletes multiple DatoCMS uploads at once | `apiToken`, `uploadIds`, `confirmation`, `environment` (optional) | Confirmation message with count of deleted uploads |
-| BulkTagDatoCMSUploads | Adds specified tags to multiple DatoCMS uploads | `apiToken`, `uploadIds`, `tags`, `environment` (optional) | Confirmation message with count of tagged uploads |
-| BulkSetDatoCMSUploadCollection | Assigns multiple DatoCMS uploads to a collection or removes them from collections | `apiToken`, `uploadIds`, `collectionId`, `environment` (optional) | Confirmation message with count of updated uploads |
-| ListDatoCMSUploadTags | Retrieves all manually created upload tags for the DatoCMS project, with optional filtering and pagination | `apiToken`, `filter` (optional), `page` (optional) | Array of resource objects of type upload_tag |
-| CreateDatoCMSUploadTag | Creates a new upload tag in the DatoCMS project | `apiToken`, `name` | Resource object of type upload_tag |
-| ListDatoCMSUploadSmartTags | Retrieves all automatically created upload smart tags for the DatoCMS project, with optional filtering and pagination | `apiToken`, `filter` (optional), `page` (optional) | Array of resource objects of type upload_smart_tag |
-| ListDatoCMSSubscriptionFeatures | Retrieves all the subscription features for the DatoCMS project, showing which special features are enabled for the current plan | `apiToken` | Array of resource objects of type subscription_feature |
+The architecture includes a sophisticated parameter description system:
 
-### Upload Collections Operations
+1. **Documentation Tool** (`DocumentationTool.ts`): Provides detailed parameter information
+   - Exposes the `datocms_parameters` tool to Claude
+   - Formats Zod schemas into user-friendly documentation
 
-| Tool | Description | Parameters | Returns | 
-|------|-------------|------------|-------|
-| GetDatoCMSUploadCollection | Retrieves a specific upload collection by ID | `apiToken`, `uploadCollectionId`, `environment` (optional) | Upload collection resource object |
-| QueryDatoCMSUploadCollections | Lists all upload collections with optional filtering by IDs | `apiToken`, `ids` (optional), `environment` (optional) | Array of upload collection resource objects |
-| CreateDatoCMSUploadCollection | Creates a new upload collection in DatoCMS | `apiToken`, `label`, `id` (optional), `position` (optional), `parent` (optional), `environment` (optional) | Created upload collection resource object |
-| UpdateDatoCMSUploadCollection | Updates an existing upload collection | `apiToken`, `uploadCollectionId`, `label` (optional), `position` (optional), `parent` (optional), `children` (optional), `environment` (optional) | Updated upload collection resource object |
-| DeleteDatoCMSUploadCollection | Deletes an upload collection by ID | `apiToken`, `uploadCollectionId`, `environment` (optional) | Deleted upload collection resource object |
+2. **Parameter-First Workflow**: 
+   - Users must first call `datocms_parameters` to understand required parameters
+   - Then use the appropriate router tool with the correct parameters
 
-### Project Operations
+3. **Schema Validation**:
+   - All router tools validate parameters against Zod schemas
+   - Detailed error messages direct users back to the parameters tool
 
-| Tool | Description | Parameters | Returns | 
-|------|-------------|------------|-------|
-| GetDatoCMSProjectInfo | Retrieves information about the DatoCMS project | `apiToken`, `environment` (optional) | Project configuration object |
-| UpdateDatoCMSSiteSettings | Updates the general site settings for a DatoCMS project | `apiToken`, `name` (optional), `noIndex` (optional), `favicon` (optional), `timezone` (optional), `environment` (optional) | Site resource object |
+## Usage Flow
 
-### Environment Operations
+1. **Get Parameters**: Call `datocms_parameters` with a resource and action
+   ```json
+   {
+     "resource": "records",
+     "action": "query"
+   }
+   ```
 
-| Tool | Description | Parameters | Returns | 
-|------|-------------|------------|-------|
-| ListDatoCMSEnvironments | Retrieves a list of all environments in the DatoCMS project | `apiToken` | Array of resource objects of type environment |
-| RetrieveDatoCMSEnvironment | Retrieves information about a specific DatoCMS environment by its ID | `apiToken`, `environmentId` | Resource object of type environment |
-| DeleteDatoCMSEnvironment | Permanently deletes a DatoCMS environment by its ID | `apiToken`, `environmentId`, `confirmation` | Resource object of type environment |
-| RenameDatoCMSEnvironment | Renames a DatoCMS environment by changing its ID | `apiToken`, `environmentId`, `newId` | Resource object of type environment |
-| PromoteDatoCMSEnvironment | Promotes a DatoCMS environment to primary status | `apiToken`, `environmentId` | Resource object of type environment |
-| ForkDatoCMSEnvironment | Creates a new environment by forking an existing one | `apiToken`, `environmentId`, `newId`, `fast` (optional), `force` (optional) | Resource object of type environment |
+2. **Execute Action**: Call the appropriate router tool with validated parameters
+   ```json
+   {
+     "action": "query",
+     "args": {
+       "apiToken": "your-api-token",
+       "textSearch": "content management"
+     }
+   }
+   ```
 
-### Subscription Operations
+## Development Guidelines
 
-| Tool | Description | Parameters | Returns | 
-|------|-------------|------------|-------|
-| ListDatoCMSUsagesAndSubscriptionLimits | Retrieves all the usage and subscription limits for the DatoCMS project | `apiToken` | Array of resource objects of type subscription_limit |
-| ListDatoCMSSubscriptionFeatures | Retrieves all the subscription features for the DatoCMS project, showing which special features are enabled for the current plan | `apiToken` | Array of resource objects of type subscription_feature |
+When extending this codebase:
 
-### Maintenance Mode Operations
+1. **Follow Router Patterns**: Add new functionality by following the existing router/handler pattern
+2. **Schema Definitions**: Define parameter schemas using Zod in domain-specific schema files
+3. **Handler Implementation**: Implement operation handlers in subdirectories by operation type
+4. **Tool Registration**: Register new tools in `src/index.ts` within the `createServer` function
 
-| Tool | Description | Parameters | Returns | 
-|------|-------------|------------|-------|
-| FetchMaintenanceMode | Retrieves the current state of maintenance mode for the primary environment | `apiToken` | Resource object of type maintenance_mode |
-| ActivateMaintenanceMode | Activates maintenance mode which makes the primary environment read-only | `apiToken`, `force` (optional) | Resource object of type maintenance_mode |
-| DeactivateMaintenanceMode | Deactivates maintenance mode, allowing normal operations on the primary environment | `apiToken` | Resource object of type maintenance_mode |
+## Commands
 
-### Model Operations
+### Build and Run
 
-| Tool | Description | ReadOnly | Parameters |
-|------|-------------|----------|------------|
-| ListDatoCMSModels | Retrieves all models (item types) from your DatoCMS project. | ✓ | apiToken, environment (optional) |
-| GetDatoCMSModel | Retrieves a specific model (item type) from your DatoCMS project by ID or API key. | ✓ | apiToken, modelIdOrApiKey, environment (optional) |
-| CreateDatoCMSModel | Creates a new model (item type) in your DatoCMS project. |  | apiToken, name, api_key, id (optional), singleton (optional), all_locales_required (optional), sortable (optional), modular_block (optional), draft_mode_active (optional), draft_saving_active (optional), tree (optional), ordering_direction (optional), ordering_meta (optional), collection_appearance (optional), hint (optional), inverse_relationships_enabled (optional), skip_menu_item_creation (optional), menu_item_id (optional), schema_menu_item_id (optional), environment (optional) |
-| UpdateDatoCMSModel | Updates an existing model (item type) in your DatoCMS project. |  | apiToken, modelIdOrApiKey, name (optional), api_key (optional), singleton (optional), all_locales_required (optional), sortable (optional), modular_block (optional), draft_mode_active (optional), draft_saving_active (optional), tree (optional), ordering_direction (optional), ordering_meta (optional), collection_appearance (optional), hint (optional), inverse_relationships_enabled (optional), meta (optional), environment (optional) |
-| DuplicateDatoCMSModel | Creates a duplicate of an existing model (item type) in your DatoCMS project. |  | apiToken, modelIdOrApiKey, environment (optional) |
-| DeleteDatoCMSModel | Permanently deletes a model (item type) from your DatoCMS project. |  | apiToken, modelIdOrApiKey, environment (optional) |
+- Build the TypeScript project: `npm run build`
+- Start the MCP server: `npm run start` or `./start-server.sh`
+- Start the server with HTTP transport: `npm run start:http`
+- Watch mode for development: `npm run dev`
 
 ## Prerequisites
 
@@ -185,73 +147,16 @@ npm run start
 yarn start
 ```
 
-The server runs in the foreground and will handle MCP requests from Claude. Keep this terminal window open while using Claude with this tool.
-
 ## Connecting to Claude
 
 To connect this MCP server to Claude:
 
-1. Open your Anthropic Claude client (e.g., Claude on web or desktop app)
+1. Open your Anthropic Claude client
 2. Navigate to Settings > Model Context Protocol
 3. Add a new connection with the following details:
    - **Connection Name**: DatoCMS Tools (or any name you prefer)
    - **Connection Type**: Local Process
-   - **Command**: Path to the start-server.sh script
-     - Example: `/path/to/your/project/start-server.sh`
-   - Alternatively, you can use: `npm run start` or full path to node executable followed by the path to the built index.js file
-     - Example: `/usr/local/bin/node /path/to/your/project/dist/index.js`
-4. Click "Add Connection"
-
-## Using DatoCMS Tools with Claude
-
-Once connected, you can use the tools described in the table above.
-
-Here's an example conversation using the DatoCMS tools:
-
-```
-User: I need to find content in my DatoCMS project about "artificial intelligence". My API token is [your-api-token].
-
-Claude: I'll search for content related to artificial intelligence in your DatoCMS project.
-[Claude uses QueryDatoCMSRecords tool]
-
-I found 3 items matching your search:
-1. "Introduction to AI" - Blog post (ID: 12345)
-2. "Machine Learning Basics" - Tutorial (ID: 67890)
-3. "AI Ethics Guidelines" - Page (ID: 54321)
-
-Would you like more details about any of these items?
-
-User: Yes, can you get me the details of the AI Ethics Guidelines page?
-
-Claude: I'll retrieve the details for the AI Ethics Guidelines page.
-[Claude uses GetDatoCMSRecordById tool with the remembered API token]
-
-Here are the details for "AI Ethics Guidelines":
-[Content details provided]
-
-Would you like to schedule this content to be published at a specific time?
-
-User: Yes, please schedule it for tomorrow at 9:00 AM UTC.
-
-Claude: I'll set up the scheduled publication for you.
-[Claude uses CreateScheduledPublicationOnRecord tool with the remembered API token]
-
-Success! The "AI Ethics Guidelines" page has been scheduled for publication tomorrow at 9:00 AM UTC.
-
-User: Thanks! Can you also give me the URL to edit this page in the DatoCMS admin interface?
-
-Claude: I'll generate that URL for you.
-[Claude uses BuildDatoCMSRecordUrl tool]
-
-Here's the direct link to edit this page in your DatoCMS admin interface:
-[Editor URL provided]
-```
-
-## Troubleshooting
-
-- If Claude cannot connect to the MCP server, ensure the server is running and the path in the Claude connection settings is correct
-- For API authentication errors, verify your DatoCMS API token is valid and has the correct permissions
-- If search returns no results, try using more general search terms
+   - **Command**: Path to the start-server.sh script or `npm run start`
 
 ## License
 
