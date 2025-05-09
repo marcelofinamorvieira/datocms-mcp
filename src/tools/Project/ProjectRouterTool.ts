@@ -7,10 +7,6 @@ import { createErrorResponse } from "../../utils/errorHandlers.js";
 // Import handlers from subdirectories
 import { getProjectInfoHandler } from "./Info/handlers/index.js";
 import { updateSiteSettingsHandler } from "./Update/handlers/index.js";
-import { 
-  listSubscriptionFeaturesHandler,
-  listUsagesAndLimitsHandler 
-} from "./Subscription/handlers/index.js";
 
 // Annotate the args parameter with the discriminated union type
 type ProjectToolArgs = {
@@ -25,8 +21,6 @@ type ProjectAction = keyof typeof projectSchemas;
 type ActionArgsMap = {
   get_info: z.infer<typeof projectSchemas.get_info>;
   update_site_settings: z.infer<typeof projectSchemas.update_site_settings>;
-  list_subscription_features: z.infer<typeof projectSchemas.list_subscription_features>;
-  list_usages_and_limits: z.infer<typeof projectSchemas.list_usages_and_limits>;
 };
 
 /**
@@ -90,12 +84,6 @@ This will show you all the required parameters and their types.`);
             // Site settings operations
             case "update_site_settings":
               return updateSiteSettingsHandler(validatedArgs as ActionArgsMap['update_site_settings']);
-            
-            // Subscription operations
-            case "list_subscription_features":
-              return listSubscriptionFeaturesHandler(validatedArgs as ActionArgsMap['list_subscription_features']);
-            case "list_usages_and_limits":
-              return listUsagesAndLimitsHandler(validatedArgs as ActionArgsMap['list_usages_and_limits']);
             
             default:
               return createErrorResponse(`Error: No handler implemented for action '${action}'. This is a server configuration error.`);
