@@ -47,3 +47,5 @@ temp/
 
 # Test related files
 test-report.xml
+
+**/.claude/settings.local.json

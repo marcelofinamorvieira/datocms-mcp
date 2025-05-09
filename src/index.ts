@@ -14,7 +14,11 @@ import fetch from "node-fetch";
 // Records tools are now consolidated into a router tool
 import { registerRecordsRouter } from "./tools/Records/RecordsRouterTool.js";
 import { registerGetParametersTool } from "./tools/DocumentationTool.js";
-import { registerProjectRouter, registerUploadsRouter } from "./tools/index.js";
+import {
+  registerProjectRouter,
+  registerUploadsRouter,
+  registerEnvironmentRouter
+} from "./tools/index.js";
 
 // Import Upload Collection tools directly from their location
 
@@ -40,10 +44,7 @@ const createServer = (): McpServer => {
   registerRecordsRouter(server);     // Execute tool for records
   registerProjectRouter(server);     // Project actions
   registerUploadsRouter(server);     // All uploads actions (router)
-
-  // Environment tools
-  // registerListDatoCMSEnvironments(server);
-  // registerForkDatoCMSEnvironment(server);
+  registerEnvironmentRouter(server); // Environment and maintenance mode actions
 
   // Model tools
   // registerGetDatoCMSModel(server);

@@ -3,13 +3,15 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { recordsSchemas, recordActionsList } from "./Records/schemas.js";
 import { projectSchemas, projectActionsList } from "./Project/schemas.js";
 import { uploadsSchemas, uploadsActionsList } from "./Uploads/schemas.js";
+import { environmentSchemas, environmentActionsList } from "./Environments/schemas.js";
 import { createResponse } from "../utils/responseHandlers.js";
 
 // Define schema map for all resources
 const schemas = {
   records: recordsSchemas,
   project: projectSchemas,
-  uploads: uploadsSchemas
+  uploads: uploadsSchemas,
+  environments: environmentSchemas
 };
 
 type SchemaMap = typeof schemas;
@@ -17,6 +19,8 @@ type SchemaMap = typeof schemas;
 // Create a type-safe action enum for each resource type
 type RecordActions = typeof recordActionsList[number];
 type ProjectActions = typeof projectActionsList[number];
+type UploadActions = typeof uploadsActionsList[number];
+type EnvironmentActions = typeof environmentActionsList[number];
 
 /**
  * Helper function to extract and format Zod schema into a more user-friendly format
@@ -163,14 +167,16 @@ export const registerGetParametersTool = (server: McpServer) => {
     "datocms_parameters",
     // Parameter schema with types
     {
-      resource: z.enum(["records", "project", "uploads"])
-        .describe("Resource type ('records', 'project', or 'uploads')"),
+      resource: z.enum(["records", "project", "uploads", "environments"])
+        .describe("Resource type ('records', 'project', 'uploads', or 'environments')"),
       action: z.union([
         z.enum(recordActionsList as [RecordActions, ...RecordActions[]]).describe("The specific action you want to perform for records (e.g., 'query', 'get', 'publish', etc.)"),
         z.enum(projectActionsList as [ProjectActions, ...ProjectActions[]])
           .describe("Project-level action"),
         z.enum(uploadsActionsList as [string, ...string[]])
-          .describe("Uploads-level action")
+          .describe("Uploads-level action"),
+        z.enum(environmentActionsList as [string, ...string[]])
+          .describe("Environment-level action")
       ])
     },
     // Annotations for the tool - Much stronger emphasis on using this first
