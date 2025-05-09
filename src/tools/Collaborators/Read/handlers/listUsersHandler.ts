@@ -23,9 +23,9 @@ export const listUsersHandler = async (params: Params) => {
     const client = buildClient(clientParameters);
     
     try {
-      // Fetch all users - try the site.collaborators method which returns all users
-      const users = await client.site.collaborators();
-      
+      // Fetch all users using the users.list() method
+      const users = await client.users.list();
+
       // Convert to JSON and create response
       return createResponse(JSON.stringify({
         success: true,
