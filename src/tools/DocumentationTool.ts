@@ -4,6 +4,8 @@ import { recordsSchemas, recordActionsList } from "./Records/schemas.js";
 import { projectSchemas, projectActionsList } from "./Project/schemas.js";
 import { uploadsSchemas, uploadsActionsList } from "./Uploads/schemas.js";
 import { environmentSchemas, environmentActionsList } from "./Environments/schemas.js";
+import { collaboratorSchemas, collaboratorActionsList } from "./Collaborators/schemas.js";
+import { schemas as rolesSchemas, actionEnum as rolesActionsList } from "./Roles/schemas.js";
 import { createResponse } from "../utils/responseHandlers.js";
 
 // Define schema map for all resources
@@ -11,7 +13,9 @@ const schemas = {
   records: recordsSchemas,
   project: projectSchemas,
   uploads: uploadsSchemas,
-  environments: environmentSchemas
+  environments: environmentSchemas,
+  collaborators: collaboratorSchemas,
+  roles: rolesSchemas
 };
 
 type SchemaMap = typeof schemas;
@@ -21,6 +25,8 @@ type RecordActions = typeof recordActionsList[number];
 type ProjectActions = typeof projectActionsList[number];
 type UploadActions = typeof uploadsActionsList[number];
 type EnvironmentActions = typeof environmentActionsList[number];
+type CollaboratorActions = typeof collaboratorActionsList[number];
+type RolesActions = z.infer<typeof rolesActionsList>;
 
 /**
  * Helper function to extract and format Zod schema into a more user-friendly format
@@ -167,8 +173,8 @@ export const registerGetParametersTool = (server: McpServer) => {
     "datocms_parameters",
     // Parameter schema with types
     {
-      resource: z.enum(["records", "project", "uploads", "environments"])
-        .describe("Resource type ('records', 'project', 'uploads', or 'environments')"),
+      resource: z.enum(["records", "project", "uploads", "environments", "collaborators", "roles"])
+        .describe("Resource type ('records', 'project', 'uploads', 'environments', 'collaborators', or 'roles')"),
       action: z.union([
         z.enum(recordActionsList as [RecordActions, ...RecordActions[]]).describe("The specific action you want to perform for records (e.g., 'query', 'get', 'publish', etc.)"),
         z.enum(projectActionsList as [ProjectActions, ...ProjectActions[]])
@@ -176,7 +182,11 @@ export const registerGetParametersTool = (server: McpServer) => {
         z.enum(uploadsActionsList as [string, ...string[]])
           .describe("Uploads-level action"),
         z.enum(environmentActionsList as [string, ...string[]])
-          .describe("Environment-level action")
+          .describe("Environment-level action"),
+        z.enum(collaboratorActionsList as [CollaboratorActions, ...CollaboratorActions[]])
+          .describe("Collaborator-level action"),
+        rolesActionsList
+          .describe("Roles-level action")
       ])
     },
     // Annotations for the tool - Much stronger emphasis on using this first

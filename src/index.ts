@@ -17,7 +17,9 @@ import { registerGetParametersTool } from "./tools/DocumentationTool.js";
 import {
   registerProjectRouter,
   registerUploadsRouter,
-  registerEnvironmentRouter
+  registerEnvironmentRouter,
+  registerCollaboratorRouter,
+  registerRolesRouter
 } from "./tools/index.js";
 
 // Import Upload Collection tools directly from their location
@@ -45,6 +47,8 @@ const createServer = (): McpServer => {
   registerProjectRouter(server);     // Project actions
   registerUploadsRouter(server);     // All uploads actions (router)
   registerEnvironmentRouter(server); // Environment and maintenance mode actions
+  registerCollaboratorRouter(server); // Collaborator and invitation actions
+  registerRolesRouter(server);       // Role operations
 
   // Model tools
   // registerGetDatoCMSModel(server);
