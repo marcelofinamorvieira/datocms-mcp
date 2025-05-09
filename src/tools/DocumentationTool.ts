@@ -2,12 +2,14 @@ import { z } from "zod";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { recordsSchemas, recordActionsList } from "./Records/schemas.js";
 import { projectSchemas, projectActionsList } from "./Project/schemas.js";
+import { uploadsSchemas, uploadsActionsList } from "./Uploads/schemas.js";
 import { createResponse } from "../utils/responseHandlers.js";
 
 // Define schema map for all resources
 const schemas = {
   records: recordsSchemas,
-  project: projectSchemas
+  project: projectSchemas,
+  uploads: uploadsSchemas
 };
 
 type SchemaMap = typeof schemas;
@@ -21,10 +23,18 @@ type ProjectActions = typeof projectActionsList[number];
  * This generates documentation that's actually useful to humans
  */
 function formatZodSchemaForHumans(schema: z.ZodTypeAny, schemaName: string): object {
+  // ── Unwrap any ZodEffects layers (added by .refine(), .transform(), etc.) ──
+  let baseSchema: z.ZodTypeAny = schema;
+  // ZodEffects stores the inner schema in _def.schema – loop in case of nested effects
+  while (baseSchema instanceof z.ZodEffects) {
+    // @ts-ignore Accessing internal property of ZodEffects to reach the inner schema
+    baseSchema = baseSchema._def.schema;
+  }
+
   // Check if it's an object schema
-  if (schema instanceof z.ZodObject) {
+  if (baseSchema instanceof z.ZodObject) {
     // Extract shape information
-    const shape = schema._def.shape();
+    const shape = baseSchema._def.shape();
     
     // Create a user-friendly representation
     const properties: Record<string, {
@@ -153,10 +163,14 @@ export const registerGetParametersTool = (server: McpServer) => {
     "datocms_parameters",
     // Parameter schema with types
     {
-      resource: z.enum(["records", "project"]).describe("The resource type to get parameters for (currently 'records' and 'project' are supported)"),
+      resource: z.enum(["records", "project", "uploads"])
+        .describe("Resource type ('records', 'project', or 'uploads')"),
       action: z.union([
         z.enum(recordActionsList as [RecordActions, ...RecordActions[]]).describe("The specific action you want to perform for records (e.g., 'query', 'get', 'publish', etc.)"),
-        z.enum(projectActionsList as [ProjectActions, ...ProjectActions[]]).describe("The specific action you want to perform for project (e.g., 'query', 'get', 'publish', etc.)")
+        z.enum(projectActionsList as [ProjectActions, ...ProjectActions[]])
+          .describe("Project-level action"),
+        z.enum(uploadsActionsList as [string, ...string[]])
+          .describe("Uploads-level action")
       ])
     },
     // Annotations for the tool - Much stronger emphasis on using this first
@@ -233,7 +247,7 @@ export const registerGetParametersTool = (server: McpServer) => {
       return createResponse(JSON.stringify({
         ...schemaDoc,
         usage_example: usageExample,
-        important_note: "⚠️ ALWAYS use exactly these parameters with their correct types. Do not add, remove, or modify parameters."
+        important_note:  "⚠️ ALWAYS supply *all* required parameters exactly as listed (including `apiToken`, which **must** be provided by you—it is never injected automatically). Leave optional parameters out unless you explicitly need them, instead of redundantly sending their default value. If you’re not certain of a required value such as the API token, ALWAYS ask the user — do not hallucinate."
       }, null, 2));
     }
   );

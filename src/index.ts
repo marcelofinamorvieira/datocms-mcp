@@ -14,26 +14,9 @@ import fetch from "node-fetch";
 // Records tools are now consolidated into a router tool
 import { registerRecordsRouter } from "./tools/Records/RecordsRouterTool.js";
 import { registerGetParametersTool } from "./tools/DocumentationTool.js";
-import { 
-  registerProjectRouter, 
-  registerGetDatoCMSUploadById,
-  registerGetDatoCMSUploadReferences,
-  registerQueryDatoCMSUploads,
-  registerBulkDestroyDatoCMSUploads,
-  registerDestroyDatoCMSUpload,
-  registerListDatoCMSEnvironments,
-  registerForkDatoCMSEnvironment,
-  registerGetDatoCMSModel,
-  registerListDatoCMSModels,
-  registerDuplicateDatoCMSModel,
-} from "./tools/index.js";
+import { registerProjectRouter, registerUploadsRouter } from "./tools/index.js";
 
 // Import Upload Collection tools directly from their location
-import { registerGetDatoCMSUploadCollection } from "./tools/Uploads/UploadCollections/Read/GetDatoCMSUploadCollection.js";
-import { registerQueryDatoCMSUploadCollections } from "./tools/Uploads/UploadCollections/Read/QueryDatoCMSUploadCollections.js";
-import { registerCreateDatoCMSUploadCollection } from "./tools/Uploads/UploadCollections/Create/CreateDatoCMSUploadCollection.js";
-import { registerUpdateDatoCMSUploadCollection } from "./tools/Uploads/UploadCollections/Update/UpdateDatoCMSUploadCollection.js";
-import { registerDeleteDatoCMSUploadCollection } from "./tools/Uploads/UploadCollections/Delete/DeleteDatoCMSUploadCollection.js";
 
 // Apply fetch polyfill for DatoCMS client compatibility
 // @ts-ignore - Type definition mismatch between node-fetch and global fetch
@@ -55,14 +38,8 @@ const createServer = (): McpServer => {
   // Register DatoCMS tools with clear order (parameters first, then execution)
   registerGetParametersTool(server); // Parameters tool MUST be registered FIRST
   registerRecordsRouter(server);     // Execute tool for records
-  registerProjectRouter(server);     // Execute tool for project operations
-
-  // Upload tools
-  // registerGetDatoCMSUploadById(server);
-  // registerGetDatoCMSUploadReferences(server);
-  // registerQueryDatoCMSUploads(server);
-  // registerBulkDestroyDatoCMSUploads(server);
-  // registerDestroyDatoCMSUpload(server);
+  registerProjectRouter(server);     // Project actions
+  registerUploadsRouter(server);     // All uploads actions (router)
 
   // Environment tools
   // registerListDatoCMSEnvironments(server);
