@@ -36,7 +36,7 @@ export const registerListDatoCMSItemTypes = (server: McpServer) => {
         
         try {
           // List item types with optional filters
-          const itemTypes = await client.itemTypes.list(filter || {});
+          const itemTypes = await client.itemTypes.list();
           
           return createResponse(JSON.stringify(itemTypes, null, 2));
           

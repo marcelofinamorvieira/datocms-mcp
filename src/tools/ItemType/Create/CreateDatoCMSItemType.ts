@@ -74,8 +74,15 @@ export const registerCreateDatoCMSItemType = (server: McpServer) => {
           const cleanedItemTypeData = Object.fromEntries(
             Object.entries(itemTypeData).filter(([_, v]) => v !== undefined)
           );
-          
-          const createdItemType = await client.itemTypes.create(cleanedItemTypeData);
+
+          // Create the item type with required parameters
+          const createdItemType = await client.itemTypes.create({
+            name: name, // Required string parameter
+            api_key: apiKey, // Required string parameter
+            ...Object.entries(cleanedItemTypeData)
+              .filter(([k, v]) => v !== undefined && !['name', 'api_key'].includes(k))
+              .reduce((acc, [k, v]) => ({ ...acc, [k]: v }), {})
+          });
           
           return createResponse(JSON.stringify(createdItemType, null, 2));
           
