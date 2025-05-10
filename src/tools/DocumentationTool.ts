@@ -4,8 +4,7 @@ import { recordsSchemas, recordActionsList } from "./Records/schemas.js";
 import { projectSchemas, projectActionsList } from "./Project/schemas.js";
 import { uploadsSchemas, uploadsActionsList } from "./Uploads/schemas.js";
 import { environmentSchemas, environmentActionsList } from "./Environments/schemas.js";
-import { collaboratorSchemas, collaboratorActionsList } from "./Collaborators/schemas.js";
-import { schemas as rolesSchemas, actionEnum as rolesActionsList } from "./Roles/schemas.js";
+import { collaboratorSchemas, collaboratorActionsList, roleSchemas, roleActionEnum as rolesActionsList } from "./CollaboratorsRolesAndAPITokens/schemas.js";
 import { schemaSchemas, schemaActionsList } from "./Schema/schemas.js";
 import { createResponse } from "../utils/responseHandlers.js";
 
@@ -16,7 +15,7 @@ const schemas = {
   uploads: uploadsSchemas,
   environments: environmentSchemas,
   collaborators: collaboratorSchemas,
-  roles: rolesSchemas,
+  roles: roleSchemas,
   schema: schemaSchemas
 };
 

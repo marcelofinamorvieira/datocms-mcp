@@ -1,12 +1,13 @@
 # DatoCMS MCP Tools
 
-This project provides a Model Context Protocol (MCP) server that enables Claude AI models to interact with DatoCMS. It includes tools for managing DatoCMS content, collaborators, environments, projects, records, roles, schema (item types, fieldsets, etc.), and uploads through a standardized interface.
+This project provides a Model Context Protocol (MCP) server that enables Claude AI models to interact with DatoCMS. It includes tools for managing DatoCMS content, collaborators, environments, projects, records, roles, API tokens, schema (item types, fieldsets, etc.), and uploads through a standardized interface.
 
 ## Features
 
 - **Content Management**: Query, create, read, update, and delete DatoCMS records
 - **Publication Management**: Publish, unpublish, and schedule content publications
 - **Collaborator Management**: Manage users and roles in your DatoCMS project
+- **API Token Management**: Create, retrieve, update, delete, and rotate API tokens
 - **Environment Management**: Create, fork, promote, and maintain DatoCMS environments
 - **Schema Management**: Manage item types (models), fieldsets, and related schema components
 - **Upload Management**: Manage media assets, collections, and tags
@@ -14,7 +15,7 @@ This project provides a Model Context Protocol (MCP) server that enables Claude 
 
 ## Architecture
 
-The codebase follows a modular architecture organized around domain-specific routers. This design provides a clean separation of concerns while maintaining consistency across different resource types.
+The codebase follows a modular architecture organized around domain-specific routers. This design provides a clean separation of concerns while maintaining consistency across different resource types. Related functionalities are grouped together (e.g., collaborators, roles, and API tokens) for better organization.
 
 ### Router Architecture
 
@@ -24,7 +25,7 @@ The server implements a router-based architecture with a uniform pattern:
    - Example: `RecordsRouterTool.ts`, `ProjectRouterTool.ts`
 
 2. **Domain-Specific Organization**: Each router organizes operations into subdirectories by type
-   - Example: `Records/Read/`, `Records/Publication/`, `Records/Delete/`
+   - Example: `Records/Read/`, `Records/Publication/`, `Records/Delete/`, `CollaboratorsRolesAndAPITokens/Collaborators/`, `CollaboratorsRolesAndAPITokens/Roles/`
 
 3. **Handler Implementation**: Individual operation handlers are implemented in their own files
    - Example: `getRecordByIdHandler.ts`, `publishRecordHandler.ts`
@@ -40,8 +41,7 @@ All operations are coordinated through these main router tools:
 | `RecordsRouterTool` | Manages record CRUD, publication, and versioning | Query records, publish/unpublish, manage versions |
 | `ProjectRouterTool` | Handles project-level operations | Get project info, update site settings |
 | `EnvironmentRouterTool` | Manages DatoCMS environments | List environments, retrieve environment details |
-| `CollaboratorsRouterTool` | Manages users and invitations | Create/delete users, manage invitations |
-| `RolesRouterTool` | Manages user roles and permissions | Create/update/delete roles |
+| `CollaboratorsRolesAndAPITokensRouterTool` | Manages users, roles, invitations, and API tokens | Create/delete users, manage invitations, create/update/delete roles, create/rotate API tokens |
 | `UploadsRouterTool` | Manages media assets | Query uploads, manage upload collections |
 | `SchemaRouterTool` | Manages schema components | Create/read/update/delete item types and fieldsets |
 

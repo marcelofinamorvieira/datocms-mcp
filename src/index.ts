@@ -18,8 +18,7 @@ import {
   registerProjectRouter,
   registerUploadsRouter,
   registerEnvironmentRouter,
-  registerCollaboratorRouter,
-  registerRolesRouter,
+  registerPermissionsRouter,
   registerSchemaRouter
 } from "./tools/index.js";
 
@@ -48,8 +47,7 @@ const createServer = (): McpServer => {
   registerProjectRouter(server);     // Project actions
   registerUploadsRouter(server);     // All uploads actions (router)
   registerEnvironmentRouter(server); // Environment and maintenance mode actions
-  registerCollaboratorRouter(server); // Collaborator and invitation actions
-  registerRolesRouter(server);       // Role operations
+  registerPermissionsRouter(server); // Permissions: Collaborators and Roles
   registerSchemaRouter(server);      // Schema operations (item types, fieldsets, etc.)
 
   return server;
