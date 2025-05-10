@@ -9,3 +9,4 @@ export { registerEnvironmentRouter } from "./Environments/index.js";
 export { registerCollaboratorRouter } from "./Collaborators/index.js";
 export { registerRolesRouter } from "./Roles/index.js";
 export * from "./ItemType/index.js";
+export { registerFieldsetsRouter } from "./Fieldsets/index.js";

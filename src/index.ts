@@ -20,6 +20,7 @@ import {
   registerEnvironmentRouter,
   registerCollaboratorRouter,
   registerRolesRouter,
+  registerFieldsetsRouter,
   // ItemType operations
   registerCreateDatoCMSItemType,
   registerDuplicateDatoCMSItemType,
@@ -56,6 +57,7 @@ const createServer = (): McpServer => {
   registerEnvironmentRouter(server); // Environment and maintenance mode actions
   registerCollaboratorRouter(server); // Collaborator and invitation actions
   registerRolesRouter(server);       // Role operations
+  registerFieldsetsRouter(server);   // Fieldset operations
 
   // ItemType tools
   registerCreateDatoCMSItemType(server);
