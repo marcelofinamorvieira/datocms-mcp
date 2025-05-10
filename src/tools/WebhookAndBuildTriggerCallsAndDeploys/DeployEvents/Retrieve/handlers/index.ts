@@ -1,1 +1,1 @@
-export * from './retrieveDeployEventHandler';
+export * from './retrieveDeployEventHandler.js';

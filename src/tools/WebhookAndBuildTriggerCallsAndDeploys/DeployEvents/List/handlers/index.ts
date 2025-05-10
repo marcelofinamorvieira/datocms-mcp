@@ -1,1 +1,1 @@
-export * from './listDeployEventsHandler';
+export * from './listDeployEventsHandler.js';
