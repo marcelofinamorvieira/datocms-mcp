@@ -1,6 +1,6 @@
 # DatoCMS MCP Tools
 
-This project provides a Model Context Protocol (MCP) server that enables Claude AI models to interact with DatoCMS. It includes tools for managing DatoCMS content, collaborators, environments, fieldsets, item types, projects, records, roles, and uploads through a standardized interface.
+This project provides a Model Context Protocol (MCP) server that enables Claude AI models to interact with DatoCMS. It includes tools for managing DatoCMS content, collaborators, environments, projects, records, roles, schema (item types, fieldsets, etc.), and uploads through a standardized interface.
 
 ## Features
 
@@ -8,10 +8,9 @@ This project provides a Model Context Protocol (MCP) server that enables Claude 
 - **Publication Management**: Publish, unpublish, and schedule content publications
 - **Collaborator Management**: Manage users and roles in your DatoCMS project
 - **Environment Management**: Create, fork, promote, and maintain DatoCMS environments
-- **Fieldset Management**: Create, read, update, and delete fieldsets for organizing fields
+- **Schema Management**: Manage item types (models), fieldsets, and related schema components
 - **Upload Management**: Manage media assets, collections, and tags
 - **Project Configuration**: Retrieve and update project settings
-- **Item Type Operations**: Create, read, update, and duplicate content item types
 
 ## Architecture
 
@@ -44,8 +43,7 @@ All operations are coordinated through these main router tools:
 | `CollaboratorsRouterTool` | Manages users and invitations | Create/delete users, manage invitations |
 | `RolesRouterTool` | Manages user roles and permissions | Create/update/delete roles |
 | `UploadsRouterTool` | Manages media assets | Query uploads, manage upload collections |
-| `ItemType` | Manages item type operations | Create/read/update/delete/duplicate item types |
-| `FieldsetRouterTool` | Manages fieldsets for organizing fields | Create/read/update/delete fieldsets |
+| `SchemaRouterTool` | Manages schema components | Create/read/update/delete item types and fieldsets |
 
 ### Parameter Description System
 

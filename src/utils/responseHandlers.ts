@@ -15,7 +15,7 @@ type Response = {
  * Maximum character length for a single MCP response block to avoid truncation
  * The MCP reference protocol caps each response at 100,000 UTF-8 characters
  */
-const MAX_RESPONSE_LENGTH = 100000; 
+const MAX_RESPONSE_LENGTH = 100000;
 
 /**
  * Splits large text responses into smaller chunks that stay within MCP size limits
@@ -30,11 +30,11 @@ export const chunkTextResponse = (text: string): TextBlock[] => {
 
   // Split the text into chunks
   const chunks: TextBlock[] = [];
-  
+
   // Use regex to split the text into chunks of appropriate size
   // The regex matches up to MAX_RESPONSE_LENGTH characters
   const textChunks = text.match(new RegExp(`.{1,${MAX_RESPONSE_LENGTH}}`, "gs")) || [];
-  
+
   // Convert each text chunk to a proper MCP TextBlock
   for (const chunk of textChunks) {
     chunks.push({ type: "text" as const, text: chunk });
@@ -49,7 +49,11 @@ export const chunkTextResponse = (text: string): TextBlock[] => {
  * @param text The text to include in the response
  * @returns An MCP response object with properly sized content blocks
  */
-export const createResponse = (text: string): Response => {
+export const createResponse = (textOrObject: string | Record<string, any>): Response => {
+  const text = typeof textOrObject === 'string'
+    ? textOrObject
+    : JSON.stringify(textOrObject, null, 2);
+
   return {
     content: chunkTextResponse(text)
   };

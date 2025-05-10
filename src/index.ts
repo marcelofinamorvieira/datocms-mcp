@@ -20,14 +20,7 @@ import {
   registerEnvironmentRouter,
   registerCollaboratorRouter,
   registerRolesRouter,
-  registerFieldsetsRouter,
-  // ItemType operations
-  registerCreateDatoCMSItemType,
-  registerDuplicateDatoCMSItemType,
-  registerGetDatoCMSItemType,
-  registerListDatoCMSItemTypes,
-  registerUpdateDatoCMSItemType,
-  registerDeleteDatoCMSItemType
+  registerSchemaRouter
 } from "./tools/index.js";
 
 // Import Upload Collection tools directly from their location
@@ -57,15 +50,7 @@ const createServer = (): McpServer => {
   registerEnvironmentRouter(server); // Environment and maintenance mode actions
   registerCollaboratorRouter(server); // Collaborator and invitation actions
   registerRolesRouter(server);       // Role operations
-  registerFieldsetsRouter(server);   // Fieldset operations
-
-  // ItemType tools
-  registerCreateDatoCMSItemType(server);
-  registerDuplicateDatoCMSItemType(server);
-  registerGetDatoCMSItemType(server);
-  registerListDatoCMSItemTypes(server);
-  registerUpdateDatoCMSItemType(server);
-  registerDeleteDatoCMSItemType(server);
+  registerSchemaRouter(server);      // Schema operations (item types, fieldsets, etc.)
 
   return server;
 };
