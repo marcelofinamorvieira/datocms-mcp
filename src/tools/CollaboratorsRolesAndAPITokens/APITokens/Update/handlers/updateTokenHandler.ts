@@ -16,6 +16,7 @@ export const updateTokenHandler = async (params: Params) => {
     name,
     role,
     can_access_cda,
+    can_access_cda_preview,
     can_access_cma,
     environment
   } = params;
@@ -26,51 +27,40 @@ export const updateTokenHandler = async (params: Params) => {
     const client = buildClient(clientParams);
 
     try {
-      // Prepare the update payload, only including defined values
-      const updatePayload: any = {};
+      // First, get the current token to ensure we have all required fields
+      const currentToken = await client.accessTokens.find(tokenId);
 
-      // Only add parameters that are provided
-      if (name !== undefined) {
-        updatePayload.name = name;
-      }
+      // Prepare the update payload with all required fields
+      const updatePayload: any = {
+        name: name,
+        can_access_cda: can_access_cda,
+        can_access_cda_preview: can_access_cda_preview,
+        can_access_cma: can_access_cma
+      };
 
-      // Handle role assignment if provided
-      if (role !== undefined) {
-        if (typeof role === 'string') {
-          // Handle predefined role names or role IDs
-          if (['admin', 'editor', 'developer', 'seo', 'contributor'].includes(role)) {
-            const roles = await client.roles.list();
-            const matchingRole = roles.find(r => r.name.toLowerCase() === role.toLowerCase());
-            if (matchingRole) {
-              updatePayload.role = { id: matchingRole.id, type: "role" };
-            } else {
-              throw new Error(`Predefined role '${role}' not found in your DatoCMS project.`);
-            }
+      // Handle role assignment
+      if (role === null) {
+        updatePayload.role = null;
+      } else if (typeof role === 'string') {
+        // Handle predefined role names or role IDs
+        if (['admin', 'editor', 'developer', 'seo', 'contributor'].includes(role)) {
+          const roles = await client.roles.list();
+          const matchingRole = roles.find(r => r.name.toLowerCase() === role.toLowerCase());
+          if (matchingRole) {
+            updatePayload.role = { id: matchingRole.id, type: "role" };
           } else {
-            // Assume it's a role ID
-            updatePayload.role = { id: role, type: "role" };
+            throw new Error(`Predefined role '${role}' not found in your DatoCMS project.`);
           }
-        } else if (typeof role === 'object') {
-          // Direct role object assignment
-          updatePayload.role = role;
+        } else {
+          // Assume it's a role ID
+          updatePayload.role = { id: role, type: "role" };
         }
+      } else if (typeof role === 'object' && role !== null) {
+        // Direct role object assignment
+        updatePayload.role = role;
       }
 
-      // Add optional flags if provided
-      if (can_access_cda !== undefined) {
-        updatePayload.can_access_cda = can_access_cda;
-      }
-      
-      if (can_access_cma !== undefined) {
-        updatePayload.can_access_cma = can_access_cma;
-      }
-
-      // Only proceed with update if there are actually fields to update
-      if (Object.keys(updatePayload).length === 0) {
-        return createErrorResponse("Error: No fields to update. Please provide at least one field to modify.");
-      }
-
-      // Update the API token
+      // Update the API token with all required fields
       const updatedToken = await client.accessTokens.update(tokenId, updatePayload);
 
       // Convert to JSON and create response

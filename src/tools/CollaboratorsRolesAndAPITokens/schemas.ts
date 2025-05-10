@@ -173,8 +173,9 @@ export const createTokenSchema = z.object({
       type: z.literal("role").describe("Resource type")
     })
   ]).describe("Role to assign to the API token"),
-  can_access_cda: z.boolean().optional().describe("Whether the token can access the Content Delivery API"),
-  can_access_cma: z.boolean().optional().describe("Whether the token can access the Content Management API"),
+  can_access_cda: z.boolean().describe("Whether the token can access the Content Delivery API published content"),
+  can_access_cda_preview: z.boolean().describe("Whether the token can access the Content Delivery API draft content"),
+  can_access_cma: z.boolean().describe("Whether the token can access the Content Management API"),
   environment: z.string().optional().describe("The name of the DatoCMS environment to interact with. If not provided, the primary environment will be used.")
 });
 
@@ -195,17 +196,19 @@ export const retrieveTokenSchema = z.object({
 export const updateTokenSchema = z.object({
   apiToken: z.string().describe("DatoCMS API token for authentication. If you are not certain of one, ask for the user, do not halucinate."),
   tokenId: z.string().describe("ID of the API token to update"),
-  name: z.string().optional().describe("Name of the API token"),
+  name: z.string().describe("Name of the API token"),
   role: z.union([
     z.enum(["admin", "editor", "developer", "seo", "contributor"]),
     z.string().regex(/^[0-9]+$/).describe("Role ID"),
     z.object({
       id: z.string().describe("Role ID"),
       type: z.literal("role").describe("Resource type")
-    })
-  ]).optional().describe("Role to assign to the API token"),
-  can_access_cda: z.boolean().optional().describe("Whether the token can access the Content Delivery API"),
-  can_access_cma: z.boolean().optional().describe("Whether the token can access the Content Management API"),
+    }),
+    z.null()
+  ]).describe("Role to assign to the API token (can be null)"),
+  can_access_cda: z.boolean().describe("Whether the token can access the Content Delivery API published content"),
+  can_access_cda_preview: z.boolean().describe("Whether the token can access the Content Delivery API draft content"),
+  can_access_cma: z.boolean().describe("Whether the token can access the Content Management API"),
   environment: z.string().optional().describe("The name of the DatoCMS environment to interact with. If not provided, the primary environment will be used.")
 });
 

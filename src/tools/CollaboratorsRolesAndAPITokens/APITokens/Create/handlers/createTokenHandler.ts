@@ -15,6 +15,7 @@ export const createTokenHandler = async (params: Params) => {
     name,
     role,
     can_access_cda,
+    can_access_cda_preview,
     can_access_cma,
     environment
   } = params;
@@ -25,9 +26,12 @@ export const createTokenHandler = async (params: Params) => {
     const client = buildClient(clientParams);
 
     try {
-      // Prepare token payload
+      // Prepare token payload with required fields
       const tokenPayload: any = {
         name,
+        can_access_cda,
+        can_access_cda_preview,
+        can_access_cma,
       };
 
       // Handle role assignment
@@ -48,15 +52,6 @@ export const createTokenHandler = async (params: Params) => {
       } else if (typeof role === 'object') {
         // Direct role object assignment
         tokenPayload.role = role;
-      }
-
-      // Add optional flags if provided
-      if (can_access_cda !== undefined) {
-        tokenPayload.can_access_cda = can_access_cda;
-      }
-      
-      if (can_access_cma !== undefined) {
-        tokenPayload.can_access_cma = can_access_cma;
       }
 
       // Create the API token

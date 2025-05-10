@@ -4,7 +4,14 @@ import { recordsSchemas, recordActionsList } from "./Records/schemas.js";
 import { projectSchemas, projectActionsList } from "./Project/schemas.js";
 import { uploadsSchemas, uploadsActionsList } from "./Uploads/schemas.js";
 import { environmentSchemas, environmentActionsList } from "./Environments/schemas.js";
-import { collaboratorSchemas, collaboratorActionsList, roleSchemas, roleActionEnum as rolesActionsList } from "./CollaboratorsRolesAndAPITokens/schemas.js";
+import {
+  collaboratorSchemas,
+  collaboratorActionsList,
+  roleSchemas,
+  roleActionEnum as rolesActionsList,
+  apiTokenSchemas,
+  apiTokenActionEnum as apiTokensActionsList
+} from "./CollaboratorsRolesAndAPITokens/schemas.js";
 import { schemaSchemas, schemaActionsList } from "./Schema/schemas.js";
 import { createResponse } from "../utils/responseHandlers.js";
 
@@ -16,6 +23,7 @@ const schemas = {
   environments: environmentSchemas,
   collaborators: collaboratorSchemas,
   roles: roleSchemas,
+  api_tokens: apiTokenSchemas,
   schema: schemaSchemas
 };
 
@@ -28,6 +36,7 @@ type UploadActions = typeof uploadsActionsList[number];
 type EnvironmentActions = typeof environmentActionsList[number];
 type CollaboratorActions = typeof collaboratorActionsList[number];
 type RolesActions = z.infer<typeof rolesActionsList>;
+type ApiTokenActions = z.infer<typeof apiTokensActionsList>;
 type SchemaActions = typeof schemaActionsList[number];
 
 /**
@@ -175,8 +184,8 @@ export const registerGetParametersTool = (server: McpServer) => {
     "datocms_parameters",
     // Parameter schema with types
     {
-      resource: z.enum(["records", "project", "uploads", "environments", "collaborators", "roles", "schema"])
-        .describe("Resource type ('records', 'project', 'uploads', 'environments', 'collaborators', 'roles', or 'schema')"),
+      resource: z.enum(["records", "project", "uploads", "environments", "collaborators", "roles", "api_tokens", "schema"])
+        .describe("Resource type ('records', 'project', 'uploads', 'environments', 'collaborators', 'roles', 'api_tokens', or 'schema')"),
       action: z.union([
         z.enum(recordActionsList as [RecordActions, ...RecordActions[]]).describe("The specific action you want to perform for records (e.g., 'query', 'get', 'publish', etc.)"),
         z.enum(projectActionsList as [ProjectActions, ...ProjectActions[]])
@@ -189,6 +198,8 @@ export const registerGetParametersTool = (server: McpServer) => {
           .describe("Collaborator-level action"),
         rolesActionsList
           .describe("Roles-level action"),
+        apiTokensActionsList
+          .describe("API token-level action"),
         z.enum(schemaActionsList as [SchemaActions, ...SchemaActions[]])
           .describe("Schema-level action (item types, fieldsets, etc.)")
       ])
