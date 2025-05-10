@@ -43,6 +43,7 @@ import { listRolesHandler } from "./Roles/Read/handlers/index.js";
 import { retrieveRoleHandler } from "./Roles/Read/handlers/index.js";
 import { updateRoleHandler } from "./Roles/Update/handlers/index.js";
 import { destroyRoleHandler } from "./Roles/Delete/handlers/index.js";
+import { duplicateRoleHandler } from "./Roles/Duplicate/handlers/index.js";
 
 // Import handlers from subdirectories for API tokens
 import { createTokenHandler } from "./APITokens/Create/handlers/index.js";
@@ -228,6 +229,8 @@ export const registerRolesRouter = (server: McpServer) => {
             return await updateRoleHandler(params as z.infer<typeof roleSchemas.update_role>);
           case "destroy_role":
             return await destroyRoleHandler(params as z.infer<typeof roleSchemas.destroy_role>);
+          case "duplicate_role":
+            return await duplicateRoleHandler(params as z.infer<typeof roleSchemas.duplicate_role>);
           default:
             throw new Error(`Unsupported action: ${action}`);
         }

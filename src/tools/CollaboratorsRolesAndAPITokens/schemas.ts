@@ -91,6 +91,7 @@ export const roleActionEnum = z.enum([
   "retrieve_role",
   "update_role",
   "destroy_role",
+  "duplicate_role",
 ]);
 
 // Schema for creating a role
@@ -142,6 +143,13 @@ export const destroyRoleSchema = z.object({
   environment: z.string().optional().describe("The name of the DatoCMS environment to interact with."),
 });
 
+// Schema for duplicating a role
+export const duplicateRoleSchema = z.object({
+  apiToken: z.string().describe("DatoCMS API token for authentication. If you are not certain of one, ask for the user, do not halucinate."),
+  roleId: z.string().describe("ID of the role to duplicate"),
+  environment: z.string().optional().describe("The name of the DatoCMS environment to interact with."),
+});
+
 // Export schemas by action for easy access
 export const roleSchemas = {
   create_role: createRoleSchema,
@@ -149,6 +157,7 @@ export const roleSchemas = {
   retrieve_role: retrieveRoleSchema,
   update_role: updateRoleSchema,
   destroy_role: destroyRoleSchema,
+  duplicate_role: duplicateRoleSchema,
 } as const;
 
 // Common action enums for API tokens
