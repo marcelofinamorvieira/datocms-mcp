@@ -19,7 +19,8 @@ import {
   registerUploadsRouter,
   registerEnvironmentRouter,
   registerPermissionsRouter,
-  registerSchemaRouter
+  registerSchemaRouter,
+  registerDeliveryManagementRouter
 } from "./tools/index.js";
 
 // Import Upload Collection tools directly from their location
@@ -42,13 +43,14 @@ const createServer = (): McpServer => {
   });
 
   // Register DatoCMS tools with clear order (parameters first, then execution)
-  registerGetParametersTool(server); // Parameters tool MUST be registered FIRST
-  registerRecordsRouter(server);     // Execute tool for records
-  registerProjectRouter(server);     // Project actions
-  registerUploadsRouter(server);     // All uploads actions (router)
-  registerEnvironmentRouter(server); // Environment and maintenance mode actions
-  registerPermissionsRouter(server); // Permissions: Collaborators and Roles
-  registerSchemaRouter(server);      // Schema operations (item types, fieldsets, etc.)
+  registerGetParametersTool(server);      // Parameters tool MUST be registered FIRST
+  registerRecordsRouter(server);          // Execute tool for records
+  registerProjectRouter(server);          // Project actions
+  registerUploadsRouter(server);          // All uploads actions (router)
+  registerEnvironmentRouter(server);      // Environment and maintenance mode actions
+  registerPermissionsRouter(server);      // Permissions: Collaborators and Roles
+  registerSchemaRouter(server);           // Schema operations (item types, fieldsets, etc.)
+  registerDeliveryManagementRouter(server); // Webhooks and delivery management
 
   return server;
 };

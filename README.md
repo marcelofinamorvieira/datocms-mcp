@@ -44,6 +44,7 @@ All operations are coordinated through these main router tools:
 | `CollaboratorsRolesAndAPITokensRouterTool` | Manages users, roles, invitations, and API tokens | Create/delete users, manage invitations, create/update/delete roles, create/rotate API tokens |
 | `UploadsRouterTool` | Manages media assets | Query uploads, manage upload collections |
 | `SchemaRouterTool` | Manages schema components | Create/read/update/delete item types and fieldsets |
+| `WebhookAndBuildTriggerCallsAndDeploysRouterTool` | Manages webhooks, build triggers, deploy events, and webhook calls | Create/update/delete webhooks, list webhook calls, manage build triggers, view deploy events |
 
 ### Parameter Description System
 
@@ -60,6 +61,34 @@ The architecture includes a sophisticated parameter description system:
 3. **Schema Validation**:
    - All router tools validate parameters against Zod schemas
    - Detailed error messages direct users back to the parameters tool
+
+## WebhookAndBuildTriggerCallsAndDeploys Router Actions
+
+The `WebhookAndBuildTriggerCallsAndDeploysRouterTool` provides comprehensive management for webhooks, build triggers, webhook calls, and deploy events:
+
+### Webhook Actions
+- **list**: List all webhooks
+- **retrieve**: Get a specific webhook
+- **create**: Create a new webhook
+- **update**: Update an existing webhook
+- **delete**: Delete a webhook
+
+### Webhook Call Actions
+- **list**: List webhook call logs for a specific webhook
+- **retrieve**: Get detailed information about a webhook call
+- **resend**: Resend a webhook call
+
+### Build Trigger Actions
+- **list**: List all build triggers
+- **retrieve**: Get a specific build trigger
+- **create**: Create a new build trigger
+- **update**: Update an existing build trigger
+- **delete**: Delete a build trigger
+- **trigger**: Manually trigger a build
+
+### Deploy Event Actions
+- **list**: List deploy events for a specific build trigger
+- **retrieve**: Get detailed information about a deploy event
 
 ## Usage Flow
 
