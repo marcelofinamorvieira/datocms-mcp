@@ -13,7 +13,7 @@ export const registerPromoteDatoCMSEnvironment = (server: McpServer) => {
     "PromoteDatoCMSEnvironment",
     // Parameter schema with types
     { 
-      apiToken: z.string().describe("DatoCMS API token for authentication."),
+      apiToken: z.string().describe("DatoCMS API token for authentication. If you are not certain of one, ask for the user, do not halucinate."),
       environmentId: z.string().describe("The ID of the environment to promote to primary.")
     },
     // Annotations for the tool

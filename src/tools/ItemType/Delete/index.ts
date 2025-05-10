@@ -1,0 +1,1 @@
+export { registerDeleteDatoCMSItemType } from "./DeleteDatoCMSItemType.js";

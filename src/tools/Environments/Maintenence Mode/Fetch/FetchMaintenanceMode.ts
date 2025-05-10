@@ -13,7 +13,7 @@ export const registerFetchMaintenanceMode = (server: McpServer) => {
     "FetchMaintenanceMode",
     // Parameter schema with types
     {
-      apiToken: z.string().describe("DatoCMS API token for authentication."),
+      apiToken: z.string().describe("DatoCMS API token for authentication. If you are not certain of one, ask for the user, do not halucinate."),
       environment: z.string().optional().describe("The ID of a specific environment to target (defaults to primary environment).")
     },
     // Annotations for the tool

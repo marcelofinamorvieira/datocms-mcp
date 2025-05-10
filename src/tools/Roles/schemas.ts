@@ -11,7 +11,7 @@ export const actionEnum = z.enum([
 
 // Schema for creating a role
 export const createRoleSchema = z.object({
-  apiToken: z.string().describe("DatoCMS API token for authentication."),
+  apiToken: z.string().describe("DatoCMS API token for authentication. If you are not certain of one, ask for the user, do not halucinate."),
   name: z.string().describe("Name of the role"),
   can_edit_schema: z.boolean().optional().describe("Whether the role can edit schema"),
   can_edit_others_content: z.boolean().optional().describe("Whether the role can edit content created by other users"),
@@ -25,20 +25,20 @@ export const createRoleSchema = z.object({
 
 // Schema for listing roles
 export const listRolesSchema = z.object({
-  apiToken: z.string().describe("DatoCMS API token for authentication."),
+  apiToken: z.string().describe("DatoCMS API token for authentication. If you are not certain of one, ask for the user, do not halucinate."),
   environment: z.string().optional().describe("The name of the DatoCMS environment to interact with."),
 });
 
 // Schema for retrieving a role
 export const retrieveRoleSchema = z.object({
-  apiToken: z.string().describe("DatoCMS API token for authentication."),
+  apiToken: z.string().describe("DatoCMS API token for authentication. If you are not certain of one, ask for the user, do not halucinate."),
   roleId: z.string().describe("ID of the role to retrieve"),
   environment: z.string().optional().describe("The name of the DatoCMS environment to interact with."),
 });
 
 // Schema for updating a role
 export const updateRoleSchema = z.object({
-  apiToken: z.string().describe("DatoCMS API token for authentication."),
+  apiToken: z.string().describe("DatoCMS API token for authentication. If you are not certain of one, ask for the user, do not halucinate."),
   roleId: z.string().describe("ID of the role to update"),
   name: z.string().optional().describe("Name of the role"),
   can_edit_schema: z.boolean().optional().describe("Whether the role can edit schema"),
@@ -53,7 +53,7 @@ export const updateRoleSchema = z.object({
 
 // Schema for destroying a role
 export const destroyRoleSchema = z.object({
-  apiToken: z.string().describe("DatoCMS API token for authentication."),
+  apiToken: z.string().describe("DatoCMS API token for authentication. If you are not certain of one, ask for the user, do not halucinate."),
   roleId: z.string().describe("ID of the role to destroy"),
   environment: z.string().optional().describe("The name of the DatoCMS environment to interact with."),
 });

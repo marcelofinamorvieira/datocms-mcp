@@ -1,6 +1,6 @@
 # DatoCMS MCP Tools
 
-This project provides a Model Context Protocol (MCP) server that enables Claude AI models to interact with DatoCMS. It includes tools for managing DatoCMS content, collaborators, environments, models, projects, records, roles, and uploads through a standardized interface.
+This project provides a Model Context Protocol (MCP) server that enables Claude AI models to interact with DatoCMS. It includes tools for managing DatoCMS content, collaborators, environments, item types, projects, records, roles, and uploads through a standardized interface.
 
 ## Features
 
@@ -10,7 +10,7 @@ This project provides a Model Context Protocol (MCP) server that enables Claude 
 - **Environment Management**: Create, fork, promote, and maintain DatoCMS environments
 - **Upload Management**: Manage media assets, collections, and tags
 - **Project Configuration**: Retrieve and update project settings
-- **Model Operations**: Create, read, update, and duplicate content models
+- **Item Type Operations**: Create, read, update, and duplicate content item types
 
 ## Architecture
 
@@ -43,6 +43,7 @@ All operations are coordinated through these main router tools:
 | `CollaboratorsRouterTool` | Manages users and invitations | Create/delete users, manage invitations |
 | `RolesRouterTool` | Manages user roles and permissions | Create/update/delete roles |
 | `UploadsRouterTool` | Manages media assets | Query uploads, manage upload collections |
+| `ItemType` | Manages item type operations | Create/read/update/delete/duplicate item types |
 
 ### Parameter Description System
 

@@ -13,7 +13,7 @@ export const registerDeleteDatoCMSEnvironment = (server: McpServer) => {
     "DeleteDatoCMSEnvironment",
     // Parameter schema with types
     { 
-      apiToken: z.string().describe("DatoCMS API token for authentication."),
+      apiToken: z.string().describe("DatoCMS API token for authentication. If you are not certain of one, ask for the user, do not halucinate."),
       environmentId: z.string().describe("The ID of the environment to delete."),
       confirmation: z.literal("confirm").describe("Type 'confirm' to confirm the deletion. This is required to prevent accidental deletion.")
     },

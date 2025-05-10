@@ -13,7 +13,7 @@ export const registerForkDatoCMSEnvironment = (server: McpServer) => {
     "ForkDatoCMSEnvironment",
     // Parameter schema with types
     { 
-      apiToken: z.string().describe("DatoCMS API token for authentication."),
+      apiToken: z.string().describe("DatoCMS API token for authentication. If you are not certain of one, ask for the user, do not halucinate."),
       environmentId: z.string().describe("The ID of the environment to fork."),
       newId: z.string().describe("The ID for the forked environment. Should be in kebab-case format."),
       fast: z.boolean().optional().default(false).describe("When true, performing a fast fork reduces processing time, but it also prevents writing to the source environment during the process."),

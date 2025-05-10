@@ -7,7 +7,7 @@ import { z } from "zod";
 export const collaboratorSchemas = {
   // Invitation operations
   invitation_create: z.object({
-    apiToken: z.string().describe("DatoCMS API token for authentication."),
+    apiToken: z.string().describe("DatoCMS API token for authentication. If you are not certain of one, ask for the user, do not halucinate."),
     email: z.string().email().describe("Email address for the invitation recipient"),
     role: z.union([
       z.enum(["admin", "editor", "developer", "seo", "contributor"]),
@@ -21,42 +21,42 @@ export const collaboratorSchemas = {
   }),
 
   invitation_list: z.object({
-    apiToken: z.string().describe("DatoCMS API token for authentication."),
+    apiToken: z.string().describe("DatoCMS API token for authentication. If you are not certain of one, ask for the user, do not halucinate."),
     environment: z.string().optional().describe("The name of the DatoCMS environment to interact with. If not provided, the primary environment will be used.")
   }),
 
   invitation_retrieve: z.object({
-    apiToken: z.string().describe("DatoCMS API token for authentication."),
+    apiToken: z.string().describe("DatoCMS API token for authentication. If you are not certain of one, ask for the user, do not halucinate."),
     invitationId: z.string().describe("ID of the invitation to retrieve"),
     environment: z.string().optional().describe("The name of the DatoCMS environment to interact with. If not provided, the primary environment will be used.")
   }),
 
   invitation_destroy: z.object({
-    apiToken: z.string().describe("DatoCMS API token for authentication."),
+    apiToken: z.string().describe("DatoCMS API token for authentication. If you are not certain of one, ask for the user, do not halucinate."),
     invitationId: z.string().describe("ID of the invitation to delete"),
     environment: z.string().optional().describe("The name of the DatoCMS environment to interact with. If not provided, the primary environment will be used.")
   }),
 
   invitation_resend: z.object({
-    apiToken: z.string().describe("DatoCMS API token for authentication."),
+    apiToken: z.string().describe("DatoCMS API token for authentication. If you are not certain of one, ask for the user, do not halucinate."),
     invitationId: z.string().describe("ID of the invitation to resend"),
     environment: z.string().optional().describe("The name of the DatoCMS environment to interact with. If not provided, the primary environment will be used.")
   }),
 
   // User operations
   user_list: z.object({
-    apiToken: z.string().describe("DatoCMS API token for authentication."),
+    apiToken: z.string().describe("DatoCMS API token for authentication. If you are not certain of one, ask for the user, do not halucinate."),
     environment: z.string().optional().describe("The name of the DatoCMS environment to interact with. If not provided, the primary environment will be used.")
   }),
 
   user_retrieve: z.object({
-    apiToken: z.string().describe("DatoCMS API token for authentication."),
+    apiToken: z.string().describe("DatoCMS API token for authentication. If you are not certain of one, ask for the user, do not halucinate."),
     userId: z.string().describe("ID of the user to retrieve"),
     environment: z.string().optional().describe("The name of the DatoCMS environment to interact with. If not provided, the primary environment will be used.")
   }),
 
   user_update: z.object({
-    apiToken: z.string().describe("DatoCMS API token for authentication."),
+    apiToken: z.string().describe("DatoCMS API token for authentication. If you are not certain of one, ask for the user, do not halucinate."),
     userId: z.string().describe("ID of the user to update"),
     email: z.string().email().optional().describe("Email of the user"),
     first_name: z.string().optional().describe("First name of the user"),
@@ -66,13 +66,13 @@ export const collaboratorSchemas = {
   }),
 
   user_destroy: z.object({
-    apiToken: z.string().describe("DatoCMS API token for authentication."),
+    apiToken: z.string().describe("DatoCMS API token for authentication. If you are not certain of one, ask for the user, do not halucinate."),
     userId: z.string().describe("ID of the user to destroy"),
     environment: z.string().optional().describe("The name of the DatoCMS environment to interact with. If not provided, the primary environment will be used.")
   }),
 
   user_invite: z.object({
-    apiToken: z.string().describe("DatoCMS API token for authentication."),
+    apiToken: z.string().describe("DatoCMS API token for authentication. If you are not certain of one, ask for the user, do not halucinate."),
     email: z.string().email().describe("Email of the user to invite"),
     role_id: z.string().describe("Role ID to assign to the user"),
     first_name: z.string().optional().describe("First name of the user"),

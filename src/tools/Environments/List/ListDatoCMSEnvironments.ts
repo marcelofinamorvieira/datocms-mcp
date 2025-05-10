@@ -13,7 +13,7 @@ export const registerListDatoCMSEnvironments = (server: McpServer) => {
     "ListDatoCMSEnvironments",
     // Parameter schema with types
     { 
-      apiToken: z.string().describe("DatoCMS API token for authentication.")
+      apiToken: z.string().describe("DatoCMS API token for authentication. If you are not certain of one, ask for the user, do not halucinate.")
     },
     // Annotations for the tool
     {

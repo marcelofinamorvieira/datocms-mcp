@@ -19,7 +19,14 @@ import {
   registerUploadsRouter,
   registerEnvironmentRouter,
   registerCollaboratorRouter,
-  registerRolesRouter
+  registerRolesRouter,
+  // ItemType operations
+  registerCreateDatoCMSItemType,
+  registerDuplicateDatoCMSItemType,
+  registerGetDatoCMSItemType,
+  registerListDatoCMSItemTypes,
+  registerUpdateDatoCMSItemType,
+  registerDeleteDatoCMSItemType
 } from "./tools/index.js";
 
 // Import Upload Collection tools directly from their location
@@ -50,10 +57,13 @@ const createServer = (): McpServer => {
   registerCollaboratorRouter(server); // Collaborator and invitation actions
   registerRolesRouter(server);       // Role operations
 
-  // Model tools
-  // registerGetDatoCMSModel(server);
-  // registerListDatoCMSModels(server);
-  // registerDuplicateDatoCMSModel(server);
+  // ItemType tools
+  registerCreateDatoCMSItemType(server);
+  registerDuplicateDatoCMSItemType(server);
+  registerGetDatoCMSItemType(server);
+  registerListDatoCMSItemTypes(server);
+  registerUpdateDatoCMSItemType(server);
+  registerDeleteDatoCMSItemType(server);
 
   return server;
 };
